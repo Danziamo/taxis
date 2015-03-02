@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CityTaxiDriver</string>
+    <string name="login_full_name">ФИО водителя</string>
+    <string name="login_phone_number">Номер телефона</string>
+    <string name="login_car_type">Марка автомобиля</string>
+    <string name="login_car_model">Модель автомобиля</string>
+    <string name="login_car_color">Цвет автомобиля</string>
+    <string name="login_passport_info">Пасспортные данные</string>
 </resources>
