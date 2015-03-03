@@ -25,6 +25,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
      */
 
     private static final String EXTRA_MESSAGE = "taxi.city.citytaxidriver.MESSAGE";
+    EditText loginPassword;
 
     // UI references.
 
@@ -37,27 +38,26 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         EditText loginPhone = (EditText) findViewById(R.id.login_phone);
         Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
         Button btnSignUp = (Button) findViewById(R.id.btnSignUp);
+        loginPassword = (EditText) findViewById(R.id.login_password);
 
         btnSignIn.setOnClickListener(this);
         btnSignUp.setOnClickListener(this);
     }
 
     private void SignUpActivity() {
-        Log.d("Diesel", "Tamasha");
         Intent intent = new Intent(this, RegisterActivity.class);
         EditText phone = (EditText) findViewById(R.id.login_phone);
         intent.putExtra(EXTRA_MESSAGE, phone.toString());
-        Log.d("Diesel", "Tamasha2");
         startActivity(intent);
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.btnSignUp:
-                Toast.makeText(getApplicationContext(), "Tamasha", Toast.LENGTH_LONG).show();
-                break;
             case R.id.btnSignIn:
+                Toast.makeText(getApplicationContext(), loginPassword.toString(), Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btnSignUp:
                 SignUpActivity();
                 break;
         }
