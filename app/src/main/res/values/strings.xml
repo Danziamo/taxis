@@ -6,4 +6,8 @@
     <string name="login_car_model">Модель автомобиля</string>
     <string name="login_car_color">Цвет автомобиля</string>
     <string name="login_passport_info">Пасспортные данные</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
