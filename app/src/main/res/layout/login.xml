@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <AutoCompleteTextView android:id="@+id/login_phone"
+            <EditText android:id="@+id/login_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_phone_number"
@@ -38,7 +38,7 @@
                 android:maxLines="1"
                 android:singleLine="true" />
 
-            <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
+            <Button android:id="@+id/btnSignIn" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Зарегестрироваться"
-                android:id="@+id/btn_sign_up" />
+                android:id="@+id/btnSignUp" />
 
         </LinearLayout>
     </ScrollView>
