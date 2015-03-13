@@ -71,59 +71,12 @@
         android:layout_alignEnd="@+id/etEmail"
         android:hint="ФИО" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etCarMark"
-        android:layout_below="@+id/etFullName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/etFullName"
-        android:layout_alignEnd="@+id/etFullName"
-        android:hint="Марка автомобиля" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etCarModel"
-        android:layout_below="@+id/etCarMark"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/etCarMark"
-        android:layout_alignEnd="@+id/etCarMark"
-        android:hint="Модель автомобиля" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etCarColor"
-        android:layout_below="@+id/etCarModel"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/etCarModel"
-        android:layout_alignEnd="@+id/etCarModel"
-        android:hint="Цвет автомобиля" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etIdInfo"
-        android:layout_below="@+id/etCarColor"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/etCarColor"
-        android:layout_alignEnd="@+id/etCarColor"
-        android:hint="Пасспортные данные" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Зарегестрироваться"
         android:id="@+id/btnSignUp"
-        android:layout_below="@+id/etIdInfo"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/etIdInfo"
-        android:layout_alignEnd="@+id/etIdInfo" />
+        android:layout_below="@+id/etFullName"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
