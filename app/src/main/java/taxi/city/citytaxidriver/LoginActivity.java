@@ -26,6 +26,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     private static final String EXTRA_MESSAGE = "taxi.city.citytaxidriver.MESSAGE";
     EditText loginPassword;
+    EditText loginPhone;
 
     // UI references.
 
@@ -35,7 +36,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.login);
 
         // Set up the login form.
-        EditText loginPhone = (EditText) findViewById(R.id.login_phone);
+        loginPhone = (EditText) findViewById(R.id.login_phone);
         Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
         Button btnSignUp = (Button) findViewById(R.id.btnSignUp);
         loginPassword = (EditText) findViewById(R.id.login_password);
@@ -51,11 +52,37 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         startActivity(intent);
     }
 
+    private void StartMapsActivity(){
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
+    private boolean ValidateInputFields() {
+        String login = String.valueOf(loginPhone.getText());
+        String password = String.valueOf(loginPassword.getText());
+
+        if (login == null || login.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Введите логин", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (password == null || password.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Введите пароль", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
+//            case R.id.btnSignIn:
+//                Toast.makeText(getApplicationContext(), loginPassword.toString(), Toast.LENGTH_LONG).show();
+//                break;
             case R.id.btnSignIn:
-                Toast.makeText(getApplicationContext(), loginPassword.toString(), Toast.LENGTH_LONG).show();
+                if(ValidateInputFields()) {
+                   StartMapsActivity();
+                }
                 break;
             case R.id.btnSignUp:
                 SignUpActivity();
@@ -63,6 +90,3 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         }
     }
 }
-
-
-
