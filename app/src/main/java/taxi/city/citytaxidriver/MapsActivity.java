@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
+public class MapsActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
@@ -57,10 +59,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     Button buttonBeginTrip;
     Button buttonEndTrip;
-    private Timer myTimer;
-    List<Polyline> polylines = new ArrayList<Polyline>();
+    List<Polyline> polylines = new ArrayList<>();
 
-    public static final String TAG = MapsActivity.class.getSimpleName();
+    public static final String TAG = "taxi maps";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     DecimalFormat df = new DecimalFormat("#.##");
 
@@ -84,13 +85,32 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        setUpMapIfNeeded();
+        SetGooglePlayServices();
+
+        Initialize();
+        SetDefaultValues();
+
+        SetLocationRequest();
+    }
+
+    private void SetGooglePlayServices() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        setUpMapIfNeeded();
+    }
 
+    private void SetLocationRequest() {
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setSmallestDisplacement(10)
+                .setInterval(1 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+    }
+
+    private void Initialize() {
         distance = 0;
         price = startPrice;
         prev = null;
@@ -105,13 +125,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         buttonBeginTrip.setOnClickListener(this);
         buttonEndTrip.setOnClickListener(this);
 
-        SetDefaultValues();
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(10)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
     }
 
     private void SetDefaultValues() {
@@ -119,8 +132,24 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         distance = 0;
         price = startPrice;
         textViewSpeed.setText("Скорость: 0 км/ч");
-        textViewLocation.setText("Расстояние: " + df.format(distance/1000) + " км");
+        textViewLocation.setText("Расстояние: " + df.format(distance / 1000) + " км");
         textViewPrice.setText("Цена: " + df.format(price) + " сом");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -128,13 +157,12 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         // Connected to Google Play services!
         // The good stuff goes here.
         Log.i(TAG, "Location services connected.");
+        startLocationUpdates();
+
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
+
+        if (location != null) {
             handleNewLocation(location);
-            startLocationUpdates();
         };
     }
 
@@ -144,14 +172,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         double speed = location.getSpeed();
         boolean ifSession = !buttonBeginTrip.isEnabled();
-        int zoom = ifSession ? 17 : 15;
-        int bearing = ifSession ? (int)location.getBearing() : 0;
-        int tilt = ifSession ? 80 : 0;
+        int zoom = 15;//ifSession ? 17 : 15;
+        int bearing = 0;//ifSession ? (int)location.getBearing() : 0;
+        int tilt = 0;//ifSession ? 80 : 0;
 
         if (ifSession){
             distance += prev.distanceTo(location);
@@ -183,8 +210,8 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 .tilt(tilt)
                 .build();
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
 
     @Override
@@ -329,6 +356,15 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         {
             line.remove();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+
     }
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
