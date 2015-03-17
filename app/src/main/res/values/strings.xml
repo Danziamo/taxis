@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tamasha</string>
+    <string name="app_name">Easy Taxi</string>
     <string name="login_full_name">ФИО водителя</string>
     <string name="login_phone_number">Номер телефона</string>
     <string name="login_car_type">Марка автомобиля</string>
@@ -12,4 +12,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_register_next">RegisterNextActivity</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="item1">Item1</string>
+    <string name="item2">Item2</string>
+    <string name="item3">Item3</string>
+    <string name="item4">Item4</string>
 </resources>
