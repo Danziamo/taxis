@@ -3,16 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="taxi.city.citytaxidriver.MapsActivity">
 
+
+    <item
+        android:id="@+id/action_map"
+        android:title="Карта"
+        android:icon="@drawable/ic_maps_icon"
+        app:showAsAction="always">
+    </item>
     <item
         android:id="@+id/action_order"
         android:title="Заказать"
         android:icon="@drawable/ic_action_order"
-        app:showAsAction="ifRoom|withText">
+        app:showAsAction="always">
     </item>
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never">
+        app:showAsAction="always">
     </item>
 </menu>

@@ -6,7 +6,7 @@
     </style>
 
     <style name="GoogleMapsTheme" parent="Theme.AppCompat.Light">
-
+        <item name="android:logo">@mipmap/ic_launcher</item>
     </style>
 
 </resources>
