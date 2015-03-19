@@ -179,9 +179,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         double speed = location.getSpeed();
         boolean ifSession = !buttonBeginTrip.isEnabled();
-        int zoom = 15;//ifSession ? 17 : 15;
-        int bearing = 0;//ifSession ? (int)location.getBearing() : 0;
-        int tilt = 0;//ifSession ? 80 : 0;
+        int zoom = ifSession ? 17 : 15;
+        int bearing = ifSession ? (int)location.getBearing() : 0;
+        int tilt = ifSession ? 45 : 0;
 
         if (ifSession){
             distance += prev.distanceTo(location);
@@ -195,8 +195,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 if (ifSession) {
                     Polyline line = mMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(prev.getLatitude(), prev.getLongitude()), latLng)
-                            .width(10)
-                            .color(Color.BLACK)
+                            .width(12)
+                            .color(0x7F0000FF)
                             .geodesic(true));
 
                     polylines.add(line);
@@ -213,8 +213,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 .tilt(tilt)
                 .build();
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
 
     @Override
@@ -381,6 +381,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        if (!buttonBeginTrip.isEnabled()) {
+            return false;
+        }
         switch (item.getItemId()) {
             case R.id.action_order:
                 OpenOrder();
