@@ -399,7 +399,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void OpenSettings() {
-
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
