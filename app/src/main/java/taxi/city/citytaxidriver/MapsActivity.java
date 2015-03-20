@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,6 +45,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+
+    private static final int FINISH_ORDER_ID = 2;
 
     LinearLayout lMain;
     TextView textViewLocation;
@@ -345,12 +348,33 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.endTrip:
-                RunAlertDialog();
-                ClearMapFromLines();
-                buttonBeginTrip.setEnabled(true);
-                buttonEndTrip.setEnabled(false);
-                lMain.setVisibility(View.INVISIBLE);
-                timerHandler.removeCallbacks(timerRunnable);
+                EndTrip();
+                break;
+        }
+    }
+
+    private void EndTrip() {
+        ClearMapFromLines();
+        buttonBeginTrip.setEnabled(true);
+        buttonEndTrip.setEnabled(false);
+        lMain.setVisibility(View.INVISIBLE);
+        timerHandler.removeCallbacks(timerRunnable);
+        Intent intent = new Intent(this, FinishOrder.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Distance", df.format(distance/1000));
+        bundle.putString("Price", df.format(price));
+        bundle.putString("Time", df.format(time));
+        bundle.putString("BeginPoint", "какой то аддресс");
+        bundle.putString("EndPoint", "конечный аддрес какой то");
+        intent.putExtras(bundle);
+        startActivityForResult(intent, FINISH_ORDER_ID);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FINISH_ORDER_ID) {
+            Toast.makeText(getApplicationContext(), "Заказ окончен", Toast.LENGTH_LONG).show();
         }
     }
 

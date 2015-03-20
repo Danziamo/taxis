@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="taxi.city.citytaxidriver.FinishOrder">
+
+    <TextView android:text="Начальная точка:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvBeginPoint"
+        android:layout_marginTop="101dp"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Конечная точка:"
+        android:id="@+id/tvEndPoint"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/tvBeginPoint"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Расстояние:"
+        android:id="@+id/tvDistance"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/tvEndPoint"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Время:"
+        android:id="@+id/tvTime"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/tvDistance"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Стоимость:"
+        android:id="@+id/tvPrice"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/tvTime"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Оплачено"
+        android:id="@+id/btnDone"
+        android:layout_below="@+id/tvPrice"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:textSize="25dp" />
+
+</RelativeLayout>
