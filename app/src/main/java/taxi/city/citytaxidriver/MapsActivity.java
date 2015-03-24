@@ -63,6 +63,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     Button btnBeginTrip;
     Button btnPauseTrip;
     Button btnEndTrip;
+    Location location;
     List<Polyline> polylines = new ArrayList<>();
 
     public static final String TAG = "taxi maps";
@@ -196,7 +197,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
-
+        location.setAltitude(0);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         double speed = location.getSpeed();
         boolean ifSession = !btnBeginTrip.isEnabled();
@@ -289,7 +290,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onLocationChanged(Location location) {
-        handleNewLocation(location);
+        this.location = location;
+        handleNewLocation(this.location);
     }
 
     /**
@@ -323,6 +325,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.beginTrip:
+                this.location = null;
                 btnEndTrip.setEnabled(true);
                 btnBeginTrip.setEnabled(false);
                 btnPauseTrip.setEnabled(true);
@@ -339,6 +342,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     tvPause.setVisibility(View.VISIBLE);
                     isPause = true;
                 } else {
+                    this.location = null;
                     pauseTotalTime += pauseSessionTime;
                     btnPauseTrip.setText("ОЖИДАНИЕ");
                     tvPause.setVisibility(View.INVISIBLE);
