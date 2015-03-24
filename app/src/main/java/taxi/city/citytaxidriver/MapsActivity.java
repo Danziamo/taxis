@@ -1,15 +1,9 @@
 package taxi.city.citytaxidriver;
 
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -48,11 +42,14 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private static final int FINISH_ORDER_ID = 2;
 
-    LinearLayout lMain;
-    TextView textViewLocation;
-    TextView textViewPrice;
-    TextView textViewSpeed;
-    TextView textViewTime;
+    LinearLayout llMain;
+    TextView tvDistance;
+    TextView tvPrice;
+    TextView tvSpeed;
+    TextView tvTime;
+    TextView tvPause;
+    TextView tvFeeTime;
+    TextView tvFeePrice;
 
     Location prev;
     double distance;
@@ -60,29 +57,44 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     double ratio = 10;
     double freeMeters = 2000;
     double startPrice = 60;
+    double feePrice = 0;
     double time;
 
-    Button buttonBeginTrip;
-    Button buttonEndTrip;
+    Button btnBeginTrip;
+    Button btnPauseTrip;
+    Button btnEndTrip;
     List<Polyline> polylines = new ArrayList<>();
 
     public static final String TAG = "taxi maps";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     DecimalFormat df = new DecimalFormat("#.##");
 
+
+    boolean isPause = false;
     long startTime = 0;
+    double pauseTotalTime = 0;
+    double pauseSessionTime = 0;
+    long pauseStartTime = 0;
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
         @Override
         public void run() {
-            long millis = System.currentTimeMillis() - startTime;
-            double seconds = (double) (millis / 1000);
-            double minutes = seconds / 60;
+            if (!isPause) {
+                long millis = System.currentTimeMillis() - startTime;
+                double seconds = (double) (millis / 1000);
 
-            time = minutes;
-            textViewTime.setText("Время: " + df.format(time) + " мин");
-            timerHandler.postDelayed(this, 500);
+                time = (seconds - pauseTotalTime)/ 60;
+                tvTime.setText("Время: " + df.format(time) + " мин");
+            } else {
+                long millis = System.currentTimeMillis() - pauseStartTime;
+
+                pauseSessionTime = (double) (millis/ 1000);
+                //tvPause.setText("Время ожидания: " + df.format(pauseSessionTime / 60) + " мин");
+                tvFeePrice.setText("Штраф: " + df.format(feePrice) + " с");
+                tvFeeTime.setText("Время ожидания: " + df.format(pauseTotalTime/60 + pauseSessionTime/60) + " мин");
+            }
+            timerHandler.postDelayed(this, 1000);
         }
     };
 
@@ -96,6 +108,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         Initialize();
         SetDefaultValues();
+        btnPauseTrip.setEnabled(false);
 
         SetLocationRequest();
     }
@@ -112,24 +125,29 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setSmallestDisplacement(10)
-                .setInterval(1 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setInterval(1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1000); // 1 second, in milliseconds
     }
 
     private void Initialize() {
         distance = 0;
         price = startPrice;
         prev = null;
-        textViewLocation = (TextView) findViewById(R.id.location);
-        textViewPrice = (TextView) findViewById(R.id.price);
-        buttonBeginTrip = (Button) findViewById(R.id.beginTrip);
-        buttonEndTrip = (Button) findViewById(R.id.endTrip);
-        lMain = (LinearLayout) findViewById(R.id.mainLayout);
-        textViewSpeed = (TextView) findViewById(R.id.speed);
-        textViewTime = (TextView) findViewById(R.id.time);
+        tvDistance = (TextView) findViewById(R.id.textViewDistance);
+        tvPrice = (TextView) findViewById(R.id.textViewPrice);
+        btnBeginTrip = (Button) findViewById(R.id.beginTrip);
+        btnEndTrip = (Button) findViewById(R.id.endTrip);
+        btnPauseTrip = (Button) findViewById(R.id.pauseTrip);
+        llMain = (LinearLayout) findViewById(R.id.mainLayout);
+        tvSpeed = (TextView) findViewById(R.id.textViewSpeed);
+        tvTime = (TextView) findViewById(R.id.textViewTime);
+        tvPause = (TextView) findViewById(R.id.pauseText);
+        tvFeePrice = (TextView) findViewById(R.id.textViewFeePrice);
+        tvFeeTime = (TextView) findViewById(R.id.textViewFeeTime);
 
-        buttonBeginTrip.setOnClickListener(this);
-        buttonEndTrip.setOnClickListener(this);
+        btnBeginTrip.setOnClickListener(this);
+        btnEndTrip.setOnClickListener(this);
+        btnPauseTrip.setOnClickListener(this);
 
     }
 
@@ -137,9 +155,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         startTime = System.currentTimeMillis();
         distance = 0;
         price = startPrice;
-        textViewSpeed.setText("Скорость: 0 км/ч");
-        textViewLocation.setText("Расстояние: " + df.format(distance / 1000) + " км");
-        textViewPrice.setText("Цена: " + df.format(price) + " сом");
+        tvSpeed.setText("Скорость: 0 км/ч");
+        tvDistance.setText("Расстояние: " + df.format(distance / 1000) + " км");
+        tvPrice.setText("Цена: " + df.format(price) + " сом");
     }
 
     @Override
@@ -169,7 +187,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         if (location != null) {
             handleNewLocation(location);
-        };
+        }
     }
 
     protected void startLocationUpdates() {
@@ -181,43 +199,50 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         double speed = location.getSpeed();
-        boolean ifSession = !buttonBeginTrip.isEnabled();
+        boolean ifSession = !btnBeginTrip.isEnabled();
         int zoom = ifSession ? 17 : 15;
         int bearing = ifSession ? (int)location.getBearing() : 0;
         int tilt = ifSession ? 45 : 0;
 
-        if (ifSession){
+        if (ifSession && !isPause){
             distance += prev.distanceTo(location);
+            if (pauseTotalTime > 5 * 60) {
+                feePrice = pauseTotalTime <= 15*60 ? 3*pauseTotalTime/60 : 15*pauseTotalTime/60;
+                if (pauseTotalTime > 15*60) {
+                    feePrice += 5 * pauseTotalTime/60;
+                }
+            }
             if (distance >= freeMeters)
                 price = startPrice +  ratio*distance/1000;
-            textViewLocation.setText("Расстояние: " + df.format(distance/1000) + "км");
-            textViewPrice.setText("Цена: " + df.format(price) + "сом");
-            textViewSpeed.setText("Скорость: " + df.format(speed*3.6) + " км/ч");
+            tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
+            tvPrice.setText("Цена: " + df.format(price) + "сом");
+            tvSpeed.setText("Скорость: " + df.format(speed * 3.6) + " км/ч");
 
             if (prev != null) {
-                if (ifSession) {
-                    Polyline line = mMap.addPolyline(new PolylineOptions()
-                            .add(new LatLng(prev.getLatitude(), prev.getLongitude()), latLng)
-                            .width(12)
-                            .color(0x7F0000FF)
-                            .geodesic(true));
+                Polyline line = mMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(prev.getLatitude(), prev.getLongitude()), latLng)
+                        .width(12)
+                        .color(0x7F0000FF)
+                        .geodesic(true));
 
-                    polylines.add(line);
-                }
+                polylines.add(line);
             }
         }
 
         prev = location;
 
-        CameraPosition cp = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(zoom)
-                .bearing(bearing)
-                .tilt(tilt)
-                .build();
-
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+        if (ifSession && !isPause) {
+            CameraPosition cp = new CameraPosition.Builder()
+                    .target(latLng)
+                    .zoom(zoom)
+                    .bearing(bearing)
+                    .tilt(tilt)
+                    .build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+        }
+        else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
     }
 
     @Override
@@ -294,58 +319,31 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void RunAlertDialog()
-    {
-        AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this).create();
-        alertDialog.setTitle("Поездка оконченна!");
-
-        Context context = MapsActivity.this.getApplicationContext();
-        LinearLayout adlayout = new LinearLayout(context);
-        adlayout.setOrientation(LinearLayout.VERTICAL);
-        int color = Color.BLACK;
-
-        final TextView tvDistance = new TextView(context);
-        tvDistance.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tvDistance.setTextSize(15);
-        tvDistance.setTextColor(color);
-        tvDistance.setText("Вы проехали: " + df.format(distance/1000) + " км");
-        adlayout.addView(tvDistance);
-
-        final TextView tvPrice = new TextView(context);
-        tvPrice.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tvPrice.setTextSize(15);
-        tvPrice.setTextColor(color);
-        tvPrice.setText("Зачислено: " + df.format(price) + " сомов");
-        adlayout.addView(tvPrice);
-
-        final TextView tvTime = new TextView(context);
-        tvTime.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tvTime.setTextSize(15);
-        tvTime.setTextColor(color);
-        tvTime.setText("Время поездки: " + df.format(time) + " мин.");
-        adlayout.addView(tvTime);
-
-        alertDialog.setView(adlayout);
-
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
-
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.beginTrip:
-                buttonEndTrip.setEnabled(true);
-                buttonBeginTrip.setEnabled(false);
-                lMain.setVisibility(View.VISIBLE);
+                btnEndTrip.setEnabled(true);
+                btnBeginTrip.setEnabled(false);
+                btnPauseTrip.setEnabled(true);
+                btnPauseTrip.setText("ОЖИДАНИЕ");
+                llMain.setVisibility(View.VISIBLE);
                 SetDefaultValues();
                 timerHandler.postDelayed(timerRunnable, 0);
+                break;
+            case R.id.pauseTrip:
+                if (btnPauseTrip.getText() == "ОЖИДАНИЕ") {
+                    pauseSessionTime = 0;
+                    pauseStartTime = System.currentTimeMillis();
+                    btnPauseTrip.setText("ПРОДОЛЖИТЬ");
+                    tvPause.setVisibility(View.VISIBLE);
+                    isPause = true;
+                } else {
+                    pauseTotalTime += pauseSessionTime;
+                    btnPauseTrip.setText("ОЖИДАНИЕ");
+                    tvPause.setVisibility(View.INVISIBLE);
+                    isPause = false;
+                }
                 break;
             case R.id.endTrip:
                 EndTrip();
@@ -355,9 +353,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void EndTrip() {
         ClearMapFromLines();
-        buttonBeginTrip.setEnabled(true);
-        buttonEndTrip.setEnabled(false);
-        lMain.setVisibility(View.INVISIBLE);
+        btnBeginTrip.setEnabled(true);
+        btnEndTrip.setEnabled(false);
+        btnPauseTrip.setEnabled(false);
+        tvPause.setVisibility(View.INVISIBLE);
+        llMain.setVisibility(View.INVISIBLE);
+
         timerHandler.removeCallbacks(timerRunnable);
         Intent intent = new Intent(this, FinishOrder.class);
         Bundle bundle = new Bundle();
@@ -366,6 +367,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         bundle.putString("Time", df.format(time));
         bundle.putString("BeginPoint", "какой то аддресс");
         bundle.putString("EndPoint", "конечный аддрес какой то");
+        bundle.putString("FeePrice", df.format(feePrice));
+        bundle.putString("FeeTime", df.format(pauseTotalTime/60));
         intent.putExtras(bundle);
         startActivityForResult(intent, FINISH_ORDER_ID);
     }
@@ -388,7 +391,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
-        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.addCategory( Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
 
@@ -405,7 +408,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
-        if (!buttonBeginTrip.isEnabled()) {
+        if (!btnBeginTrip.isEnabled()) {
             return false;
         }
         switch (item.getItemId()) {

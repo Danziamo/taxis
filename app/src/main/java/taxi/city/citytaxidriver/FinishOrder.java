@@ -17,6 +17,8 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     TextView tvDistance;
     TextView tvPrice;
     TextView tvTime;
+    TextView tvFeePrice;
+    TextView tvFeeTime;
     Button btnFinish;
     private static final int FINISH_ORDER_ID = 2;
 
@@ -34,6 +36,8 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvDistance.setText("Путь: " + b.getString("Distance") + " км");
         tvTime.setText("Время: " + b.getString("Time") + " мин");
         tvPrice.setText("Цена: " + b.getString("Price") + " сом");
+        tvFeeTime.setText("Время ожидания: " + b.getString("FeeTime") + " мин");
+        tvFeePrice.setText("Штраф: " + b.getString("FeePrice") + " с");
     }
 
     protected void GetItems() {
@@ -42,6 +46,8 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvPrice = (TextView) findViewById(R.id.tvPrice);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
         tvTime = (TextView) findViewById(R.id.tvTime);
+        tvFeePrice = (TextView) findViewById(R.id.tvFeePrice);
+        tvFeeTime = (TextView) findViewById(R.id.tvFeeTime);
         btnFinish = (Button) findViewById(R.id.btnDone);
         btnFinish.setOnClickListener(this);
     }

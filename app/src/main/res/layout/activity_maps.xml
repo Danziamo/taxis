@@ -31,14 +31,14 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/llinfo"
+                    android:id="@+id/llTop"
                     android:weightSum="2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/speed"
+                        android:id="@+id/textViewDistance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -48,7 +48,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/time"
+                        android:id="@+id/textViewSpeed"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingLeft="5dp" />
@@ -56,14 +56,14 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll"
+                    android:id="@+id/llCenter"
                     android:weightSum="2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/location"
+                        android:id="@+id/textViewPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -72,13 +72,46 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/price"
+                        android:id="@+id/textViewTime"
+                        android:layout_weight="1"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llBottom"
+                    android:weightSum="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/textViewFeePrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewFeeTime"
                         android:layout_weight="1"
                         android:gravity="center"/>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pauseText"
+                android:layout_centerHorizontal="true"
+                android:background="#F0FF0000"
+                android:textSize="20dp"
+                android:layout_centerVertical="true"
+                />
 
             <Button
                 android:id="@+id/beginTrip"
