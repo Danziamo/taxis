@@ -1,11 +1,18 @@
 package taxi.city.citytaxidriver;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -105,6 +112,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
+        CheckEnableGPS();
+
         SetGooglePlayServices();
 
         Initialize();
@@ -112,6 +121,43 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         btnPauseTrip.setEnabled(false);
 
         SetLocationRequest();
+    }
+
+    private void CheckEnableGPS(){
+        String provider = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if(!provider.equals("")){
+            //GPS Enabled
+            Toast.makeText(this, "GPS Enabled: " + provider,
+                    Toast.LENGTH_LONG).show();
+        }else{
+            displayPromptForEnablingGPS();
+        }
+    }
+
+    public void displayPromptForEnablingGPS()
+    {
+
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(MapsActivity.this);
+        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+        final String message = "Активируйте геолокацию.";
+
+        builder.setMessage(message)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                MapsActivity.this.startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton("Отмена",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 
     private void SetGooglePlayServices() {
@@ -172,9 +218,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
+        /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
-        }
+        }*/
     }
 
     @Override
@@ -242,7 +288,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
         else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         }
     }
 
