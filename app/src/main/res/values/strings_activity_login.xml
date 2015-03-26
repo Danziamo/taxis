@@ -6,7 +6,7 @@
     <string name="action_sign_in">Войти</string>
     <string name="action_sign_in_short">Войти</string>
 
-    <string name="error_invalid_email">This email address is invalid</string>git
+    <string name="error_invalid_phone">Это поле не правильно заполнено</string>
     <string name="error_invalid_password">Пароль слишком корткий</string>
     <string name="error_incorrect_password">Пароль неверный</string>
     <string name="error_field_required">Это поле обязяательное</string>

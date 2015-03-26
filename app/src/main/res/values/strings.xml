@@ -13,10 +13,6 @@
     <string name="title_activity_register_next">RegisterNextActivity</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="item1">Item1</string>
-    <string name="item2">Item2</string>
-    <string name="item3">Item3</string>
-    <string name="item4">Item4</string>
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_finish_order">FinishOrder</string>
 </resources>
