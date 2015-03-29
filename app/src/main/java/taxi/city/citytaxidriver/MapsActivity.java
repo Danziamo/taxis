@@ -41,12 +41,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import taxi.city.citytaxidriver.Core.Order;
+
 public class MapsActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    private Order order;
     private static final int FINISH_ORDER_ID = 2;
 
     LinearLayout llMain;
@@ -362,6 +365,10 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     .getMap();
 
             if (mMap != null) {
+                order = Order.getInstance();
+                if (order.startPoint != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
+                }
                 mMap.setMyLocationEnabled(true);
             }
         }

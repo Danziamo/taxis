@@ -9,6 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import taxi.city.citytaxidriver.Core.Order;
+import taxi.city.citytaxidriver.Service.ApiService;
+
 
 public class FinishOrder extends ActionBarActivity implements View.OnClickListener {
 
@@ -21,6 +27,8 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     TextView tvFeeTime;
     Button btnFinish;
     private static final int FINISH_ORDER_ID = 2;
+    private ApiService api = ApiService.getInstance();
+    private Order order = Order.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +67,20 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
                 sendData();
                 Intent intent=new Intent();
                 intent.putExtra("MESSAGE", "done");
-                setResult(FINISH_ORDER_ID,intent);
+                setResult(FINISH_ORDER_ID, intent);
+                order.clear();
                 finish();//finishing activity
         }
     }
 
-    protected void sendData() {
-
+    private void sendData() {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("client_phone", "tamasha");
+            //json.put("password", mPassword);
+            api.getDataFromPostRequest(json, "/orders");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

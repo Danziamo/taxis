@@ -27,22 +27,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.Service.ApiService;
 
 
 /**
@@ -61,6 +54,8 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private View mLoginFormView;
     private User user;
     private int statusCode;
+
+    private ApiService api = ApiService.getInstance();
 
     private SharedPreferences settings;
 
@@ -114,6 +109,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         editor.putString("phoneKey", mPhoneView.getText().toString());
         editor.putString("passwordKey", mPasswordView.getText().toString());
         editor.putString("tokenKey", user.getToken());
+        api.setToken(user.getToken());
         editor.apply();
     }
 
@@ -293,23 +289,23 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
-            boolean b = false;
             // Simulate network access.
-            JSONObject res = postData();
 
-            if (res != null) {
-                try {
-                    user = new User(res, mPhone, mPassword);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return false;
+            try {
+                JSONObject json = new JSONObject();
+                json.put("phone", mPhone);
+                json.put("password", mPassword);
+                Map.Entry map = api.loginRequest(json, "login/");
+                if (map != null) {
+                    statusCode = (int)map.getKey();
+                    user = new User((JSONObject)map.getValue(), mPhone, mPassword);
+                    return true;
                 }
-                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
             }
-
-            // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
@@ -336,58 +332,6 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
-        }
-
-        protected JSONObject getUser(HttpResponse response) {
-            JSONObject result = null;
-            try {
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                StringBuffer sb = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                result = new JSONObject(sb.toString());
-            } catch (JSONException | IOException e) {
-                e.printStackTrace();
-            }
-
-            return result;
-        }
-
-        protected JSONObject postData() {
-            // Create a new HttpClient and Post Header
-            HttpClient httpclient = new DefaultHttpClient();
-
-            try {
-                HttpPost request = new HttpPost(url + "login/");
-                // Add your data
-                JSONObject json = new JSONObject();
-                json.put("phone", mPhone);
-                json.put("password", mPassword);
-                request.addHeader("content-type", "application/json");
-                StringEntity params = new StringEntity(json.toString());
-                request.setEntity(params);
-
-                // Execute HTTP Post Request
-                HttpResponse response = httpclient.execute(request);
-                statusCode = response.getStatusLine().getStatusCode();
-
-                JSONObject object = getUser(response);
-                return object;
-
-            } catch (ClientProtocolException e) {
-                return null;
-                // TODO Auto-generated catch block
-            } catch (IOException e) {
-                return null;
-                // TODO Auto-generated catch block
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
     }
 }
