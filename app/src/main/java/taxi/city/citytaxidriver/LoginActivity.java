@@ -52,7 +52,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private User user;
+    private User user = User.GetInstance();
     private int statusCode;
 
     private ApiService api = ApiService.getInstance();
@@ -298,7 +298,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                 Map.Entry map = api.loginRequest(json, "login/");
                 if (map != null) {
                     statusCode = (int)map.getKey();
-                    user = new User((JSONObject)map.getValue(), mPhone, mPassword);
+                    user.setUser((JSONObject)map.getValue(), mPhone, mPassword);
                     return true;
                 }
             } catch (JSONException e) {

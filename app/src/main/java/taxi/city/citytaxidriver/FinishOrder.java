@@ -1,18 +1,25 @@
 package taxi.city.citytaxidriver;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import taxi.city.citytaxidriver.Core.Order;
+import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
@@ -29,6 +36,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     private static final int FINISH_ORDER_ID = 2;
     private ApiService api = ApiService.getInstance();
     private Order order = Order.getInstance();
+    private FinishOrderTask finishTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +72,59 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.btnDone:
-                sendData();
-                Intent intent=new Intent();
-                intent.putExtra("MESSAGE", "done");
-                setResult(FINISH_ORDER_ID, intent);
-                order.clear();
-                finish();//finishing activity
+                sendPostRequest();
         }
     }
 
-    private void sendData() {
-        try {
-            JSONObject json = new JSONObject();
-            json.put("client_phone", "tamasha");
-            //json.put("password", mPassword);
-            api.getDataFromPostRequest(json, "/orders");
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private void sendPostRequest() {
+        if (finishTask != null) {
+            return;
+        }
+
+        finishTask = new FinishOrderTask();
+        finishTask.execute((Void) null);
+    }
+
+    public class FinishOrderTask extends AsyncTask<Void, Void, Map.Entry> {
+
+        FinishOrderTask() {}
+
+        @Override
+        protected Map.Entry doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+            // Simulate network access.
+
+            order.status = OrderStatus.STATUS.FINISHED;
+            JSONObject data = new JSONObject();
+            try {
+                data = order.getOrderAsJson();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return api.putDataRequest(data, "orders/" + order.id + "/");
+        }
+
+        @Override
+        protected void onPostExecute(Map.Entry map) {
+            if ((int) map.getKey() == HttpStatus.SC_OK)
+            {
+                finishTask = null;
+                Intent intent=new Intent();
+                intent.putExtra("MESSAGE", "Заказ окончен");
+                setResult(FINISH_ORDER_ID, intent);
+                order.clear();
+                finish();//finishing activity
+            } else {
+                Intent intent=new Intent();
+                intent.putExtra("MESSAGE", "Ошибка при отправке на сервер");
+                setResult(FINISH_ORDER_ID, intent);
+                finish();//finishing activity
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            finishTask = null;
         }
     }
 }

@@ -1,15 +1,12 @@
 package taxi.city.citytaxidriver;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -38,17 +35,28 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.apache.http.HttpStatus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
+import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.Enums.OrderStatus;
+import taxi.city.citytaxidriver.Service.ApiService;
 
 public class MapsActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private SendPostRequestTask sendTask = null;
+    private ApiService api = ApiService.getInstance();
+    private User user = User.GetInstance();
 
     private Order order;
     private static final int FINISH_ORDER_ID = 2;
@@ -281,6 +289,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             }
         }
 
+        order.endPoint = latLng;
         prev = location;
 
         if (ifSession && !isPause) {
@@ -386,6 +395,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 btnPauseTrip.setText("ОЖИДАНИЕ");
                 llMain.setVisibility(View.VISIBLE);
                 SetDefaultValues();
+                order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                SendPostRequest(OrderStatus.STATUS.ACCEPTED);
                 timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.pauseTrip:
@@ -422,8 +433,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         bundle.putString("Distance", df.format(distance/1000));
         bundle.putString("Price", df.format(price));
         bundle.putString("Time", df.format(time));
-        bundle.putString("BeginPoint", "какой то аддресс");
-        bundle.putString("EndPoint", "конечный аддрес какой то");
+        bundle.putString("BeginPoint", order.startPoint.toString());
+        bundle.putString("EndPoint", order.endPoint.toString());
         bundle.putString("FeePrice", df.format(feePrice));
         bundle.putString("FeeTime", df.format(pauseTotalTime/60));
         intent.putExtras(bundle);
@@ -434,7 +445,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FINISH_ORDER_ID) {
-            Toast.makeText(getApplicationContext(), "Заказ окончен", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), data.getExtras().getString("MESSAGE"), Toast.LENGTH_LONG).show();
         }
         if (requestCode == MAKE_ORDER_ID) {
             if (order.startPoint != null) {
@@ -502,5 +513,51 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    private void SendPostRequest(OrderStatus.STATUS status) {
+        if (sendTask != null) {
+            return;
+        }
+
+        sendTask = new SendPostRequestTask(status);
+        sendTask.execute((Void) null);
+    }
+
+    private class SendPostRequestTask extends AsyncTask<Void, Void, Map.Entry> {
+        SendPostRequestTask(OrderStatus.STATUS type) {
+            order.status = type;
+            order.driver = user.id;
+        }
+
+        @Override
+        protected Map.Entry doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+            // Simulate network access.
+
+            JSONObject data = new JSONObject();
+            try {
+                data = order.getOrderAsJson();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return api.putDataRequest(data, "orders/" + order.id + "/");
+        }
+
+        @Override
+        protected void onPostExecute(Map.Entry map) {
+            if ((int) map.getKey() == HttpStatus.SC_OK)
+            {
+                sendTask = null;
+                Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            sendTask = null;
+        }
     }
 }

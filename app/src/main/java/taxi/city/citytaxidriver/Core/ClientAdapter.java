@@ -43,7 +43,7 @@ public class ClientAdapter extends ArrayAdapter<Client> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.id.setText(client.name);
+        viewHolder.id.setText(String.valueOf(client.id));
         viewHolder.phone.setText(client.phone);
         return convertView;
     }

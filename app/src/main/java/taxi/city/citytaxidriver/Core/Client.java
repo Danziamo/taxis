@@ -8,15 +8,15 @@ import java.io.Serializable;
  * Created by Daniyar on 3/18/2015.
  */
 public class Client implements Serializable{
-    public String name;
+    public int id;
+    public String orderTime;
     public String phone;
     public LatLng startPoint;
+    public LatLng endPoint;
+    public String waitTime;
+    public String status;
+    public int tariff;
+    public int driver;
 
     public Client() {};
-
-    public Client(String name, String phone, LatLng startPoint) {
-        this.name = name;
-        this.phone = phone;
-        this.startPoint = startPoint;
-    }
 }
