@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -51,6 +52,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private Order order;
     private static final int FINISH_ORDER_ID = 2;
+    private static final int MAKE_ORDER_ID = 1;
+    private static final String TAG = "OrderActivity";
 
     LinearLayout llMain;
     TextView tvDistance;
@@ -76,7 +79,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     Location location;
     List<Polyline> polylines = new ArrayList<>();
 
-    public static final String TAG = "taxi maps";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     DecimalFormat df = new DecimalFormat("#.##");
 
@@ -378,7 +380,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.beginTrip:
-                this.location = null;
                 btnEndTrip.setEnabled(true);
                 btnBeginTrip.setEnabled(false);
                 btnPauseTrip.setEnabled(true);
@@ -395,7 +396,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     tvPause.setVisibility(View.VISIBLE);
                     isPause = true;
                 } else {
-                    this.location = null;
                     pauseTotalTime += pauseSessionTime;
                     btnPauseTrip.setText("ОЖИДАНИЕ");
                     tvPause.setVisibility(View.INVISIBLE);
@@ -435,6 +435,15 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FINISH_ORDER_ID) {
             Toast.makeText(getApplicationContext(), "Заказ окончен", Toast.LENGTH_LONG).show();
+        }
+        if (requestCode == MAKE_ORDER_ID) {
+            if (order.startPoint != null) {
+                Toast.makeText(getApplicationContext(), "Заказ выбран ", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "Координаты начала пути получены " + order.startPoint);
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(order.startPoint).title("Здесь ваш клиент"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
+            }
         }
     }
 
@@ -482,7 +491,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void OpenOrder() {
         Intent intent = new Intent(this, OrderActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, MAKE_ORDER_ID);
     }
 
     private void OpenSettings() {

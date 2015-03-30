@@ -32,42 +32,20 @@ import taxi.city.citytaxidriver.Service.ApiService;
 
 public class OrderActivity extends ActionBarActivity {
 
+    private String LogTag = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
     private FetchOrderTask mFetchTask = null;
+    ListView lvMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
+        lvMain = (ListView) findViewById(R.id.orderList);
         fetchData();
-
-        ListView lvMain = (ListView) findViewById(R.id.orderList);
-        ClientAdapter adapter = new ClientAdapter(this, list);
-        lvMain.setAdapter(adapter);
-        lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView idTextView = (TextView)findViewById(R.id.orderId);
-                TextView clientPhoneTextView = (TextView)findViewById(R.id.orderPhone);
-                String orderId = idTextView.getText().toString();
-                String clientPhone = clientPhoneTextView.getText().toString();
-                order.id = Integer.valueOf(orderId);
-                /*Log.e("Test", orderId);*/
-                order.clientPhone = clientPhone;
-                for (int i = list.size() - 1; i >= 0; i -= 1) {
-                    if (orderId.equals(list.get(i).name)) {
-                        order.startPoint = list.get(i).startPoint;
-                        break;
-                    }
-                }
-                /*Toast.makeText(getApplicationContext(), orderId, Toast.LENGTH_LONG).show();*/
-                Intent intent = new Intent(OrderActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     private LatLng getLatLng(String s) {
@@ -81,7 +59,7 @@ public class OrderActivity extends ActionBarActivity {
     private void InitListView(Map.Entry map) {
         list.clear();
         try {
-
+            Log.d(LogTag, "Start to fill up list view");
             if (map != null && (int)map.getKey() == 200) {
                 JSONArray arr = (JSONArray)map.getValue();
                 for (int i=0; i < arr.length(); ++i) {
@@ -91,8 +69,33 @@ public class OrderActivity extends ActionBarActivity {
                         list.add(new Client(row.getString("id"), row.getString("client_phone"), getLatLng(address)));
                     }
                 }
+                ClientAdapter adapter = new ClientAdapter(OrderActivity.this, list);
+                lvMain.setAdapter(adapter);
+                lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TextView idTextView = (TextView)findViewById(R.id.orderId);
+                        TextView clientPhoneTextView = (TextView)findViewById(R.id.orderPhone);
+                        String orderId = idTextView.getText().toString();
+                        String clientPhone = clientPhoneTextView.getText().toString();
+                        order.id = Integer.valueOf(orderId);
+                        order.clientPhone = clientPhone;
+                        for (int i = list.size() - 1; i >= 0; i -= 1) {
+                            if (orderId.equals(list.get(i).name)) {
+                                order.startPoint = list.get(i).startPoint;
+                                break;
+                            }
+                        }
+                        Intent intent = new Intent();
+                        intent.putExtra("clientLocation", order.startPoint);
+                        setResult(1, intent);
+                        finish();
+                    }
+                });
+                Log.d(LogTag, "Finished filling up listview");
             }
         } catch (JSONException e) {
+            Log.e(LogTag, "Oops something happened while initializing listview");
             e.printStackTrace();
         }
 
@@ -121,6 +124,7 @@ public class OrderActivity extends ActionBarActivity {
     }
 
     private void fetchData() {
+        Log.d(LogTag, "Starting fetching data");
         if (mFetchTask != null) {
             return;
         }
@@ -145,11 +149,10 @@ public class OrderActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Map.Entry map) {
             mFetchTask = null;
-
-            if (map!= null && (int)map.getKey() == HttpStatus.SC_OK)
+            Log.d(LogTag, "Finished fetching data " + map.toString());
+            if ((int) map.getKey() == HttpStatus.SC_OK)
             {
                 InitListView(map);
-                finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
             }
