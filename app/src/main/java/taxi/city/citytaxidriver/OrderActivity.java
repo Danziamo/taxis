@@ -27,6 +27,7 @@ import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.ClientAdapter;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
@@ -36,8 +37,9 @@ public class OrderActivity extends ActionBarActivity {
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
-    private User user = User.GetInstance();
+    private User user = User.getInstance();
     private FetchOrderTask mFetchTask = null;
+    private SendPostRequestTask sendTask = null;
     ListView lvMain;
 
     @Override
@@ -96,6 +98,7 @@ public class OrderActivity extends ActionBarActivity {
                                 break;
                             }
                         }
+                        SendPostRequest(OrderStatus.STATUS.ACCEPTED);
                         Intent intent = new Intent();
                         intent.putExtra("clientLocation", order.startPoint);
                         setResult(1, intent);
@@ -171,6 +174,52 @@ public class OrderActivity extends ActionBarActivity {
         @Override
         protected void onCancelled() {
             mFetchTask = null;
+        }
+    }
+
+    private void SendPostRequest(OrderStatus.STATUS status) {
+        if (sendTask != null) {
+            return;
+        }
+
+        sendTask = new SendPostRequestTask(status);
+        sendTask.execute((Void) null);
+    }
+
+    private class SendPostRequestTask extends AsyncTask<Void, Void, Map.Entry> {
+        SendPostRequestTask(OrderStatus.STATUS type) {
+            order.status = type;
+            order.driver = user.id;
+        }
+
+        @Override
+        protected Map.Entry doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+            // Simulate network access.
+
+            JSONObject data = new JSONObject();
+            try {
+                data = order.getOrderAsJson();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return api.putDataRequest(data, "orders/" + order.id + "/");
+        }
+
+        @Override
+        protected void onPostExecute(Map.Entry map) {
+            if ((int) map.getKey() == HttpStatus.SC_OK)
+            {
+                sendTask = null;
+                Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            sendTask = null;
         }
     }
 

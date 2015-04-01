@@ -118,6 +118,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
                 Intent intent=new Intent();
                 intent.putExtra("MESSAGE", "Ошибка при отправке на сервер");
                 setResult(FINISH_ORDER_ID, intent);
+                order.clear();
                 finish();//finishing activity
             }
         }

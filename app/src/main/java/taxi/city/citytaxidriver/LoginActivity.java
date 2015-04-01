@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +53,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private User user = User.GetInstance();
+    private User user = User.getInstance();
     private int statusCode;
 
     private ApiService api = ApiService.getInstance();
@@ -296,16 +297,16 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                 json.put("phone", mPhone);
                 json.put("password", mPassword);
                 Map.Entry map = api.loginRequest(json, "login/");
-                if (map != null) {
-                    statusCode = (int)map.getKey();
-                    user.setUser((JSONObject)map.getValue(), mPhone, mPassword);
+                if (map != null && (int)map.getKey() == HttpStatus.SC_OK) {
+                    user.setUser((JSONObject) map.getValue(), mPhone, mPassword);
                     return true;
+                } else {
+                    return false;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 return false;
             }
-            return false;
         }
 
         @Override
@@ -324,7 +325,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                 mPasswordView.requestFocus();
             }
             else {
-                Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
             }
         }
 

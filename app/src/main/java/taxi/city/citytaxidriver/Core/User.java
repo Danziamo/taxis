@@ -21,7 +21,7 @@ public class User implements Serializable {
 
     private User() {}
 
-    public static User GetInstance() {
+    public static User getInstance() {
         if (mInstance == null) {
             mInstance = new User();
         }

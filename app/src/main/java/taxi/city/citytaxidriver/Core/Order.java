@@ -25,6 +25,9 @@ public class Order {
     public int tariff;
     public int driver;
 
+    public String distance;
+    public long time;
+
     private Order() {
 
     }
@@ -47,8 +50,12 @@ public class Order {
     }
 
     private String LatLngToString(LatLng point) {
-        String res = point.toString();
-        return res.replace("lat/lng", "POINT").replace(",", " ").replace(":", " ");
+        if (point != null) {
+            String res = point.toString();
+            return res.replace("lat/lng", "POINT").replace(",", " ").replace(":", " ");
+        } else {
+            return null;
+        }
     }
 
     public JSONObject getOrderAsJson() throws JSONException {
@@ -68,5 +75,15 @@ public class Order {
 
     public void clear() {
         mInstance = null;
+        this.id = 0;
+        this.waitTime = null;
+        this.startPoint = null;
+        this.endPoint = null;
+        this.status = null;
+        this.tariff = 0;
+        this.driver = 0;
+        this.orderTime = null;
+        this.clientPhone = null;
+
     }
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -35,18 +34,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.apache.http.HttpStatus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 public class MapsActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
@@ -54,14 +47,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private SendPostRequestTask sendTask = null;
-    private ApiService api = ApiService.getInstance();
-    private User user = User.GetInstance();
 
     private Order order;
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
-    private static final String TAG = "OrderActivity";
+    private static final String TAG = "MapsActivity";
 
     LinearLayout llMain;
     TextView tvDistance;
@@ -89,7 +79,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     DecimalFormat df = new DecimalFormat("#.##");
-
 
     boolean isPause = false;
     long startTime = 0;
@@ -205,6 +194,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         tvFeePrice = (TextView) findViewById(R.id.textViewFeePrice);
         tvFeeTime = (TextView) findViewById(R.id.textViewFeeTime);
 
+        btnBeginTrip.setEnabled(false);
+        btnPauseTrip.setEnabled(false);
+        btnEndTrip.setEnabled(false);
         btnBeginTrip.setOnClickListener(this);
         btnEndTrip.setOnClickListener(this);
         btnPauseTrip.setOnClickListener(this);
@@ -215,6 +207,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         startTime = System.currentTimeMillis();
         distance = 0;
         price = startPrice;
+
         tvSpeed.setText("Скорость: 0 км/ч");
         tvDistance.setText("Расстояние: " + df.format(distance / 1000) + " км");
         tvPrice.setText("Цена: " + df.format(price) + " сом");
@@ -246,6 +239,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (location != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }
     }
@@ -259,7 +253,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         location.setAltitude(0);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         double speed = location.getSpeed();
-        boolean ifSession = !btnBeginTrip.isEnabled();
+        boolean ifSession = order.id != 0;
         int zoom = ifSession ? 17 : 15;
         int bearing = ifSession ? (int)location.getBearing() : 0;
         int tilt = ifSession ? 45 : 0;
@@ -290,6 +284,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         }
 
         order.endPoint = latLng;
+        if (prev == null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        }
         prev = location;
 
         if (ifSession && !isPause) {
@@ -301,9 +298,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
-        else {
+        /*else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        }
+        }*/
     }
 
     @Override
@@ -389,14 +386,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.beginTrip:
-                btnEndTrip.setEnabled(true);
                 btnBeginTrip.setEnabled(false);
                 btnPauseTrip.setEnabled(true);
+                btnEndTrip.setEnabled(true);
                 btnPauseTrip.setText("ОЖИДАНИЕ");
                 llMain.setVisibility(View.VISIBLE);
                 SetDefaultValues();
                 order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
-                SendPostRequest(OrderStatus.STATUS.ACCEPTED);
                 timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.pauseTrip:
@@ -421,7 +417,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     private void EndTrip() {
         ClearMapFromLines();
-        btnBeginTrip.setEnabled(true);
+        btnBeginTrip.setEnabled(false);
         btnEndTrip.setEnabled(false);
         btnPauseTrip.setEnabled(false);
         tvPause.setVisibility(View.INVISIBLE);
@@ -444,13 +440,16 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        order = Order.getInstance();
         if (requestCode == FINISH_ORDER_ID) {
             Toast.makeText(getApplicationContext(), data.getExtras().getString("MESSAGE"), Toast.LENGTH_LONG).show();
+            mMap.clear();
         }
         if (requestCode == MAKE_ORDER_ID) {
-            if (order.startPoint != null) {
+            if (order.id != 0) {
                 Toast.makeText(getApplicationContext(), "Заказ выбран ", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "Координаты начала пути получены " + order.startPoint);
+                btnBeginTrip.setEnabled(true);
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(order.startPoint).title("Здесь ваш клиент"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
@@ -471,7 +470,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         startMain.addCategory( Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-
     }
 
     @Override
@@ -485,13 +483,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
-        if (!btnBeginTrip.isEnabled()) {
-            return false;
-        }
         switch (item.getItemId()) {
             case R.id.action_order:
-                OpenOrder();
-                return true;
+                if (order.id == 0) {
+                    OpenOrder();
+                    return true;
+                }
+                return false;
             case R.id.action_settings:
                 OpenSettings();
                 return true;
@@ -515,49 +513,4 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onConfigurationChanged(newConfig);
     }
 
-    private void SendPostRequest(OrderStatus.STATUS status) {
-        if (sendTask != null) {
-            return;
-        }
-
-        sendTask = new SendPostRequestTask(status);
-        sendTask.execute((Void) null);
-    }
-
-    private class SendPostRequestTask extends AsyncTask<Void, Void, Map.Entry> {
-        SendPostRequestTask(OrderStatus.STATUS type) {
-            order.status = type;
-            order.driver = user.id;
-        }
-
-        @Override
-        protected Map.Entry doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
-
-            JSONObject data = new JSONObject();
-            try {
-                data = order.getOrderAsJson();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return api.putDataRequest(data, "orders/" + order.id + "/");
-        }
-
-        @Override
-        protected void onPostExecute(Map.Entry map) {
-            if ((int) map.getKey() == HttpStatus.SC_OK)
-            {
-                sendTask = null;
-                Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            sendTask = null;
-        }
-    }
 }
