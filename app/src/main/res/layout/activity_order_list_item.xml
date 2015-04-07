@@ -10,7 +10,7 @@
         android:layout_marginRight="10dp"/>
 
     <TextView
-        android:id="@+id/orderPhone"
+        android:id="@+id/orderAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"

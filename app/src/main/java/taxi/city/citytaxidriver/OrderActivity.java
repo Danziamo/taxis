@@ -52,6 +52,8 @@ public class OrderActivity extends ActionBarActivity {
     }
 
     private LatLng getLatLng(String s) {
+        if (s == null || s.equals("null"))
+            return null;
         String[] geo = s.replace("(", "").replace(")", "").split(" ");
 
         double latitude = Double.valueOf(geo[1].trim());
@@ -78,6 +80,7 @@ public class OrderActivity extends ActionBarActivity {
                         client.tariff = row.getInt("tariff");
                         client.status = row.getString("status");
                         client.orderTime = row.getString("order_time");
+                        client.address = row.getString("description");
                         list.add(client);
                     }
                 }
@@ -87,11 +90,11 @@ public class OrderActivity extends ActionBarActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         TextView idTextView = (TextView)findViewById(R.id.orderId);
-                        TextView clientPhoneTextView = (TextView)findViewById(R.id.orderPhone);
+                        TextView clientAddressTextView = (TextView)findViewById(R.id.orderAddress);
                         int orderId = Integer.valueOf(idTextView.getText().toString());
-                        String clientPhone = clientPhoneTextView.getText().toString();
+                        String clientAddress = clientAddressTextView.getText().toString();
                         order.id = orderId;
-                        order.clientPhone = clientPhone;
+                        order.address = clientAddress;
                         for (int i = list.size() - 1; i >= 0; i -= 1) {
                             if (orderId == list.get(i).id) {
                                 order.setOrder(list.get(i));
@@ -156,7 +159,7 @@ public class OrderActivity extends ActionBarActivity {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
-            return api.getDataFromGetRequest(null, "orders/");
+            return api.getDataFromGetRequest(null, "orders/?status=new");
         }
 
         @Override

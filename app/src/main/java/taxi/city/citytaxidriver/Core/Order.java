@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import taxi.city.citytaxidriver.Enums.OrderStatus;
@@ -14,6 +15,8 @@ import taxi.city.citytaxidriver.Enums.OrderStatus;
  * Created by Daniyar on 3/27/2015.
  */
 public class Order {
+    DecimalFormat df = new DecimalFormat("#.##");
+
     private static Order mInstance = null;
     public int id;
     public String orderTime;
@@ -24,8 +27,10 @@ public class Order {
     public String waitTime;
     public int tariff;
     public int driver;
+    public String address;
 
-    public String distance;
+    public double distance;
+    public double sum;
     public long time;
 
     private Order() {
@@ -47,6 +52,7 @@ public class Order {
         this.tariff = client.tariff;
         this.clientPhone = client.phone;
         this.orderTime = client.orderTime;
+        this.address = client.address;
     }
 
     private String LatLngToString(LatLng point) {
@@ -54,7 +60,7 @@ public class Order {
             String res = point.toString();
             return res.replace("lat/lng", "POINT").replace(",", " ").replace(":", " ");
         } else {
-            return null;
+            return "";
         }
     }
 
@@ -69,12 +75,27 @@ public class Order {
         obj.put("tariff", this.tariff);
         obj.put("driver", this.driver);
         obj.put("order_time", this.orderTime);
+        obj.put("order_distance", this.distance);
+        obj.put("order_sum", this.sum);
+        obj.put("order_travel_time", getTimeFromLong(this.time));
+        obj.put("description", this.address);
 
         return obj;
     }
 
+    private String getTimeFromLong(long seconds) {
+        int hr = (int)seconds/3600;
+        int rem = (int)seconds%3600;
+        int mn = rem/60;
+        int sec = rem%60;
+        String hrStr = (hr<10 ? "0" : "")+hr;
+        String mnStr = (mn<10 ? "0" : "")+mn;
+        String secStr = (sec<10 ? "0" : "")+sec;
+        String res = hrStr + ":" + mnStr +":" + secStr;
+        return res;
+    }
+
     public void clear() {
-        mInstance = null;
         this.id = 0;
         this.waitTime = null;
         this.startPoint = null;
@@ -84,6 +105,8 @@ public class Order {
         this.driver = 0;
         this.orderTime = null;
         this.clientPhone = null;
-
+        this.distance = 0;
+        this.time = 0;
+        this.sum = 0;
     }
 }

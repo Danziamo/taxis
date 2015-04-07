@@ -39,11 +39,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".SignUpActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".RegisterNextActivity"
+            android:name=".CreateCarActivity"
             android:label="@string/title_activity_register_next" >
         </activity>
 
@@ -71,6 +71,10 @@
         <activity
             android:name=".FinishOrder"
             android:label="@string/title_activity_finish_order" >
+        </activity>
+        <activity
+            android:name=".ConfirmSignUpActivity"
+            android:label="@string/title_activity_confirm_sing_up" >
         </activity>
     </application>
 

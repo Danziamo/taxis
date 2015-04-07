@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
 
@@ -44,7 +47,6 @@ import taxi.city.citytaxidriver.Service.ApiService;
  */
 public class LoginActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String url = "http://81.88.192.37/api/v1/";
     private static final String PREFS_NAME = "MyPrefsFile";
     private UserLoginTask mAuthTask = null;
 
@@ -91,8 +93,30 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             }
         });
 
+        Button mPhoneSignUpButton = (Button) findViewById(R.id.btnSignUp);
+        mPhoneSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUp();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void signUp() {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (data != null && data.getExtras() != null)
+                Toast.makeText(getApplicationContext(), data.getExtras().getString("MESSAGE"), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setPreferences() {
@@ -102,6 +126,9 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             if (settings.contains("passwordKey")) {
                 mPasswordView.setText(settings.getString("passwordKey", ""));
             }
+        }
+        if (settings.contains("orderIdKey")) {
+            Order.getInstance().id = settings.getInt("orderIdKey", 0);
         }
     }
 
@@ -281,6 +308,8 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
 
         private final String mPhone;
         private final String mPassword;
+        private boolean hasCar = false;
+        private int id = 0;
 
         UserLoginTask(String phone, String password) {
             mPhone = phone;
@@ -291,22 +320,37 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
-
+            boolean res = false;
             try {
                 JSONObject json = new JSONObject();
+                user.phone = mPhone;
+                user.password = mPassword;
                 json.put("phone", mPhone);
                 json.put("password", mPassword);
-                Map.Entry map = api.loginRequest(json, "login/");
-                if (map != null && (int)map.getKey() == HttpStatus.SC_OK) {
-                    user.setUser((JSONObject) map.getValue(), mPhone, mPassword);
-                    return true;
-                } else {
-                    return false;
+                JSONObject object = api.loginRequest(json, "login/");
+                if (object != null) {
+                    statusCode = object.getInt("status_code");
+                    if (statusCode == HttpStatus.SC_OK) {
+                        user.setUser(object);
+                        id = object.getInt("id");
+                        JSONArray cars = api.hasCar(null, "usercars/");
+                        if (cars != null && cars.length() > 0) {
+                            for (int i = 0; i < cars.length(); ++i) {
+                                JSONObject row = cars.getJSONObject(i);
+                                if (row.getInt("driver") == id) {
+                                    hasCar = true;
+                                    break;
+                                }
+                            }
+                        }
+                        res = true;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                return false;
+                res = false;
             }
+            return res;
         }
 
         @Override
@@ -315,11 +359,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             showProgress(false);
 
             if (success && statusCode == 200) {
-                savePreferences(user);
-                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                intent.putExtra("User", user);
-                startActivity(intent);
-                finish();
+                NextActivity(hasCar);
             } else  if (statusCode == 401) {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -334,5 +374,18 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void NextActivity(boolean hasCar) {
+        savePreferences(user);
+        Intent intent;
+        if (hasCar) {
+            intent = new Intent(LoginActivity.this, MapsActivity.class);
+        } else {
+            intent = new Intent(LoginActivity.this, CreateCarActivity.class);
+        }
+        intent.putExtra("User", user);
+        startActivity(intent);
+        finish();
     }
 }

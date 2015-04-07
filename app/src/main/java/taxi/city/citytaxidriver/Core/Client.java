@@ -17,6 +17,7 @@ public class Client implements Serializable{
     public String status;
     public int tariff;
     public int driver;
+    public String address;
 
     public Client() {};
 }

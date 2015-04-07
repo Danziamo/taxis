@@ -20,7 +20,7 @@ public class ClientAdapter extends ArrayAdapter<Client> {
 
     private static class ViewHolder {
         TextView id;
-        TextView phone;
+        TextView address;
     }
 
     public ClientAdapter(Context context, ArrayList<Client> clients) {
@@ -38,13 +38,13 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.activity_order_list_item, parent, false);
             viewHolder.id = (TextView) convertView.findViewById(R.id.orderId);
-            viewHolder.phone = (TextView) convertView.findViewById(R.id.orderPhone);
+            viewHolder.address = (TextView) convertView.findViewById(R.id.orderAddress);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.id.setText(String.valueOf(client.id));
-        viewHolder.phone.setText(client.phone);
+        viewHolder.address.setText(client.address);
         return convertView;
     }
 }

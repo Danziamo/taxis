@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
@@ -39,8 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import taxi.city.citytaxidriver.Core.Order;
-import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Service.ApiService;
 
 public class MapsActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
@@ -69,7 +68,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     double freeMeters = 2000;
     double startPrice = 60;
     double feePrice = 0;
-    double time;
+    long time;
 
     Button btnBeginTrip;
     Button btnPauseTrip;
@@ -82,8 +81,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     boolean isPause = false;
     long startTime = 0;
-    double pauseTotalTime = 0;
-    double pauseSessionTime = 0;
+    long pauseTotalTime = 0;
+    long pauseSessionTime = 0;
     long pauseStartTime = 0;
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
@@ -94,15 +93,14 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 long millis = System.currentTimeMillis() - startTime;
                 double seconds = (double) (millis / 1000);
 
-                time = (seconds - pauseTotalTime)/ 60;
-                tvTime.setText("Время: " + df.format(time) + " мин");
+                time = (long)seconds - pauseTotalTime;
+                tvTime.setText("Время: " + getTimeFromLong(time));
             } else {
                 long millis = System.currentTimeMillis() - pauseStartTime;
 
-                pauseSessionTime = (double) (millis/ 1000);
-                //tvPause.setText("Время ожидания: " + df.format(pauseSessionTime / 60) + " мин");
+                pauseSessionTime = (long) (millis/ 1000);
                 tvFeePrice.setText("Штраф: " + df.format(feePrice) + " с");
-                tvFeeTime.setText("Время ожидания: " + df.format(pauseTotalTime/60 + pauseSessionTime/60) + " мин");
+                tvFeeTime.setText("Время ожидания: " + getTimeFromLong(pauseTotalTime + pauseSessionTime));
             }
             timerHandler.postDelayed(this, 1000);
         }
@@ -112,6 +110,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         setUpMapIfNeeded();
 
         CheckEnableGPS();
@@ -123,6 +122,18 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         btnPauseTrip.setEnabled(false);
 
         SetLocationRequest();
+    }
+
+    private String getTimeFromLong(long seconds) {
+        int hr = (int)seconds/3600;
+        int rem = (int)seconds%3600;
+        int mn = rem/60;
+        int sec = rem%60;
+        String hrStr = (hr<10 ? "0" : "")+hr;
+        String mnStr = (mn<10 ? "0" : "")+mn;
+        String secStr = (sec<10 ? "0" : "")+sec;
+        String res = hrStr + ":" + mnStr +":" + secStr;
+        return res;
     }
 
     private void CheckEnableGPS(){
@@ -239,12 +250,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (location != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }
     }
 
-    protected void startLocationUpdates() {
+    private void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
@@ -393,6 +404,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 llMain.setVisibility(View.VISIBLE);
                 SetDefaultValues();
                 order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.pauseTrip:
@@ -427,8 +439,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         Intent intent = new Intent(this, FinishOrder.class);
         Bundle bundle = new Bundle();
         bundle.putString("Distance", df.format(distance/1000));
-        bundle.putString("Price", df.format(price));
-        bundle.putString("Time", df.format(time));
+        bundle.putDouble("Price", price);
+        bundle.putLong("Time", time);
         bundle.putString("BeginPoint", order.startPoint.toString());
         bundle.putString("EndPoint", order.endPoint.toString());
         bundle.putString("FeePrice", df.format(feePrice));
@@ -444,6 +456,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         if (requestCode == FINISH_ORDER_ID) {
             Toast.makeText(getApplicationContext(), data.getExtras().getString("MESSAGE"), Toast.LENGTH_LONG).show();
             mMap.clear();
+            UpdatePreferences();
         }
         if (requestCode == MAKE_ORDER_ID) {
             if (order.id != 0) {
@@ -451,10 +464,19 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 Log.d(TAG, "Координаты начала пути получены " + order.startPoint);
                 btnBeginTrip.setEnabled(true);
                 mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(order.startPoint).title("Здесь ваш клиент"));
+                mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
             }
         }
+    }
+
+    private void UpdatePreferences() {
+        String PREFS_NAME = "MyPrefsFile";
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("orderIdKey", order.id);
+        editor.apply();
+
     }
 
     private void ClearMapFromLines() {

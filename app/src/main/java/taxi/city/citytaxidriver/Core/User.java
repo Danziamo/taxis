@@ -28,13 +28,12 @@ public class User implements Serializable {
         return mInstance;
     }
 
-    public void setUser(JSONObject json, String phone, String password) throws JSONException {
-        id = json.getInt("id");
-        firstName = json.getString("first_name");
-        lastName = json.getString("last_name");
-        token = json.getString("token");
-        this.phone = phone;
-        this.password = password;
+    public void setUser(JSONObject json) throws JSONException {
+        this.id = json.getInt("id");
+        this.firstName = json.getString("first_name");
+        this.lastName = json.getString("last_name");
+        this.token = json.getString("token");
+        this.phone = json.getString("phone");
     }
 
     public String getToken() {

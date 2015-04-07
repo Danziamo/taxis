@@ -54,6 +54,9 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvPrice.setText("Цена: " + b.getString("Price") + " сом");
         tvFeeTime.setText("Время ожидания: " + b.getString("FeeTime") + " мин");
         tvFeePrice.setText("Штраф: " + b.getString("FeePrice") + " с");
+        order.distance = b.getDouble("Distance");
+        order.sum = b.getDouble("Price");
+        order.time = b.getLong("Time");
     }
 
     protected void GetItems() {
