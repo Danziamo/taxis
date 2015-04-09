@@ -5,9 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.text.DecimalFormat;
-import java.util.Date;
 
 import taxi.city.citytaxidriver.Enums.OrderStatus;
 
@@ -27,7 +25,9 @@ public class Order {
     public String waitTime;
     public int tariff;
     public int driver;
-    public String address;
+    public String addressStart;
+    public String addressEnd;
+    public String description;
 
     public double distance;
     public double sum;
@@ -52,7 +52,65 @@ public class Order {
         this.tariff = client.tariff;
         this.clientPhone = client.phone;
         this.orderTime = client.orderTime;
-        this.address = client.address;
+        this.addressStart = client.addressStart;
+        this.description = client.description;
+    }
+
+    public void setOrder(JSONObject object) throws JSONException {
+        this.id = object.getInt("id");
+        this.clientPhone = object.getString("client_phone");
+        this.orderTime = object.has("order_time") ? object.getString("order_time") : "00:00:00";
+        this.status = object.has("status") ? getStatus(object.getString("status")) : OrderStatus.STATUS.NEW;
+        this.startPoint = object.has("address_start") ? stringToLatLng(object.getString("address_start")) : null;
+        this.addressStart = object.has("address_start_name") ? object.getString("address_start_name") : null;
+        this.tariff = object.has("tariff") ? object.getInt("tariff") : 0;
+        this.driver = object.has("driver") ? object.getInt("driver") : 0;
+        this.description = object.has("description") ? object.getString("description") : null;
+    }
+
+    private OrderStatus.STATUS getStatus(String status) {
+        if (status.equals("new"))
+            return OrderStatus.STATUS.NEW;
+        if (status.equals("accepted"))
+            return OrderStatus.STATUS.ACCEPTED;
+        if (status.equals("waiting"))
+            return OrderStatus.STATUS.WAITING;
+        if (status.equals("ontheway"))
+            return OrderStatus.STATUS.ONTHEWAY;
+        if (status.equals("cancelled"))
+            return OrderStatus.STATUS.CANCELLED;
+        if (status.equals("finished"))
+            return OrderStatus.STATUS.FINISHED;
+        if (status.equals("sos"))
+            return OrderStatus.STATUS.SOS;
+        return OrderStatus.STATUS.NEW;
+    }
+
+    public void setStatus(String status) {
+        if (status.equals("new"))
+            this.status = OrderStatus.STATUS.NEW;
+        if (status.equals("accepted"))
+            this.status = OrderStatus.STATUS.ACCEPTED;
+        if (status.equals("waiting"))
+            this.status = OrderStatus.STATUS.WAITING;
+        if (status.equals("ontheway"))
+            this.status = OrderStatus.STATUS.ONTHEWAY;
+        if (status.equals("cancelled"))
+            this.status = OrderStatus.STATUS.CANCELLED;
+        if (status.equals("finished"))
+            this.status = OrderStatus.STATUS.FINISHED;
+        if (status.equals("sos"))
+            this.status = OrderStatus.STATUS.SOS;
+    }
+
+    private LatLng stringToLatLng(String s) {
+        if (s == null || s.equals("null"))
+            return null;
+        String[] geo = s.replace("(", "").replace(")", "").split(" ");
+
+        double latitude = Double.valueOf(geo[1].trim());
+        double longitude = Double.valueOf(geo[2].trim());
+        return new LatLng(latitude, longitude);
     }
 
     private String LatLngToString(LatLng point) {
@@ -78,7 +136,9 @@ public class Order {
         obj.put("order_distance", this.distance);
         obj.put("order_sum", this.sum);
         obj.put("order_travel_time", getTimeFromLong(this.time));
-        obj.put("description", this.address);
+        obj.put("address_start_name", this.addressStart);
+        obj.put("address_stop_name", this.addressEnd);
+        obj.put("description", this.description);
 
         return obj;
     }
@@ -91,8 +151,7 @@ public class Order {
         String hrStr = (hr<10 ? "0" : "")+hr;
         String mnStr = (mn<10 ? "0" : "")+mn;
         String secStr = (sec<10 ? "0" : "")+sec;
-        String res = hrStr + ":" + mnStr +":" + secStr;
-        return res;
+        return String.format("%s:%s:%s", hrStr, mnStr, secStr);
     }
 
     public void clear() {
@@ -108,5 +167,8 @@ public class Order {
         this.distance = 0;
         this.time = 0;
         this.sum = 0;
+        this.addressEnd = null;
+        this.addressStart = null;
+        this.description = null;
     }
 }

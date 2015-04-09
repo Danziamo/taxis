@@ -33,13 +33,16 @@ import taxi.city.citytaxidriver.Service.ApiService;
 
 public class OrderActivity extends ActionBarActivity {
 
+    private static final int ACCEPT_ORDER = 1;
+    private static final int WAIT_ORDER = 2;
+    private static final int START_ORDER = 3;
+
     private String TAG = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
     private User user = User.getInstance();
     private FetchOrderTask mFetchTask = null;
-    private SendPostRequestTask sendTask = null;
     ListView lvMain;
 
     @Override
@@ -48,6 +51,27 @@ public class OrderActivity extends ActionBarActivity {
         setContentView(R.layout.activity_order);
 
         lvMain = (ListView) findViewById(R.id.orderList);
+        lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*TextView idTextView = (TextView)parent.findViewById(R.id.orderId);
+                //TextView clientAddressTextView = (TextView)findViewById(R.id.orderAddress);
+                int orderId = Integer.valueOf(idTextView.getText().toString());
+                //String clientAddress = clientAddressTextView.getText().toString();*/
+
+                String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
+                int orderId = Integer.valueOf(text);
+                order.id = orderId;
+
+                for (int i = list.size() - 1; i >= 0; i -= 1) {
+                    if (orderId == list.get(i).id) {
+                        order.setOrder(list.get(i));
+                        break;
+                    }
+                }
+                goOrderDetails();
+            }
+        });
         fetchData();
     }
 
@@ -61,55 +85,32 @@ public class OrderActivity extends ActionBarActivity {
         return new LatLng(latitude, longitude);
     }
 
-    private void InitListView(Map.Entry map) {
+    private void InitListView(JSONArray array) {
         list.clear();
         try {
             Log.d(TAG, "Start to fill up list view");
-            if (map != null && (int)map.getKey() == 200) {
-                JSONArray arr = (JSONArray)map.getValue();
-                for (int i=0; i < arr.length(); ++i) {
-                    JSONObject row = arr.getJSONObject(i);
-                    if (row.getString("status").equals("new")) {
-                        Client client = new Client();
-                        client.phone = row.getString("client_phone");
-                        client.startPoint = getLatLng(row.getString("address_start"));
-                        client.endPoint = getLatLng(row.getString("address_stop"));
-                        client.driver = user.id;
-                        client.id = row.getInt("id");
-                        client.waitTime = row.getString("wait_time");
-                        client.tariff = row.getInt("tariff");
-                        client.status = row.getString("status");
-                        client.orderTime = row.getString("order_time");
-                        client.address = row.getString("description");
-                        list.add(client);
-                    }
+            for (int i=0; i < array.length(); ++i) {
+                JSONObject row = array.getJSONObject(i);
+                if (row.getString("status").equals("new")) {
+                    Client client = new Client();
+                    client.phone = row.getString("client_phone");
+                    client.startPoint = getLatLng(row.getString("address_start"));
+                    client.endPoint = getLatLng(row.getString("address_stop"));
+                    client.driver = user.id;
+                    client.id = row.getInt("id");
+                    client.waitTime = row.getString("wait_time");
+                    client.tariff = row.getInt("tariff");
+                    client.status = row.getString("status");
+                    client.orderTime = row.getString("order_time");
+                    client.addressStart = row.getString("address_start_name");
+                    client.description = row.getString("description");
+                    list.add(client);
                 }
-                ClientAdapter adapter = new ClientAdapter(OrderActivity.this, list);
-                lvMain.setAdapter(adapter);
-                lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        TextView idTextView = (TextView)findViewById(R.id.orderId);
-                        TextView clientAddressTextView = (TextView)findViewById(R.id.orderAddress);
-                        int orderId = Integer.valueOf(idTextView.getText().toString());
-                        String clientAddress = clientAddressTextView.getText().toString();
-                        order.id = orderId;
-                        order.address = clientAddress;
-                        for (int i = list.size() - 1; i >= 0; i -= 1) {
-                            if (orderId == list.get(i).id) {
-                                order.setOrder(list.get(i));
-                                break;
-                            }
-                        }
-                        SendPostRequest(OrderStatus.STATUS.ACCEPTED);
-                        Intent intent = new Intent();
-                        intent.putExtra("clientLocation", order.startPoint);
-                        setResult(1, intent);
-                        finish();
-                    }
-                });
-                Log.d(TAG, "Finished filling up listview");
             }
+            ClientAdapter adapter = new ClientAdapter(OrderActivity.this, list);
+            lvMain.setAdapter(adapter);
+
+            Log.d(TAG, "Finished filling up listview");
         } catch (JSONException e) {
             Log.e(TAG, "Oops something happened while initializing listview");
             e.printStackTrace();
@@ -117,7 +118,30 @@ public class OrderActivity extends ActionBarActivity {
 
     }
 
+    private void goOrderDetails() {
+        Intent intent = new Intent(this, OrderDetailsActivity.class);
+        intent.putExtra("type", ACCEPT_ORDER);
+        startActivityForResult(intent, 1);
+    }
+
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        order = Order.getInstance();
+        if (requestCode == 1) {
+            if (data != null && data.getBooleanExtra("returnCode", false)) {
+                Intent intent = new Intent();
+                intent.putExtra("returnCode", true);
+                setResult(1, intent);
+                finish();
+            } else {
+                order.clear();
+            }
+        }
+    }
+
+
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -137,7 +161,7 @@ public class OrderActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     private void fetchData() {
         Log.d(TAG, "Starting fetching data");
@@ -150,12 +174,12 @@ public class OrderActivity extends ActionBarActivity {
 
     }
 
-    public class FetchOrderTask extends AsyncTask<Void, Void, Map.Entry>{
+    public class FetchOrderTask extends AsyncTask<Void, Void, JSONObject>{
 
         FetchOrderTask() {}
 
         @Override
-        protected Map.Entry doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
@@ -163,67 +187,23 @@ public class OrderActivity extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(Map.Entry map) {
+        protected void onPostExecute(JSONObject result) {
             mFetchTask = null;
-            Log.d(TAG, "Finished fetching data " + map.toString());
-            if ((int) map.getKey() == HttpStatus.SC_OK)
-            {
-                InitListView(map);
-            } else {
-                Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mFetchTask = null;
-        }
-    }
-
-    private void SendPostRequest(OrderStatus.STATUS status) {
-        if (sendTask != null) {
-            return;
-        }
-
-        sendTask = new SendPostRequestTask(status);
-        sendTask.execute((Void) null);
-    }
-
-    private class SendPostRequestTask extends AsyncTask<Void, Void, Map.Entry> {
-        SendPostRequestTask(OrderStatus.STATUS type) {
-            order.status = type;
-            order.driver = user.id;
-        }
-
-        @Override
-        protected Map.Entry doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
-
-            JSONObject data = new JSONObject();
             try {
-                data = order.getOrderAsJson();
+                Log.d(TAG, "Finished fetching data " + result.toString());
+                if (result.getInt("status_code") == HttpStatus.SC_OK) {
+                    InitListView(result.getJSONArray("result"));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return api.putDataRequest(data, "orders/" + order.id + "/");
-        }
-
-        @Override
-        protected void onPostExecute(Map.Entry map) {
-            if ((int) map.getKey() == HttpStatus.SC_OK)
-            {
-                sendTask = null;
-                Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
-            }
         }
 
         @Override
         protected void onCancelled() {
-            sendTask = null;
+            mFetchTask = null;
         }
     }
-
 }

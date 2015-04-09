@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import taxi.city.citytaxidriver.R;
@@ -44,7 +42,7 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.id.setText(String.valueOf(client.id));
-        viewHolder.address.setText(client.address);
+        viewHolder.address.setText(client.addressStart);
         return convertView;
     }
 }

@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.Service;
 
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -99,7 +100,7 @@ public class ApiService {
         return json;
     }
 
-    public JSONArray fetchCarBrand(JSONObject data, String apiUrl) {
+    public JSONArray fetchCarBrand(String apiUrl) {
         HttpClient httpclient = new DefaultHttpClient();
         JSONArray json = new JSONArray();
 
@@ -175,22 +176,21 @@ public class ApiService {
         return json;
     }
 
-    public JSONObject activateRequest(JSONObject data, String apiUrl) {
-        HttpClient httpclient = new DefaultHttpClient();
-        JSONObject json = new JSONObject();
+    public JSONObject patchRequest(JSONObject data, String apiUrl) {
+        HttpClient httpClient = new DefaultHttpClient();
+        JSONObject json;
 
         try {
             HttpPatch request = new HttpPatch(url + apiUrl);
             // Add your data
             request.addHeader("content-type", "application/json");
+            request.addHeader("Authorization", "Token " + this.token);
 
-            JSONObject object = new JSONObject();
-            object.put("activation_code", data.getString("activation_code"));
-            StringEntity params = new StringEntity(object.toString(), HTTP.UTF_8);
+            StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
             request.setEntity(params);
 
             // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(request);
+            HttpResponse response = httpClient.execute(request);
             json = parseData(response);
 
             Log.d(TAG, json.toString());
@@ -206,11 +206,43 @@ public class ApiService {
         return json;
     }
 
-    public Map.Entry<Integer, JSONArray> getDataFromGetRequest(String params, String apiUrl) {
-        Map.Entry<Integer, JSONArray> map;
+    public JSONObject activateRequest(JSONObject data, String apiUrl) {
+        HttpClient httpClient = new DefaultHttpClient();
+        JSONObject json = new JSONObject();
+
+        try {
+            HttpPatch request = new HttpPatch(url + apiUrl);
+            // Add your data
+            request.addHeader("content-type", "application/json");
+
+            JSONObject object = new JSONObject();
+            object.put("activation_code", data.getString("activation_code"));
+            StringEntity params = new StringEntity(object.toString(), HTTP.UTF_8);
+            request.setEntity(params);
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpClient.execute(request);
+            json = parseData(response);
+
+            Log.d(TAG, json.toString());
+
+        } catch (IOException e) {
+            json = null;
+            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
+            json = null;
+        }
+        return json;
+    }
+
+    public JSONObject getDataFromGetRequest(String params, String apiUrl) {
+        JSONObject result = new JSONObject();
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url + apiUrl);//+ "?" + params);
+            params = TextUtils.isEmpty(params) ? "" : params;
+            HttpGet request = new HttpGet(url + apiUrl + params);
             // Add your data
             //request.addHeader("content-type", "application/json");
             request.setHeader("Authorization", "Token " + this.token);
@@ -218,21 +250,21 @@ public class ApiService {
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
+            result.put("status_code", statusCode);
 
             JSONArray object = parseDataArray(response);
-            map = new AbstractMap.SimpleEntry<>(statusCode, object);
-
+            result.put("result", object);
         } catch (ClientProtocolException e) {
-            return null;
+            result = null;
             // TODO Auto-generated catch block
         } catch (IOException e) {
-            return null;
+            result = null;
             // TODO Auto-generated catch block
-        } /*catch (Exception e) {
-            Log.e("ApiError", e.getStackTrace().toString());
-            return null;
-        }*/
-        return map;
+        } catch (JSONException e) {
+            result = null;
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public Map.Entry<Integer, JSONObject> putDataRequest(JSONObject data, String apiUrl) {

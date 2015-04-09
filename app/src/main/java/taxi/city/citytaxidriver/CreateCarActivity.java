@@ -170,6 +170,11 @@ public class CreateCarActivity extends ActionBarActivity {
         Entity carBrand = (Entity)spinnerCarBrand.getSelectedItem();
         Entity carBrandModel = (Entity)spinnerCarBrandModel.getSelectedItem();
 
+        if (carBrand == null || carBrand.id == 0)
+            return;
+        if (carBrandModel == null || carBrandModel.id == 0)
+            return;
+
         int carBrandId = carBrand.id;
         int carBrandModelId = carBrandModel.id;
         String carColor = editTextCarColor.getText().toString();
@@ -204,7 +209,7 @@ public class CreateCarActivity extends ActionBarActivity {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
-            return ApiService.getInstance().fetchCarBrand(json, api);
+            return ApiService.getInstance().fetchCarBrand(api);
         }
 
         @Override

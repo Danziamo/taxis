@@ -39,6 +39,7 @@ import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
@@ -59,6 +60,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private int statusCode;
 
     private ApiService api = ApiService.getInstance();
+    private Order order = Order.getInstance();
 
     private SharedPreferences settings;
 
@@ -126,9 +128,6 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             if (settings.contains("passwordKey")) {
                 mPasswordView.setText(settings.getString("passwordKey", ""));
             }
-        }
-        if (settings.contains("orderIdKey")) {
-            Order.getInstance().id = settings.getInt("orderIdKey", 0);
         }
     }
 
@@ -300,6 +299,21 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         mPhoneView.setAdapter(adapter);
     }
 
+    private void driverHasOrder(JSONObject object) {
+        try {
+            if (object == null)
+                return;
+            if (!object.has("status_code") || object.getInt("status_code") != HttpStatus.SC_OK)
+                return;
+            if (!object.has("result") || object.getJSONArray("result").length() < 1)
+                return;
+            JSONObject row = object.getJSONArray("result").getJSONObject(0);
+            order.setOrder(row);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -343,6 +357,9 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                                 }
                             }
                         }
+                        driverHasOrder(api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/"));
+                        driverHasOrder(api.getDataFromGetRequest("?status=waiting&driver="+user.id, "orders/"));
+                        //driverHasOrder(api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/"));
                         res = true;
                     }
                 }
