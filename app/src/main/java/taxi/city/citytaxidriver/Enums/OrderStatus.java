@@ -7,6 +7,7 @@ public class OrderStatus {
     public enum STATUS {
         NEW ("new"),
         ACCEPTED ("accepted"),
+        INPLACE ("waiting"),
         WAITING ("waiting"),
         ONTHEWAY ("ontheway"),
         SOS ("sos"),

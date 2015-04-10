@@ -9,4 +9,8 @@
         <item name="android:logo">@mipmap/ic_launcher</item>
     </style>
 
+    <style name="MainTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:background">@drawable/taxi_background</item>
+    </style>
+
 </resources>

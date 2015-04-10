@@ -32,6 +32,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     TextView tvTime;
     TextView tvFeePrice;
     TextView tvFeeTime;
+    TextView tvTotalPrice;
     Button btnFinish;
     private static final int FINISH_ORDER_ID = 2;
     private ApiService api = ApiService.getInstance();
@@ -47,16 +48,14 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     }
 
     protected void SetItems(Bundle b) {
-        tvBeginPoint.setText("Начальная точка: " + b.getString("BeginPoint"));
-        tvEndPoint.setText("Конечная точка: " + b.getString("EndPoint"));
-        tvDistance.setText("Путь: " + b.getString("Distance") + " км");
-        tvTime.setText("Время: " + b.getString("Time") + " мин");
-        tvPrice.setText("Цена: " + b.getString("Price") + " сом");
-        tvFeeTime.setText("Время ожидания: " + b.getString("FeeTime") + " мин");
-        tvFeePrice.setText("Штраф: " + b.getString("FeePrice") + " с");
-        order.distance = b.getDouble("Distance");
-        order.sum = b.getDouble("Price");
-        order.time = b.getLong("Time");
+        tvBeginPoint.setText("Начальная точка: " + order.addressStart);
+        tvEndPoint.setText(order.addressEnd);
+        tvDistance.setText("Путь: " + order.getFormattedDistance() + " км");
+        tvTime.setText("Время: " + order.getTimeFromLong(order.time));
+        tvPrice.setText("Цена: " + order.sum + " сом");
+        tvFeeTime.setText("Время ожидания: " + order.getTimeFromLong(order.waitTime));
+        tvFeePrice.setText("Штраф: " + order.fee + " сом");
+        tvTotalPrice.setText("Итого: " + order.sum + order.fee + " сом");
     }
 
     protected void GetItems() {
@@ -67,6 +66,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvFeePrice = (TextView) findViewById(R.id.tvFeePrice);
         tvFeeTime = (TextView) findViewById(R.id.tvFeeTime);
+        tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
         btnFinish = (Button) findViewById(R.id.btnDone);
         btnFinish.setOnClickListener(this);
     }
@@ -109,17 +109,17 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
 
         @Override
         protected void onPostExecute(Map.Entry map) {
+            finishTask = null;
             if ((int) map.getKey() == HttpStatus.SC_OK)
             {
-                finishTask = null;
                 Intent intent=new Intent();
-                intent.putExtra("MESSAGE", "Заказ окончен");
+                intent.putExtra("returnCode", true);
                 setResult(FINISH_ORDER_ID, intent);
                 order.clear();
                 finish();//finishing activity
             } else {
                 Intent intent=new Intent();
-                intent.putExtra("MESSAGE", "Ошибка при отправке на сервер");
+                intent.putExtra("returnCode", false);
                 setResult(FINISH_ORDER_ID, intent);
                 order.clear();
                 finish();//finishing activity

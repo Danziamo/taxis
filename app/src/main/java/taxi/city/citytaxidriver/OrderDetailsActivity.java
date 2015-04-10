@@ -75,7 +75,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
             llTop.setVisibility(View.GONE);
             btnTake.setText("Взять");
             btnCancel.setText("Назад");
-            tvClientPhone.setVisibility(View.GONE);
+            tvClientPhone.setVisibility(View.VISIBLE);
             etDeclineReason.setVisibility(View.GONE);
         } else if (type == WAIT_ORDER) {
             llTop.setVisibility(View.VISIBLE);

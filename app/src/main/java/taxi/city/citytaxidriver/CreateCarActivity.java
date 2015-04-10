@@ -198,7 +198,7 @@ public class CreateCarActivity extends ActionBarActivity {
             carBrand = (Entity)spinnerCarBrand.getSelectedItem();
             this.isModel = isModel;
             if (isModel) {
-                api = "cars/carbrandmodels/?car_brand=" + carBrand.id + "/";
+                api = "cars/carbrandmodels/?car_brand=" + carBrand.id;
             } else {
                 api = "cars/carbrands/";
             }
@@ -244,6 +244,7 @@ public class CreateCarActivity extends ActionBarActivity {
                 json.put("color", color);
                 json.put("year", year);
                 json.put("car_number", number);
+                json.put("technical_certificate", "aaaaaaa");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

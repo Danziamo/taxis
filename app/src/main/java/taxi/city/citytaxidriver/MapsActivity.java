@@ -54,10 +54,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-    private static final int ACCEPT_ORDER = 1;
-    private static final int WAIT_ORDER = 2;
-    private static final int START_ORDER = 3;
-
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
@@ -106,20 +102,46 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         @Override
         public void run() {
-            if (!isPause) {
+            if (order.status != OrderStatus.STATUS.WAITING) {
+
                 long millis = System.currentTimeMillis() - startTime;
                 double seconds = (double) (millis / 1000);
 
-                time = (long)seconds - pauseTotalTime;
-                tvTime.setText("Время: " + getTimeFromLong(time));
-            } else {
-                long millis = System.currentTimeMillis() - pauseStartTime;
-
-                pauseSessionTime = (long) (millis/ 1000);
-                tvFeePrice.setText("Штраф: " + df.format(feePrice) + " с");
-                tvFeeTime.setText("Время ожидания: " + getTimeFromLong(pauseTotalTime + pauseSessionTime));
+                time = (long) seconds;
+                order.time = time - pauseTotalTime;
+                if (seconds % 30 < 5) {
+                    SendPostRequest(order.status);
+                }
+                tvTime.setText("Время: " + getTimeFromLong(order.time));
             }
             timerHandler.postDelayed(this, 1000);
+        }
+    };
+
+    Handler pauseHandler = new Handler();
+    Runnable pauseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - pauseStartTime;
+
+            pauseSessionTime = (long) (millis/ 1000);
+            long tempTime = pauseTotalTime + pauseSessionTime;
+            if (pauseTotalTime + pauseSessionTime > 5 * 60) {
+                /* TODO
+                need fix this part
+                 */
+                if (tempTime <= 15*60) {
+                    feePrice = (double)3*(tempTime-5*60)/60;
+                } else {
+                    feePrice = 3*10 + (double)(tempTime - 15*60)/60;
+                }
+                feePrice = tempTime <= 2*60 ? (double)(3*tempTime/60) : (double)(15*tempTime/60);
+            }
+            order.waitTime = pauseTotalTime + pauseSessionTime;
+            order.fee = feePrice;
+            tvFeePrice.setText("Штраф: " + df.format(feePrice) + " сом");
+            tvFeeTime.setText("Время ожидания: " + getTimeFromLong(pauseTotalTime + pauseSessionTime));
+            pauseHandler.postDelayed(this, 1000);
         }
     };
 
@@ -136,7 +158,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         Initialize();
         SetDefaultValues();
-        btnPauseTrip.setEnabled(false);
 
         SetLocationRequest();
     }
@@ -221,29 +242,73 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         tvFeePrice = (TextView) findViewById(R.id.textViewFeePrice);
         tvFeeTime = (TextView) findViewById(R.id.textViewFeeTime);
 
-        btnBeginTrip.setEnabled(false);
-        btnPauseTrip.setEnabled(false);
-        btnEndTrip.setEnabled(false);
         btnBeginTrip.setOnClickListener(this);
         btnEndTrip.setOnClickListener(this);
         btnPauseTrip.setOnClickListener(this);
 
+        updateViews();
+    }
+
+    private void updateViews() {
+        if (order.id == 0 || order.status == OrderStatus.STATUS.NEW) {
+            order.clear();
+            btnBeginTrip.setVisibility(View.GONE);
+            btnEndTrip.setVisibility(View.GONE);
+            btnPauseTrip.setVisibility(View.GONE);
+            llMain.setVisibility(View.GONE);
+        } else {
+            if (order.status == OrderStatus.STATUS.ACCEPTED) {
+                btnBeginTrip.setVisibility(View.VISIBLE);
+                btnBeginTrip.setText("НА МЕСТЕ");
+                btnEndTrip.setVisibility(View.VISIBLE);
+                btnEndTrip.setText("ОТАКЗАТЬ");
+                btnPauseTrip.setVisibility(View.GONE);
+            } else if (order.status == OrderStatus.STATUS.INPLACE) {
+                btnBeginTrip.setVisibility(View.VISIBLE);
+                btnBeginTrip.setText("НАЧАТЬ");
+                btnPauseTrip.setVisibility(View.GONE);
+                btnEndTrip.setVisibility(View.GONE);
+                llMain.setVisibility(View.VISIBLE);
+            } else if (order.status == OrderStatus.STATUS.WAITING) {
+                btnBeginTrip.setVisibility(View.GONE);
+                btnBeginTrip.setText("НАЧАТЬ");
+                btnEndTrip.setVisibility(View.VISIBLE);
+                btnEndTrip.setText("ЗАКОНЧИТЬ");
+                btnPauseTrip.setVisibility(View.VISIBLE);
+                btnPauseTrip.setText("ПРОДОЛЖИТЬ");
+                llMain.setVisibility(View.VISIBLE);
+            } else if (order.status == OrderStatus.STATUS.ONTHEWAY) {
+                btnBeginTrip.setVisibility(View.GONE);
+                btnEndTrip.setVisibility(View.VISIBLE);
+                btnPauseTrip.setVisibility(View.VISIBLE);
+                btnPauseTrip.setText("ОЖИДАЕНИЕ");
+                btnEndTrip.setText("ЗАКОНЧИТЬ");
+                llMain.setVisibility(View.VISIBLE);
+            } else {
+                btnBeginTrip.setVisibility(View.GONE);
+                btnEndTrip.setVisibility(View.GONE);
+                btnPauseTrip.setVisibility(View.GONE);
+                llMain.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void SetDefaultValues() {
         startTime = System.currentTimeMillis();
+        pauseTotalTime = 0;
+        pauseSessionTime = 0;
         distance = 0;
         price = startPrice;
+        order.sum = startPrice;
+        order.waitTime = 0;
+        order.time = 0;
 
         tvSpeed.setText("Скорость: 0 км/ч");
         tvDistance.setText("Расстояние: " + df.format(distance / 1000) + " км");
         tvPrice.setText("Цена: " + df.format(price) + " сом");
-    }
-
-    private void blockButtons() {
-        btnBeginTrip.setEnabled(false);
-        btnEndTrip.setEnabled(false);
-        btnPauseTrip.setEnabled(false);
+        tvTime.setText("Время: " + "00:00:00");
+        tvFeePrice.setText(null);
+        tvFeeTime.setText(null);
     }
 
     @Override
@@ -292,14 +357,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         if (ifSession && !isPause && prev != null){
             distance += prev.distanceTo(location);
-            if (pauseTotalTime > 5 * 60) {
-                feePrice = pauseTotalTime <= 15*60 ? 3*pauseTotalTime/60 : 15*pauseTotalTime/60;
-                if (pauseTotalTime > 15*60) {
-                    feePrice += 5 * pauseTotalTime/60;
-                }
-            }
-            if (distance >= freeMeters)
+            if (distance > freeMeters)
                 price = startPrice +  ratio*distance/1000;
+
+            order.distance = distance/1000;
+            order.sum = price;
+            order.endPoint = latLng;
+
             tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
             tvPrice.setText("Цена: " + df.format(price) + "сом");
             tvSpeed.setText("Скорость: " + df.format(speed * 3.6) + " км/ч");
@@ -330,9 +394,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
-        /*else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        }*/
     }
 
     @Override
@@ -417,57 +478,44 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.beginTrip:
-                btnBeginTrip.setEnabled(false);
-                btnPauseTrip.setEnabled(true);
-                btnEndTrip.setEnabled(true);
-                btnPauseTrip.setText("ОЖИДАНИЕ");
-                llMain.setVisibility(View.VISIBLE);
-                SetDefaultValues();
-                order.status = OrderStatus.STATUS.ONTHEWAY;
-                SendPostRequest(order.status);
+                if (order.status == OrderStatus.STATUS.ACCEPTED) {
+                    SendPostRequest(OrderStatus.STATUS.INPLACE);
+                } else if (order.status == OrderStatus.STATUS.INPLACE) {
+                    SetDefaultValues();
+                    SendPostRequest(OrderStatus.STATUS.ONTHEWAY);
+                    timerHandler.postDelayed(timerRunnable, 0);
+                }
                 order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
-                timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.pauseTrip:
-                if (btnPauseTrip.getText() == "ОЖИДАНИЕ") {
+                if (order.status == OrderStatus.STATUS.ONTHEWAY) {
+                    SendPostRequest(OrderStatus.STATUS.WAITING);
                     pauseSessionTime = 0;
                     pauseStartTime = System.currentTimeMillis();
-                    btnPauseTrip.setText("ПРОДОЛЖИТЬ");
-                    tvPause.setVisibility(View.VISIBLE);
-                    isPause = true;
-                } else {
+                    pauseHandler.postDelayed(pauseRunnable, 0);
+                } else if (order.status == OrderStatus.STATUS.WAITING) {
+                    SendPostRequest(OrderStatus.STATUS.ONTHEWAY);
+                    pauseHandler.removeCallbacks(pauseRunnable);
                     pauseTotalTime += pauseSessionTime;
-                    btnPauseTrip.setText("ОЖИДАНИЕ");
-                    tvPause.setVisibility(View.INVISIBLE);
-                    isPause = false;
                 }
                 break;
             case R.id.endTrip:
-                EndTrip();
+                if (order.status == OrderStatus.STATUS.ACCEPTED) {
+                    SendPostRequest(OrderStatus.STATUS.NEW);
+                } else {
+                    SendPostRequest(order.status);
+                    EndTrip();
+                }
                 break;
         }
     }
 
     private void EndTrip() {
         ClearMapFromLines();
-        btnBeginTrip.setEnabled(false);
-        btnEndTrip.setEnabled(false);
-        btnPauseTrip.setEnabled(false);
-        tvPause.setVisibility(View.INVISIBLE);
-        llMain.setVisibility(View.INVISIBLE);
-
         timerHandler.removeCallbacks(timerRunnable);
+        pauseHandler.removeCallbacks(pauseRunnable);
         Intent intent = new Intent(this, FinishOrder.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("Distance", df.format(distance/1000));
-        bundle.putDouble("Price", price);
-        bundle.putLong("Time", time);
-        bundle.putString("BeginPoint", order.addressStart);
-        bundle.putString("EndPoint", order.addressEnd);
-        bundle.putString("FeePrice", df.format(feePrice));
-        bundle.putString("FeeTime", df.format(pauseTotalTime/60));
-        intent.putExtras(bundle);
         startActivityForResult(intent, FINISH_ORDER_ID);
     }
 
@@ -475,7 +523,14 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FINISH_ORDER_ID) {
-            Toast.makeText(getApplicationContext(), data.getExtras().getString("MESSAGE"), Toast.LENGTH_LONG).show();
+            if (data != null) {
+                if (data.getBooleanExtra("returnCode", false)) {
+                    Toast.makeText(getApplicationContext(), "Заказ завершен", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Заказ завершен. Ошибка при отправке данных на сервер", Toast.LENGTH_LONG).show();
+                }
+            }
+            updateViews();
             mMap.clear();
         }
         if (requestCode == MAKE_ORDER_ID) {
@@ -486,18 +541,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
             }
-        }
-        if (requestCode == ORDER_DETAILS_ID) {
-            if (data != null) {
-                if (data.getBooleanExtra("returnCode", false)) {
-                    btnBeginTrip.setEnabled(true);
-                } else {
-                    mMap.clear();
-                    if (location != null) {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-                    }
-                }
-            }
+            updateViews();
         }
     }
 
@@ -531,11 +575,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             case R.id.action_order:
                 if (order.id == 0) {
                     OpenOrder();
-                    return true;
-                } else {
-                    OpenOrderDetails();
-                    return true;
                 }
+                return true;
             case R.id.action_settings:
                 OpenSettings();
                 return true;
@@ -547,14 +588,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private void OpenOrder() {
         Intent intent = new Intent(this, OrderActivity.class);
         startActivityForResult(intent, MAKE_ORDER_ID);
-    }
-
-    private void OpenOrderDetails() {
-        Intent intent = new Intent(this, OrderDetailsActivity.class);
-        if (order.status == OrderStatus.STATUS.ACCEPTED) {
-            intent.putExtra("type", WAIT_ORDER);
-            startActivityForResult(intent, ORDER_DETAILS_ID);
-        }
     }
 
     private void OpenSettings() {
@@ -577,9 +610,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
+        private OrderStatus.STATUS status;
+        private int driver;
+
         SendPostRequestTask(OrderStatus.STATUS type) {
-            order.status = type;
-            order.driver = user.id;
+            status = type;
+            driver = user.id;
         }
 
         @Override
@@ -589,8 +625,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
             JSONObject data = new JSONObject();
             try {
-                data.put("status", order.status);
-                data.put("driver", order.driver);
+                data.put("status", status);
+                data.put("driver", driver);
+                data.put("order_sum", order.sum + order.fee);
+                data.put("address_stop", order.getFormattedEndPoint());
+                data.put("wait_time", getTimeFromLong(order.waitTime));
+                data.put("order_distance", (double)Math.round(order.distance*100)/100);
+                data.put("order_travel_time", getTimeFromLong(order.time));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -602,17 +643,16 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             sendTask = null;
             try {
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
+                    order.status = status;
+                    updateViews();
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
-                    order.status = OrderStatus.STATUS.WAITING;
-                    blockButtons();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
                 order.status = OrderStatus.STATUS.WAITING;
-                blockButtons();
             }
         }
 
@@ -620,7 +660,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         protected void onCancelled() {
             sendTask = null;
             order.status = OrderStatus.STATUS.WAITING;
-            blockButtons();
         }
     }
 }

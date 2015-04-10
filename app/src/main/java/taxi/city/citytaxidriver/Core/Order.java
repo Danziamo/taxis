@@ -22,7 +22,7 @@ public class Order {
     public LatLng endPoint;
     public String clientPhone;
     public OrderStatus.STATUS status;
-    public String waitTime;
+    public long waitTime;
     public int tariff;
     public int driver;
     public String addressStart;
@@ -32,6 +32,7 @@ public class Order {
     public double distance;
     public double sum;
     public long time;
+    public double fee;
 
     private Order() {
 
@@ -46,7 +47,7 @@ public class Order {
 
     public void setOrder(Client client) {
         this.id = client.id;
-        this.waitTime = client.waitTime;
+        this.waitTime = 0;
         this.startPoint = client.startPoint;
         this.endPoint = client.endPoint;
         this.tariff = client.tariff;
@@ -66,6 +67,9 @@ public class Order {
         this.tariff = object.has("tariff") ? object.getInt("tariff") : 0;
         this.driver = object.has("driver") ? object.getInt("driver") : 0;
         this.description = object.has("description") ? object.getString("description") : null;
+        this.sum = object.has("order_sum") ? object.getDouble("order_sum") : 0;
+        this.distance = object.has("order_distance") ? object.getDouble("order_distance") : 0;
+        this.time = object.has("order_travel_time") ? object.getLong("order_travel_time") : 0;
     }
 
     private OrderStatus.STATUS getStatus(String status) {
@@ -122,6 +126,10 @@ public class Order {
         }
     }
 
+    public String getFormattedEndPoint() {
+        return this.endPoint != null ? LatLngToString(this.endPoint) : null;
+    }
+
     public JSONObject getOrderAsJson() throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("id", this.id);
@@ -129,12 +137,12 @@ public class Order {
         obj.put("status", this.status);
         obj.put("address_start", LatLngToString(this.startPoint));
         obj.put("address_stop", LatLngToString(this.endPoint));
-        obj.put("wait_time", this.waitTime == null || this.waitTime.equals("null") ? "00:00:00" : this.waitTime);
+        obj.put("wait_time", getTimeFromLong(this.waitTime));
         obj.put("tariff", this.tariff);
         obj.put("driver", this.driver);
         obj.put("order_time", this.orderTime);
-        obj.put("order_distance", this.distance);
-        obj.put("order_sum", this.sum);
+        obj.put("order_distance", (double)Math.round(this.distance*100)/100);
+        obj.put("order_sum", this.sum + this.fee);
         obj.put("order_travel_time", getTimeFromLong(this.time));
         obj.put("address_start_name", this.addressStart);
         obj.put("address_stop_name", this.addressEnd);
@@ -143,7 +151,7 @@ public class Order {
         return obj;
     }
 
-    private String getTimeFromLong(long seconds) {
+    public String getTimeFromLong(long seconds) {
         int hr = (int)seconds/3600;
         int rem = (int)seconds%3600;
         int mn = rem/60;
@@ -154,9 +162,13 @@ public class Order {
         return String.format("%s:%s:%s", hrStr, mnStr, secStr);
     }
 
+    public String getFormattedDistance() {
+        return df.format(this.distance);
+    }
+
     public void clear() {
         this.id = 0;
-        this.waitTime = null;
+        this.waitTime = 0;
         this.startPoint = null;
         this.endPoint = null;
         this.status = null;
@@ -170,5 +182,6 @@ public class Order {
         this.addressEnd = null;
         this.addressStart = null;
         this.description = null;
+        this.fee = 0;
     }
 }

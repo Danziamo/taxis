@@ -11,8 +11,8 @@
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />
 
-    <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView android:id="@+id/login_form" android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <LinearLayout android:id="@+id/email_login_form"
             android:layout_width="match_parent"
@@ -43,13 +43,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="#fffd9816"
+                android:textColor="#ff1e0a8e" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Зарегистрироваться"
-                android:id="@+id/btnSignUp" />
+                android:id="@+id/btnSignUp"
+                android:background="#fffd9816"
+                android:textColor="#ff1e0a8e" />
 
         </LinearLayout>
     </ScrollView>
