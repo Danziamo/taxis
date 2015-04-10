@@ -92,7 +92,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     DecimalFormat df = new DecimalFormat("#.##");
 
-    boolean isPause = false;
     long startTime = 0;
     long pauseTotalTime = 0;
     long pauseSessionTime = 0;
@@ -355,7 +354,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         int bearing = ifSession ? (int)location.getBearing() : 0;
         int tilt = ifSession ? 45 : 0;
 
-        if (ifSession && !isPause && prev != null){
+        if (ifSession && prev != null){
             distance += prev.distanceTo(location);
             if (distance > freeMeters)
                 price = startPrice +  ratio*distance/1000;
@@ -385,7 +384,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         }
         prev = location;
 
-        if (ifSession && !isPause) {
+        if (ifSession) {
             CameraPosition cp = new CameraPosition.Builder()
                     .target(latLng)
                     .zoom(zoom)
