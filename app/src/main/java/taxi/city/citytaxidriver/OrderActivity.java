@@ -5,15 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -21,21 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.ClientAdapter;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
 public class OrderActivity extends ActionBarActivity {
-
-    private static final int ACCEPT_ORDER = 1;
-    private static final int WAIT_ORDER = 2;
-    private static final int START_ORDER = 3;
 
     private String TAG = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
@@ -43,6 +32,8 @@ public class OrderActivity extends ActionBarActivity {
     private ApiService api = ApiService.getInstance();
     private User user = User.getInstance();
     private FetchOrderTask mFetchTask = null;
+
+    private Client client;
     ListView lvMain;
 
     @Override
@@ -54,10 +45,6 @@ public class OrderActivity extends ActionBarActivity {
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*TextView idTextView = (TextView)parent.findViewById(R.id.orderId);
-                //TextView clientAddressTextView = (TextView)findViewById(R.id.orderAddress);
-                int orderId = Integer.valueOf(idTextView.getText().toString());
-                //String clientAddress = clientAddressTextView.getText().toString();*/
 
                 String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
                 int orderId = Integer.valueOf(text);
@@ -65,24 +52,15 @@ public class OrderActivity extends ActionBarActivity {
 
                 for (int i = list.size() - 1; i >= 0; i -= 1) {
                     if (orderId == list.get(i).id) {
-                        order.setOrder(list.get(i));
+                        client = list.get(i);
+                        //order.setOrder(list.get(i));
                         break;
                     }
                 }
-                goOrderDetails();
+                goOrderDetails(client);
             }
         });
         fetchData();
-    }
-
-    private LatLng getLatLng(String s) {
-        if (s == null || s.equals("null"))
-            return null;
-        String[] geo = s.replace("(", "").replace(")", "").split(" ");
-
-        double latitude = Double.valueOf(geo[1].trim());
-        double longitude = Double.valueOf(geo[2].trim());
-        return new LatLng(latitude, longitude);
     }
 
     private void InitListView(JSONArray array) {
@@ -91,21 +69,26 @@ public class OrderActivity extends ActionBarActivity {
             Log.d(TAG, "Start to fill up list view");
             for (int i=0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
-                if (row.getString("status").equals("new")) {
-                    Client client = new Client();
-                    client.phone = row.getString("client_phone");
-                    client.startPoint = getLatLng(row.getString("address_start"));
-                    client.endPoint = getLatLng(row.getString("address_stop"));
-                    client.driver = user.id;
-                    client.id = row.getInt("id");
-                    client.waitTime = row.getString("wait_time");
-                    client.tariff = row.getInt("tariff");
-                    client.status = row.getString("status");
-                    client.orderTime = row.getString("order_time");
-                    client.addressStart = row.getString("address_start_name");
-                    client.description = row.getString("description");
-                    list.add(client);
-                }
+
+                Client client = new Client();
+                client.phone = row.getString("client_phone");
+                client.startPoint = row.getString("address_start");
+                client.endPoint = row.getString("address_stop");
+                client.driver = user.id;
+                client.id = row.getInt("id");
+                client.waitTime = row.getString("wait_time");
+                client.tariff = row.getInt("tariff");
+                client.status = row.getString("status");
+                client.orderTime = row.getString("order_time");
+                client.addressStart = row.getString("address_start_name");
+                client.description = row.getString("description");
+                client.addressEnd = row.getString("address_stop_name");
+                client.sum = row.getString("order_sum");
+                client.distance = row.getString("order_distance");
+                client.time = row.getString("order_travel_time");
+                client.waitSum = row.getString("wait_time_price");
+                list.add(client);
+
             }
             ClientAdapter adapter = new ClientAdapter(OrderActivity.this, list);
             lvMain.setAdapter(adapter);
@@ -114,13 +97,16 @@ public class OrderActivity extends ActionBarActivity {
         } catch (JSONException e) {
             Log.e(TAG, "Oops something happened while initializing listview");
             e.printStackTrace();
+        } catch (Exception e) {
+            Log.e(TAG, "Cannot open order. Please re-login");
+            e.printStackTrace();
         }
 
     }
 
-    private void goOrderDetails() {
+    private void goOrderDetails(Client mClient) {
         Intent intent = new Intent(this, OrderDetailsActivity.class);
-        intent.putExtra("type", ACCEPT_ORDER);
+        intent.putExtra("data", mClient);
         startActivityForResult(intent, 1);
     }
 
@@ -135,33 +121,10 @@ public class OrderActivity extends ActionBarActivity {
                 setResult(1, intent);
                 finish();
             } else {
-                order.clear();
+                //order.clear();
             }
         }
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_order:
-                return true;
-            case R.id.action_settings:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
 
     private void fetchData() {
         Log.d(TAG, "Starting fetching data");
@@ -174,31 +137,43 @@ public class OrderActivity extends ActionBarActivity {
 
     }
 
-    public class FetchOrderTask extends AsyncTask<Void, Void, JSONObject>{
+    public class FetchOrderTask extends AsyncTask<Void, Void, JSONArray>{
 
         FetchOrderTask() {}
 
         @Override
-        protected JSONObject doInBackground(Void... params) {
+        protected JSONArray doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
-            return api.getDataFromGetRequest(null, "orders/?status=new");
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject result) {
-            mFetchTask = null;
+            JSONArray array = new JSONArray();
             try {
-                Log.d(TAG, "Finished fetching data " + result.toString());
+                JSONObject result = api.getDataFromGetRequest(null, "orders/?status=new");
                 if (result.getInt("status_code") == HttpStatus.SC_OK) {
-                    InitListView(result.getJSONArray("result"));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                    JSONArray tempArray = result.getJSONArray("result");
+                    for (int i = 0; i < tempArray.length(); ++i) {
+                        array.put(tempArray.getJSONObject(i));
+                    }
                 }
+                result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id);
+                if (result.getInt("status_code") == HttpStatus.SC_OK) {
+                    JSONArray tempArray = result.getJSONArray("result");
+                    for (int i = 0; i < tempArray.length(); ++i) {
+                        array.put(tempArray.getJSONObject(i));
+                    }
+                }
+                Log.d(TAG, "Finished fetching data " + result.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            return array;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+            mFetchTask = null;
+            InitListView(result);
         }
 
         @Override

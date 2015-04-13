@@ -11,8 +11,8 @@ public class Client implements Serializable{
     public int id;
     public String orderTime;
     public String phone;
-    public LatLng startPoint;
-    public LatLng endPoint;
+    public String startPoint;
+    public String endPoint;
     public String waitTime;
     public String status;
     public int tariff;
@@ -20,6 +20,10 @@ public class Client implements Serializable{
     public String addressStart;
     public String addressEnd;
     public String description;
+    public String sum;
+    public String time;
+    public String distance;
+    public String waitSum;
 
     public Client() {};
 }

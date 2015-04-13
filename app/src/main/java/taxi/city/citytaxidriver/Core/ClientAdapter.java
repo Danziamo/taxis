@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.Core;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,12 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             convertView = inflater.inflate(R.layout.activity_order_list_item, parent, false);
             viewHolder.id = (TextView) convertView.findViewById(R.id.orderId);
             viewHolder.address = (TextView) convertView.findViewById(R.id.orderAddress);
+            if (client.status.equals("finished"))
+                convertView.setBackgroundColor(Color.RED);
+            else if (client.status.equals("new"))
+                convertView.setBackgroundColor(Color.GREEN);
+            else
+                convertView.setBackgroundColor(Color.YELLOW);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

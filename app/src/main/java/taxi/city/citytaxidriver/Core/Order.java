@@ -32,7 +32,7 @@ public class Order {
     public double distance;
     public double sum;
     public long time;
-    public double fee;
+    public double waitSum;
 
     private Order() {
 
@@ -45,11 +45,20 @@ public class Order {
         return mInstance;
     }
 
+    private LatLng getLatLng(String s) {
+        if (s == null || s.equals("null"))
+            return null;
+        String[] geo = s.replace("(", "").replace(")", "").split(" ");
+
+        double latitude = Double.valueOf(geo[1].trim());
+        double longitude = Double.valueOf(geo[2].trim());
+        return new LatLng(latitude, longitude);
+    }
+
     public void setOrder(Client client) {
         this.id = client.id;
         this.waitTime = 0;
-        this.startPoint = client.startPoint;
-        this.endPoint = client.endPoint;
+        this.startPoint = getLatLng(client.startPoint);
         this.tariff = client.tariff;
         this.clientPhone = client.phone;
         this.orderTime = client.orderTime;
@@ -70,6 +79,7 @@ public class Order {
         this.sum = object.has("order_sum") ? object.getDouble("order_sum") : 0;
         this.distance = object.has("order_distance") ? object.getDouble("order_distance") : 0;
         this.time = object.has("order_travel_time") ? object.getLong("order_travel_time") : 0;
+        this.waitSum = object.has("wait_time_price") ? object.getDouble("wait_time_price") : 0;
     }
 
     private OrderStatus.STATUS getStatus(String status) {
@@ -142,11 +152,12 @@ public class Order {
         obj.put("driver", this.driver);
         obj.put("order_time", this.orderTime);
         obj.put("order_distance", (double)Math.round(this.distance*100)/100);
-        obj.put("order_sum", this.sum + this.fee);
+        obj.put("order_sum", this.sum + this.waitSum);
         obj.put("order_travel_time", getTimeFromLong(this.time));
         obj.put("address_start_name", this.addressStart);
         obj.put("address_stop_name", this.addressEnd);
         obj.put("description", this.description);
+        obj.put("wait_time_price", this.waitSum);
 
         return obj;
     }
@@ -182,6 +193,6 @@ public class Order {
         this.addressEnd = null;
         this.addressStart = null;
         this.description = null;
-        this.fee = 0;
+        this.waitSum = 0;
     }
 }

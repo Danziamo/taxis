@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +14,7 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Enums.OrderStatus;
@@ -23,20 +23,26 @@ import taxi.city.citytaxidriver.Service.ApiService;
 
 public class OrderDetailsActivity extends ActionBarActivity {
 
-    private static final int ACCEPT_ORDER = 1;
-    private static final int WAIT_ORDER = 2;
-    private static final int START_ORDER = 3;
+    private static final int NEW = 1;
+    private static final int FINISHED = 2;
+    private static final int ACTIVE = 3;
 
     TextView tvAddress;
     TextView tvDescription;
     TextView tvClientPhone;
-    EditText etDeclineReason;
+    TextView tvSum;
+    TextView tvDistance;
+    TextView tvTravelTime;
+    TextView tvWaitTime;
+    TextView tvWaitSum;
+    TextView tvTotalSum;
 
     SendPostRequestTask sendTask;
     Order order;
     User user;
     ApiService api;
     int orderType;
+    Client mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +50,24 @@ public class OrderDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_order_details);
 
         Intent intent = getIntent();
-        int type = intent.getIntExtra("type", 0);
+        Client client = (Client)intent.getExtras().getSerializable("data");
+        int type = 0;
+        if (client != null) {
+            switch (client.status) {
+                case "new":
+                    type = NEW;
+                    break;
+                case "finished":
+                    type = FINISHED;
+                    break;
+                default:
+                    type = ACTIVE;
+                    break;
+            }
+        }
 
         orderType = type;
+        mClient = client;
         Initialize(type);
     }
 
@@ -58,49 +79,64 @@ public class OrderDetailsActivity extends ActionBarActivity {
         tvAddress = (TextView) findViewById(R.id.textViewStartAddress);
         tvDescription = (TextView) findViewById(R.id.textViewDescription);
         tvClientPhone = (TextView) findViewById(R.id.textViewClientPhone);
-        etDeclineReason = (EditText) findViewById(R.id.editTextDeclineReason);
+        tvSum = (TextView) findViewById(R.id.textViewOrderSum);
+        tvDistance = (TextView) findViewById(R.id.textViewOrderDistance);
+        tvTravelTime = (TextView) findViewById(R.id.textViewOrderTime);
+        tvWaitTime = (TextView) findViewById(R.id.textViewOrderWaitTime);
+        tvWaitSum = (TextView) findViewById(R.id.textViewOrderWaitSum);
+        tvTotalSum = (TextView) findViewById(R.id.textViewOrderTotalSum);
 
-        LinearLayout llTop = (LinearLayout) findViewById(R.id.linearLayoutButtonGroupMap);
-        LinearLayout llOkCancel = (LinearLayout) findViewById(R.id.linearLayoutButtonGroupOkCancel);
+        LinearLayout llDescription = (LinearLayout) findViewById(R.id.linearLayoutOrderDetails);
 
         Button btnTake = (Button) findViewById(R.id.buttonTakeOrder);
         Button btnCancel = (Button) findViewById(R.id.buttonCancelOrder);
-        Button btnMap = (Button) findViewById(R.id.buttonMap);
 
-        tvAddress.setText(order.addressStart);
-        tvClientPhone.setText(order.clientPhone);
-        tvDescription.setText(order.description);
+        tvAddress.setText(mClient.addressStart);
+        tvClientPhone.setText(mClient.phone);
+        double totalSum = 0;
+        //if (mClient.addressEnd != null && !mClient.addressEnd.equals("null"))
+        if (mClient.description != null)
+            tvDescription.setText(mClient.description);
+        if (mClient.sum != null) {
+            totalSum += Double.valueOf(mClient.sum);
+            tvSum.setText("Сумма: " + mClient.sum + " сом");
+        }
+        if (mClient.distance != null)
+            tvDistance.setText("Путь: " + mClient.distance + " км");
+        if (mClient.time != null)
+            tvTravelTime.setText("Время: " + mClient.time);
+        if (mClient.waitTime != null)
+            tvWaitTime.setText("Время ожидания: " + mClient.waitTime);
+        if (mClient.waitSum != null) {
+            totalSum += Double.valueOf(mClient.waitSum);
+            tvWaitSum.setText("Сумма ожидания: " + mClient.waitSum + " сом");
+        }
 
-        if (type == ACCEPT_ORDER) {
-            llTop.setVisibility(View.GONE);
+        tvTotalSum.setText("Общая сумма: " + totalSum + " сом");
+
+        if (type == NEW) {
+            llDescription.setVisibility(View.VISIBLE);
             btnTake.setText("Взять");
             btnCancel.setText("Назад");
+            tvClientPhone.setVisibility(View.GONE);
+        } else if (type == FINISHED) {
+            llDescription.setVisibility(View.VISIBLE);
+            btnCancel.setText("Назад");
+            btnTake.setVisibility(View.GONE);
+            tvClientPhone.setVisibility(View.GONE);
+        } else if (type == ACTIVE) {
+            llDescription.setVisibility(View.VISIBLE);
+            btnTake.setVisibility(View.GONE);
+            btnCancel.setText("Назад");
             tvClientPhone.setVisibility(View.VISIBLE);
-            etDeclineReason.setVisibility(View.GONE);
-        } else if (type == WAIT_ORDER) {
-            llTop.setVisibility(View.VISIBLE);
-            btnTake.setText("На месте");
-            btnCancel.setText("Отказ");
-            btnMap.setText("На карте");
-            tvClientPhone.setVisibility(View.VISIBLE);
-            etDeclineReason.setVisibility(View.GONE);
-        } else if (type == START_ORDER) {
-            llTop.setVisibility(View.GONE);
-            btnTake.setText("На борту");
-            btnCancel.setText("Отказ");
-            tvClientPhone.setVisibility(View.VISIBLE);
-            etDeclineReason.setVisibility(View.GONE);
         }
 
         btnTake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (orderType == ACCEPT_ORDER) {
+                if (orderType == NEW) {
+                    order.setOrder(mClient);
                     SendPostRequest(OrderStatus.STATUS.ACCEPTED);
-                } else if (orderType == WAIT_ORDER) {
-                    SendPostRequest(OrderStatus.STATUS.WAITING);
-                } else if (orderType == START_ORDER) {
-                    SendPostRequest(OrderStatus.STATUS.ONTHEWAY);
                 }
             }
         });
@@ -108,25 +144,14 @@ public class OrderDetailsActivity extends ActionBarActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (orderType == ACCEPT_ORDER) {
+                if (orderType == NEW) {
                     Intent intent = new Intent();
                     intent.putExtra("returnCode", false);
                     setResult(1, intent);
                     finish();
+                } else {
+                    finish();
                 }
-                if (orderType == WAIT_ORDER) {
-                    SendPostRequest(OrderStatus.STATUS.NEW);
-                }
-            }
-        });
-
-        btnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("returnCode", false);
-                setResult(1, intent);
-                finish();
             }
         });
     }
@@ -151,18 +176,26 @@ public class OrderDetailsActivity extends ActionBarActivity {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
+            JSONObject res = new JSONObject();
             JSONObject data = new JSONObject();
             try {
                 data.put("status", order.status);
-                if (order.status != OrderStatus.STATUS.NEW) {
-                    data.put("driver", order.driver);
+                data.put("driver", order.driver);
+                if (order.endPoint != null) {
+                    data.put("address_stop", order.getFormattedEndPoint());
+                }
+                JSONObject object = api.getDataFromGetRequest(null, "orders/" + order.id + "/?driver=");
+                if (object != null && object.getInt("status_code") == HttpStatus.SC_OK && !object.has("result")) {
+                    res = api.patchRequest(data, "orders/" + order.id + "/");
                 } else {
-                    data.put("driver", null);
+                    res = null;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                res = null;
             }
-            return api.patchRequest(data, "orders/" + order.id + "/");
+
+            return res;
         }
 
         @Override
@@ -170,16 +203,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
             sendTask = null;
             try {
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
-                    if (order.status != OrderStatus.STATUS.NEW) {
-                        Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
-                        FinishTakeOrder();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Заказ отменён", Toast.LENGTH_LONG).show();
-                        order.clear();
-                        FinishCancelOrder();
-                    }
+                    Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
+                    FinishTakeOrder();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Заказ уже занят", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -194,26 +221,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
     }
 
     private void FinishTakeOrder() {
-        if (orderType == ACCEPT_ORDER) {
-            Intent intent = new Intent();
-            intent.putExtra("returnCode", true);
-            setResult(1, intent);
-            finish();
-        }
-        if (orderType == WAIT_ORDER) {
-            Intent intent = new Intent();
-            intent.putExtra("returnCode", true);
-            setResult(3, intent);
-            finish();
-        }
-    }
-
-    private void FinishCancelOrder() {
-        if (orderType == WAIT_ORDER) {
-            Intent intent = new Intent();
-            intent.putExtra("returnCode", false);
-            setResult(3, intent);
-            finish();
-        }
+        order.setOrder(mClient);
+        Intent intent = new Intent();
+        intent.putExtra("returnCode", true);
+        setResult(1, intent);
+        finish();
     }
 }

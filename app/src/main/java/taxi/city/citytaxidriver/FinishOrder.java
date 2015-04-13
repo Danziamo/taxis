@@ -4,13 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -44,18 +40,18 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish_order);
         GetItems();
-        SetItems(getIntent().getExtras());
+        SetItems();
     }
 
-    protected void SetItems(Bundle b) {
+    protected void SetItems() {
         tvBeginPoint.setText("Начальная точка: " + order.addressStart);
         tvEndPoint.setText(order.addressEnd);
         tvDistance.setText("Путь: " + order.getFormattedDistance() + " км");
         tvTime.setText("Время: " + order.getTimeFromLong(order.time));
         tvPrice.setText("Цена: " + order.sum + " сом");
         tvFeeTime.setText("Время ожидания: " + order.getTimeFromLong(order.waitTime));
-        tvFeePrice.setText("Штраф: " + order.fee + " сом");
-        tvTotalPrice.setText("Итого: " + order.sum + order.fee + " сом");
+        tvFeePrice.setText("Штраф: " + order.waitSum + " сом");
+        tvTotalPrice.setText("Итого: " + order.sum + order.waitSum + " сом");
     }
 
     protected void GetItems() {
