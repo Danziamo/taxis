@@ -182,7 +182,7 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
             try {
                 json.put("phone", mPhone);
                 json.put("password", mPassword);
-                json.put("email", mEmail);
+                json.put("email", mEmail == null || mEmail.length() == 0 ? JSONObject.NULL : mEmail);
                 json.put("first_name", mFirstName);
                 json.put("last_name", mLastName);
                 //json.put("role", mRole);

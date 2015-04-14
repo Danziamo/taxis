@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -54,6 +55,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    private static final String PREFS_NAME = "OrderPrefsFile";
+    private SharedPreferences settings;
+
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
@@ -66,7 +70,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     TextView tvPrice;
     TextView tvSpeed;
     TextView tvTime;
-    TextView tvPause;
     TextView tvFeeTime;
     TextView tvFeePrice;
     TextView tvTotalSum;
@@ -113,6 +116,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         }
         tvTime.setText("Время: " + getTimeFromLong(order.time));
         tvTotalSum.setText("Общая сумма: " + (order.sum + order.waitSum) + " сом");
+        tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
+        tvPrice.setText("Цена: " + df.format(price) + "сом");
+        saveToPreferences();
         timerHandler.postDelayed(this, 1000);
         }
     };
@@ -135,12 +141,10 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             }
             //waitSum = tempTime <= 15*60 ? (double)(3*tempTime/60) : (double)(15*tempTime/60);
         }
-        order.waitTime = pauseTotalTime + pauseSessionTime;
-        order.waitSum = waitSum;
-        tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
-        tvPrice.setText("Цена: " + df.format(price) + "сом");
         tvFeePrice.setText("Сумма ожидания: " + df.format(waitSum) + " сом");
         tvFeeTime.setText("Время ожидания: " + getTimeFromLong(pauseTotalTime + pauseSessionTime));
+        order.waitTime = pauseTotalTime + pauseSessionTime;
+        order.waitSum = waitSum;
         pauseHandler.postDelayed(this, 1000);
         }
     };
@@ -156,10 +160,55 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         SetGooglePlayServices();
 
+        order = Order.getInstance();
+        if (order.id != 0) {
+            getPreferences();
+        }
         Initialize();
         SetDefaultValues();
 
         SetLocationRequest();
+    }
+
+    private void saveToPreferences() {
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putFloat("orderDistance", (float)order.distance);
+        editor.putInt("orderId", order.id);
+        editor.putLong("orderTime", order.time);
+        editor.putLong("orderWaitTime", order.waitTime);
+        editor.apply();
+    }
+
+    private void getPreferences() {
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        if (settings.contains("orderId")) {
+            String pStatus = settings.getString("orderStatus", "");
+            if (pStatus.equals("ontheway"))
+                order.status = OrderStatus.STATUS.WAITING;
+            else
+                order.setStatus(pStatus);
+            order.id = settings.getInt("orderId", 0);
+            order.time = settings.getLong("orderTime", 0);
+            order.distance = (double)settings.getFloat("orderDistance", 0);
+            order.waitTime = settings.getLong("orderWaitTime", 0);
+            distance = order.distance;
+            startTime = System.currentTimeMillis() - order.time;
+            pauseTotalTime = order.waitTime;
+            price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
+            order.sum = price;
+            if (order.waitTime > 5 * 60) {
+                if (order.waitTime <= 5*60) {
+                    order.waitSum = 0;
+                } else if (order.waitTime <= 15*60) {
+                    order.waitSum = Math.round((double)3*(order.waitTime-5*60)/60);
+                } else {
+                    order.waitSum = Math.round(3*10 + (double)(order.waitTime - 15*60)/60);
+                }
+            }
+            pauseStartTime = System.currentTimeMillis() - order.waitTime;
+            pauseSessionTime = 0;
+        }
     }
 
     private String getTimeFromLong(long seconds) {
@@ -227,10 +276,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void Initialize() {
-        distance = 0;
-        price = startPrice;
         prev = null;
-        order = Order.getInstance();
         tvDistance = (TextView) findViewById(R.id.textViewDistance);
         tvPrice = (TextView) findViewById(R.id.textViewPrice);
         btnBeginTrip = (Button) findViewById(R.id.beginTrip);
@@ -239,7 +285,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         llMain = (LinearLayout) findViewById(R.id.mainLayout);
         tvSpeed = (TextView) findViewById(R.id.textViewSpeed);
         tvTime = (TextView) findViewById(R.id.textViewTime);
-        tvPause = (TextView) findViewById(R.id.pauseText);
         tvFeePrice = (TextView) findViewById(R.id.textViewFeePrice);
         tvFeeTime = (TextView) findViewById(R.id.textViewFeeTime);
         tvTotalSum = (TextView) findViewById(R.id.textViewMapsTotalSum);

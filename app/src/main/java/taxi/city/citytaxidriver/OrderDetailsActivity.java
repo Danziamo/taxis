@@ -79,7 +79,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
         tvAddress = (TextView) findViewById(R.id.textViewStartAddress);
         tvDescription = (TextView) findViewById(R.id.textViewDescription);
         tvClientPhone = (TextView) findViewById(R.id.textViewClientPhone);
-        tvSum = (TextView) findViewById(R.id.textViewOrderSum);
+        tvSum = (TextView) findViewById(R.id.textViewOrderTravelSum);
         tvDistance = (TextView) findViewById(R.id.textViewOrderDistance);
         tvTravelTime = (TextView) findViewById(R.id.textViewOrderTime);
         tvWaitTime = (TextView) findViewById(R.id.textViewOrderWaitTime);
@@ -108,8 +108,13 @@ public class OrderDetailsActivity extends ActionBarActivity {
         if (mClient.waitTime != null)
             tvWaitTime.setText("Время ожидания: " + mClient.waitTime);
         if (mClient.waitSum != null) {
-            totalSum += Double.valueOf(mClient.waitSum);
-            tvWaitSum.setText("Сумма ожидания: " + mClient.waitSum + " сом");
+            try {
+                totalSum += Double.valueOf(mClient.waitSum);
+                tvWaitSum.setText("Сумма ожидания: " + mClient.waitSum + " сом");
+            }
+            catch (Exception e) {
+
+            }
         }
 
         tvTotalSum.setText("Общая сумма: " + totalSum + " сом");
@@ -135,6 +140,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (orderType == NEW) {
+                    order.clear();
                     order.setOrder(mClient);
                     SendPostRequest(OrderStatus.STATUS.ACCEPTED);
                 }

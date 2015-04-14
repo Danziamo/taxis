@@ -359,7 +359,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                         }
                         driverHasOrder(api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/"));
                         driverHasOrder(api.getDataFromGetRequest("?status=waiting&driver="+user.id, "orders/"));
-                        //driverHasOrder(api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/"));
+                        driverHasOrder(api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/"));
                         res = true;
                     }
                 }

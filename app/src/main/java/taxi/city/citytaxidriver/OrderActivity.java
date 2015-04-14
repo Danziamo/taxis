@@ -40,6 +40,7 @@ public class OrderActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        user = User.getInstance();
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
