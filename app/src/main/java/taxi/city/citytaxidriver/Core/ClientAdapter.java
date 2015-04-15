@@ -38,7 +38,7 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             convertView = inflater.inflate(R.layout.activity_order_list_item, parent, false);
             viewHolder.id = (TextView) convertView.findViewById(R.id.orderId);
             viewHolder.address = (TextView) convertView.findViewById(R.id.orderAddress);
-            if (client.status.equals("finished"))
+            if (client.status.equals("finished") || client.status.equals("canceled"))
                 convertView.setBackgroundColor(Color.RED);
             else if (client.status.equals("new"))
                 convertView.setBackgroundColor(Color.GREEN);

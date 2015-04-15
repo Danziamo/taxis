@@ -120,10 +120,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
         tvTotalSum.setText("Общая сумма: " + totalSum + " сом");
 
         if (type == NEW) {
-            llDescription.setVisibility(View.VISIBLE);
             btnTake.setText("Взять");
             btnCancel.setText("Назад");
             tvClientPhone.setVisibility(View.GONE);
+            llDescription.setVisibility(View.GONE);
         } else if (type == FINISHED) {
             llDescription.setVisibility(View.VISIBLE);
             btnCancel.setText("Назад");

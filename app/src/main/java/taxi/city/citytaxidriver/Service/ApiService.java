@@ -237,6 +237,29 @@ public class ApiService {
         return json;
     }
 
+    public JSONObject getOrderRequest(String params, String apiUrl) {
+        JSONObject result = new JSONObject();
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            params = TextUtils.isEmpty(params) ? "" : params;
+            HttpGet request = new HttpGet(url + apiUrl + params);
+            // Add your data
+            //request.addHeader("content-type", "application/json");
+            request.setHeader("Authorization", "Token " + this.token);
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(request);
+            result = parseData(response);
+        } catch (ClientProtocolException e) {
+            result = null;
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            result = null;
+            // TODO Auto-generated catch block
+        }
+        return result;
+    }
+
     public JSONObject getDataFromGetRequest(String params, String apiUrl) {
         JSONObject result = new JSONObject();
         try {

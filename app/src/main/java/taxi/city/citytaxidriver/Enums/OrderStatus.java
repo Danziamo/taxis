@@ -11,7 +11,7 @@ public class OrderStatus {
         WAITING ("waiting"),
         ONTHEWAY ("ontheway"),
         SOS ("sos"),
-        CANCELLED ("cancelled"),
+        CANCELED("canceled"),
         FINISHED ("finished");
 
         private final String name;

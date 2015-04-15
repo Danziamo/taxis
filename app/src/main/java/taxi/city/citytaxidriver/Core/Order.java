@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import taxi.city.citytaxidriver.Enums.OrderStatus;
 
@@ -115,7 +114,7 @@ public class Order {
         if (status.equals("ontheway"))
             return OrderStatus.STATUS.ONTHEWAY;
         if (status.equals("cancelled"))
-            return OrderStatus.STATUS.CANCELLED;
+            return OrderStatus.STATUS.CANCELED;
         if (status.equals("finished"))
             return OrderStatus.STATUS.FINISHED;
         if (status.equals("sos"))
@@ -133,14 +132,14 @@ public class Order {
         if (status.equals("ontheway"))
             this.status = OrderStatus.STATUS.ONTHEWAY;
         if (status.equals("cancelled"))
-            this.status = OrderStatus.STATUS.CANCELLED;
+            this.status = OrderStatus.STATUS.CANCELED;
         if (status.equals("finished"))
             this.status = OrderStatus.STATUS.FINISHED;
         if (status.equals("sos"))
             this.status = OrderStatus.STATUS.SOS;
     }
 
-    private LatLng stringToLatLng(String s) {
+    public LatLng stringToLatLng(String s) {
         if (s == null || s.equals("null"))
             return null;
         String[] geo = s.replace("(", "").replace(")", "").split(" ");
@@ -161,6 +160,10 @@ public class Order {
 
     public String getFormattedEndPoint() {
         return this.endPoint != null ? LatLngToString(this.endPoint) : null;
+    }
+
+    public String getFormattedStartPoint() {
+        return this.startPoint != null ? LatLngToString(this.startPoint) : null;
     }
 
     public JSONObject getOrderAsJson() throws JSONException {
