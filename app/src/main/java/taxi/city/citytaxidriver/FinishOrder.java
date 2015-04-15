@@ -51,7 +51,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvPrice.setText("Цена: " + order.sum + " сом");
         tvFeeTime.setText("Время ожидания: " + order.getTimeFromLong(order.waitTime));
         tvFeePrice.setText("Штраф: " + order.waitSum + " сом");
-        tvTotalPrice.setText("Итого: " + order.sum + order.waitSum + " сом");
+        tvTotalPrice.setText("Итого: " + (order.sum + order.waitSum) + " сом");
     }
 
     protected void GetItems() {
@@ -117,7 +117,6 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
                 Intent intent=new Intent();
                 intent.putExtra("returnCode", false);
                 setResult(FINISH_ORDER_ID, intent);
-                order.clear();
                 finish();//finishing activity
             }
         }

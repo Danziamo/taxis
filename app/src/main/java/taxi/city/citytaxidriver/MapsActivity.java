@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -111,7 +113,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         time = (long) seconds;
         order.time = time;
-        if (seconds % 30 < 2) {
+        if (seconds % 30 < 1) {
             SendPostRequest(order.status);
         }
         tvTime.setText("Время: " + getTimeFromLong(order.time));
@@ -160,12 +162,17 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         SetGooglePlayServices();
 
+        Initialize();
         order = Order.getInstance();
         if (order.id != 0) {
             getPreferences();
         }
-        Initialize();
-        SetDefaultValues();
+
+        updateViews();
+
+        if (order.id == 0) {
+            SetDefaultValues();
+        }
 
         SetLocationRequest();
     }
@@ -177,7 +184,19 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         editor.putInt("orderId", order.id);
         editor.putLong("orderTime", order.time);
         editor.putLong("orderWaitTime", order.waitTime);
+        editor.putString("orderStatus", order.status.toString());
         editor.apply();
+    }
+
+    private void clearPreferences() {
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear().apply();
+    }
+
+    private boolean ifPreferenceActive() {
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        return (settings.contains("orderId") && settings.contains("orderStatus"));
     }
 
     private void getPreferences() {
@@ -195,7 +214,10 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             distance = order.distance;
             startTime = System.currentTimeMillis() - order.time;
             pauseTotalTime = order.waitTime;
-            price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
+            if (distance > freeMeters)
+                price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
+            else
+                price = 60;
             order.sum = price;
             if (order.waitTime > 5 * 60) {
                 if (order.waitTime <= 5*60) {
@@ -208,6 +230,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             }
             pauseStartTime = System.currentTimeMillis() - order.waitTime;
             pauseSessionTime = 0;
+
+            tvTime.setText("Время: " + getTimeFromLong(order.time));
+            tvTotalSum.setText("Общая сумма: " + (order.sum + order.waitSum) + " сом");
+            tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
+            tvPrice.setText("Цена: " + df.format(price) + "сом");
         }
     }
 
@@ -292,8 +319,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         btnBeginTrip.setOnClickListener(this);
         btnEndTrip.setOnClickListener(this);
         btnPauseTrip.setOnClickListener(this);
-
-        updateViews();
     }
 
     private void updateViews() {
@@ -533,31 +558,42 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 if (order.status == OrderStatus.STATUS.ACCEPTED) {
+                    order.status = OrderStatus.STATUS.INPLACE;
                     SendPostRequest(OrderStatus.STATUS.INPLACE);
                 } else if (order.status == OrderStatus.STATUS.INPLACE) {
                     SetDefaultValues();
+                    order.status = OrderStatus.STATUS.ONTHEWAY;
                     SendPostRequest(OrderStatus.STATUS.ONTHEWAY);
                 }
+                updateViews();
                 break;
             case R.id.pauseTrip:
                 if (order.status == OrderStatus.STATUS.ONTHEWAY) {
+                    order.status = OrderStatus.STATUS.WAITING;
                     SendPostRequest(OrderStatus.STATUS.WAITING);
                     pauseSessionTime = 0;
                     pauseStartTime = System.currentTimeMillis();
                     pauseHandler.postDelayed(pauseRunnable, 0);
                 } else if (order.status == OrderStatus.STATUS.WAITING) {
+                    timerHandler.postDelayed(timerRunnable, 0);
+                    order.status = OrderStatus.STATUS.ONTHEWAY;
                     SendPostRequest(OrderStatus.STATUS.ONTHEWAY);
                     pauseHandler.removeCallbacks(pauseRunnable);
                     pauseTotalTime += pauseSessionTime;
                 }
+                updateViews();
                 break;
             case R.id.endTrip:
                 if (order.status == OrderStatus.STATUS.ACCEPTED) {
+                    order.status = OrderStatus.STATUS.NEW;
+                    timerHandler.removeCallbacks(timerRunnable);
+                    pauseHandler.removeCallbacks(pauseRunnable);
                     SendPostRequest(OrderStatus.STATUS.NEW);
                 } else {
                     SendPostRequest(order.status);
                     EndTrip();
                 }
+                updateViews();
                 break;
         }
     }
@@ -577,7 +613,10 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             if (data != null) {
                 if (data.getBooleanExtra("returnCode", false)) {
                     Toast.makeText(getApplicationContext(), "Заказ завершен", Toast.LENGTH_LONG).show();
+                    clearPreferences();
                 } else {
+                    saveToPreferences();
+                    order.clear();
                     Toast.makeText(getApplicationContext(), "Заказ завершен. Ошибка при отправке данных на сервер", Toast.LENGTH_LONG).show();
                 }
             }
@@ -593,6 +632,35 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        final AlertDialog.Builder builder =
+                                new AlertDialog.Builder(MapsActivity.this);
+                        //final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+                        final String message = "Вы уверены что хотите позвонить?";
+                        final String title = order.clientPhone;
+
+                        builder.setMessage(message)
+                                .setTitle(title)
+                                .setPositiveButton("Позвонить",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface d, int id) {
+                                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                                callIntent.setData(Uri.parse("tel:"+order.clientPhone));
+                                                startActivity(callIntent);
+                                                d.dismiss();
+                                            }
+                                        })
+                                .setNegativeButton("Отмена",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface d, int id) {
+                                                d.cancel();
+                                            }
+                                        });
+                        builder.create().show();
+                    }
+                });
             }
             updateViews();
         }
@@ -637,6 +705,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void OpenOrder() {
+        if (order.id == 0 || order.status == OrderStatus.STATUS.FINISHED) {
+            if (ifPreferenceActive()) {
+                getPreferences();
+                SendPostRequest(order.status);
+            }
+        }
         Intent intent = new Intent(this, OrderActivity.class);
         startActivityForResult(intent, MAKE_ORDER_ID);
     }
@@ -686,7 +760,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 data.put("address_stop", status == OrderStatus.STATUS.NEW ? JSONObject.NULL : order.getFormattedEndPoint());
                 data.put("wait_time", getTimeFromLong(order.waitTime));
                 data.put("order_distance", (double)Math.round(order.distance*100)/100);
-                data.put("order_travel_time", getTimeFromLong(order.time));
+                data.put("order_travel_time", status == OrderStatus.STATUS.ACCEPTED || status == OrderStatus.STATUS.INPLACE ? 0 : getTimeFromLong(order.time));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -696,11 +770,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         @Override
         protected void onPostExecute(JSONObject result) {
             sendTask = null;
-            order.status = status;
-            updateViews();
             try {
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
+                    if (order.status == OrderStatus.STATUS.FINISHED || order.status == OrderStatus.STATUS.NEW) {
+                        order.clear();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();
                 }

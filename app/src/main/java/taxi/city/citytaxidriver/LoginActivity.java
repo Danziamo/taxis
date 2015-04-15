@@ -357,9 +357,12 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                                 }
                             }
                         }
-                        driverHasOrder(api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/"));
-                        driverHasOrder(api.getDataFromGetRequest("?status=waiting&driver="+user.id, "orders/"));
-                        driverHasOrder(api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/"));
+                        JSONObject resultObject = api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/");
+                        driverHasOrder(resultObject);
+                        resultObject = api.getDataFromGetRequest("?status=waiting&driver="+user.id, "orders/");
+                        driverHasOrder(resultObject);
+                        resultObject = api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/");
+                        driverHasOrder(resultObject);
                         res = true;
                     }
                 }
@@ -377,7 +380,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
 
             if (success && statusCode == 200) {
                 NextActivity(hasCar);
-            } else  if (statusCode == 401) {
+            } else  if (statusCode == 403) {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

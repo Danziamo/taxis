@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import taxi.city.citytaxidriver.Enums.OrderStatus;
 
@@ -78,8 +79,30 @@ public class Order {
         this.description = object.has("description") ? object.getString("description") : null;
         this.sum = object.has("order_sum") ? object.getDouble("order_sum") : 0;
         this.distance = object.has("order_distance") ? object.getDouble("order_distance") : 0;
-        this.time = object.has("order_travel_time") ? object.getLong("order_travel_time") : 0;
-        this.waitSum = object.has("wait_time_price") ? object.getDouble("wait_time_price") : 0;
+        this.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
+        this.waitSum = object.has("wait_time_price") ? getDoubleFromObject(object.getString("wait_time_price")): 0;
+    }
+
+    private Long getLongFromString(String s) {
+        long res = 0;
+        try {
+            String[] list = s.split(":");
+            res += 60*60*Integer.valueOf(list[0]) + 60*Integer.valueOf(list[1]) +Integer.valueOf(list[2]);
+        } catch (Exception e) {
+            res = 0;
+        }
+        return res;
+
+    }
+
+    private double getDoubleFromObject(String s) {
+        double res;
+        try {
+            res = Double.valueOf(s);
+        } catch (Exception e) {
+            res = 0;
+        }
+        return res;
     }
 
     private OrderStatus.STATUS getStatus(String status) {
@@ -148,6 +171,7 @@ public class Order {
         obj.put("address_start", LatLngToString(this.startPoint));
         obj.put("address_stop", LatLngToString(this.endPoint));
         obj.put("wait_time", getTimeFromLong(this.waitTime));
+        obj.put("wait_time_price", this.waitSum);
         obj.put("tariff", this.tariff);
         obj.put("driver", this.driver);
         obj.put("order_time", this.orderTime);
@@ -157,7 +181,6 @@ public class Order {
         obj.put("address_start_name", this.addressStart);
         obj.put("address_stop_name", this.addressEnd);
         obj.put("description", this.description);
-        obj.put("wait_time_price", this.waitSum);
 
         return obj;
     }

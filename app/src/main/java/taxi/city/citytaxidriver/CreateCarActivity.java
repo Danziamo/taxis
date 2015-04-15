@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import taxi.city.citytaxidriver.Core.User;
@@ -184,8 +185,28 @@ public class CreateCarActivity extends ActionBarActivity {
         String carTechPassport = editTextCarTechPassport.getText().toString();
         String passportId = editTextIdInfo.getText().toString();
 
+        if (isInteger(carYear)) {
+            int year = Integer.valueOf(carYear);
+            if (year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR)) {
+                Toast.makeText(getApplicationContext(), "Не правильный год", Toast.LENGTH_SHORT);
+                return;
+            }
+        }
+
         task = new UserCreateCarTask(carBrandId, carBrandModelId, carColor, carNumber, carYear, carSeries, carTechPassport, passportId);
         task.execute((Void) null);
+    }
+
+    private static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 
     private class FetchCarBrandTask extends AsyncTask<Void, Void, JSONArray> {

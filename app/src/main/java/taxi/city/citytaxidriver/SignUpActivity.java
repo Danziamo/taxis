@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
@@ -98,6 +99,13 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
         mProgressView = findViewById(R.id.signup_progress);
     }
 
+    private boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
     public void attemptSignUp() {
         if (mSignUpTask != null) {
             return;
@@ -129,7 +137,7 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
             cancel = true;
         }
 
-        if (!isEmailValid(email)) {
+        if (!isEmailValid(email) || !isValidEmailAddress(email)) {
             mEmailView.setError("Email неверный");
             focusView = mEmailView;
             cancel = true;
@@ -210,6 +218,7 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
                 }
 
                 if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED || statusCode == HttpStatus.SC_CREATED) {
+                    Order.getInstance().clear();
                     ConfirmSignUp(result);
                 } else if (statusCode == 400) {
                     if (result.has("phone")) {
