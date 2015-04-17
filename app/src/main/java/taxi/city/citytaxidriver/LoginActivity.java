@@ -39,8 +39,8 @@ import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.Utils.Helper;
 
 
 /**
@@ -308,7 +308,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             if (!object.has("result") || object.getJSONArray("result").length() < 1)
                 return;
             JSONObject row = object.getJSONArray("result").getJSONObject(0);
-            order.setOrder(row);
+            Helper.setOrder(row);
         } catch (JSONException e) {
             e.printStackTrace();
         }

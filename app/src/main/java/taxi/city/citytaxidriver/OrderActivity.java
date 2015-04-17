@@ -21,7 +21,7 @@ import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.ClientAdapter;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
+import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 
@@ -33,7 +33,6 @@ public class OrderActivity extends ActionBarActivity {
     private ApiService api = ApiService.getInstance();
     private User user = User.getInstance();
     private FetchOrderTask mFetchTask = null;
-    private int activeOrderId;
 
     private Client client;
     ListView lvMain;
@@ -43,7 +42,6 @@ public class OrderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         user = User.getInstance();
-        activeOrderId = 0;
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,7 +71,7 @@ public class OrderActivity extends ActionBarActivity {
             Log.d(TAG, "Start to fill up list view");
             for (int i=0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
-                if (row.getString("status").equals(OrderStatus.STATUS.CANCELED.toString()))
+                if (row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
                 Client client = new Client();
                 client.phone = row.getString("client_phone");
@@ -93,8 +91,8 @@ public class OrderActivity extends ActionBarActivity {
                 client.time = row.getString("order_travel_time");
                 client.waitSum = row.getString("wait_time_price");
 
-                if (client.status.equals("accepted") || client.status.equals("waiting") || client.status.equals("accepted"))
-                    activeOrderId = client.id;
+                if (client.status.equals(OStatus.ACCEPTED) || client.status.equals(OStatus.WAITING))
+                    ;
                 list.add(client);
 
             }
@@ -156,8 +154,8 @@ public class OrderActivity extends ActionBarActivity {
 
             JSONArray array = new JSONArray();
             try {
-                JSONObject result = new JSONObject();
-                if (order.id == 0 || order.status == OrderStatus.STATUS.FINISHED || order.status == null) {
+                JSONObject result;
+                if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
                     result = api.getDataFromGetRequest(null, "orders/?status=new");
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
+import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
 /**
@@ -23,7 +23,7 @@ public class OrderTask {
     private SendPostRequestTask sendTask = null;
     private Context context = null;
 
-    public void sendOrderRequest(OrderStatus.STATUS type, Context context) {
+    public void sendOrderRequest(OStatus type, Context context) {
         if (sendTask != null) {
             return;
         }
@@ -34,7 +34,7 @@ public class OrderTask {
     }
 
     private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
-        SendPostRequestTask(OrderStatus.STATUS type) {
+        SendPostRequestTask(OStatus type) {
             order.status = type;
             order.driver = user.id;
         }

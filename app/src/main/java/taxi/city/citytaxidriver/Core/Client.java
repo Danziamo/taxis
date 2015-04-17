@@ -25,5 +25,5 @@ public class Client implements Serializable{
     public String distance;
     public String waitSum;
 
-    public Client() {};
+    public Client() {}
 }

@@ -17,8 +17,9 @@ import org.json.JSONObject;
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
+import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.Utils.Helper;
 
 
 public class OrderDetailsActivity extends ActionBarActivity {
@@ -141,8 +142,8 @@ public class OrderDetailsActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (orderType == NEW) {
                     order.clear();
-                    order.setOrder(mClient);
-                    SendPostRequest(OrderStatus.STATUS.ACCEPTED);
+                    Helper.setOrder(mClient);
+                    SendPostRequest(OStatus.ACCEPTED);
                 }
             }
         });
@@ -162,7 +163,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
         });
     }
 
-    private void SendPostRequest(OrderStatus.STATUS status) {
+    private void SendPostRequest(OStatus status) {
         if (sendTask != null) {
             return;
         }
@@ -172,7 +173,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
     }
 
     private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
-        SendPostRequestTask(OrderStatus.STATUS type) {
+        SendPostRequestTask(OStatus type) {
             order.status = type;
             order.driver = user.id;
         }
@@ -188,10 +189,11 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 data.put("status", order.status);
                 data.put("driver", order.driver);
                 if (order.endPoint != null) {
-                    data.put("address_stop", order.getFormattedEndPoint());
+                    data.put("address_stop", Helper.getFormattedLatLng(order.endPoint));
                 }
-                JSONObject object = api.getDataFromGetRequest(null, "orders/" + order.id + "/?driver=");
-                if (object != null && object.getInt("status_code") == HttpStatus.SC_OK && !object.has("result")) {
+                JSONObject object = api.getOrderRequest(null, "orders/" + order.id + "/");
+                if (object != null && object.getInt("status_code") == HttpStatus.SC_OK
+                            && object.getString("status").equals(OStatus.NEW.toString())) {
                     res = api.patchRequest(data, "orders/" + order.id + "/");
                 } else {
                     res = null;
@@ -227,7 +229,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
     }
 
     private void FinishTakeOrder() {
-        order.setOrder(mClient);
+        Helper.setOrder(mClient);
         Intent intent = new Intent();
         intent.putExtra("returnCode", true);
         setResult(1, intent);

@@ -2,8 +2,8 @@ package taxi.city.citytaxidriver;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,8 +15,9 @@ import org.json.JSONObject;
 import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
-import taxi.city.citytaxidriver.Enums.OrderStatus;
+import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.Utils.Helper;
 
 
 public class FinishOrder extends ActionBarActivity implements View.OnClickListener {
@@ -46,10 +47,10 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     protected void SetItems() {
         tvBeginPoint.setText("Начальная точка: " + order.addressStart);
         tvEndPoint.setText(order.addressEnd);
-        tvDistance.setText("Путь: " + order.getFormattedDistance() + " км");
-        tvTime.setText("Время: " + order.getTimeFromLong(order.time));
+        tvDistance.setText("Путь: " + Helper.getFormattedDistance(order.distance) + " км");
+        tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
         tvPrice.setText("Цена: " + order.sum + " сом");
-        tvFeeTime.setText("Время ожидания: " + order.getTimeFromLong(order.waitTime));
+        tvFeeTime.setText("Время ожидания: " + Helper.getTimeFromLong(order.waitTime));
         tvFeePrice.setText("Штраф: " + order.waitSum + " сом");
         tvTotalPrice.setText("Итого: " + (order.sum + order.waitSum) + " сом");
     }
@@ -93,7 +94,7 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
-            order.status = OrderStatus.STATUS.FINISHED;
+            order.status = OStatus.FINISHED;
             JSONObject data = new JSONObject();
             try {
                 data = order.getOrderAsJson();
