@@ -765,8 +765,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onConfigurationChanged(newConfig);
     }
 
-    private void SendPostRequest(OStatus OStatus, int orderId) {
-        if (sendTask != null) {
+    private void SendPostRequest(OStatus status, int orderId) {
+        if (sendTask != null || status == null || orderId == 0) {
             return;
         }
 
@@ -774,7 +774,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
         }
 
-        sendTask = new SendPostRequestTask(OStatus, orderId);
+        if (order.status == OStatus.ACCEPTED || order.status == OStatus.ONPLACE) {
+            order.time = 0;
+        }
+
+        sendTask = new SendPostRequestTask(status, orderId);
         sendTask.execute((Void) null);
     }
 
@@ -839,7 +843,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                         clearPreferences();
                     }
                 } else if (result != null && result.getInt("status_code") == 999) {
-                    Toast.makeText(getApplicationContext(), "Клиент отменил заказ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Клиент отменил заказ: " + result.getString("description"), Toast.LENGTH_LONG).show();
                     order.clear();
                     resetPreferences();
                     clearPreferences();

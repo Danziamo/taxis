@@ -213,6 +213,8 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
                     FinishTakeOrder();
+                } else if (result != null && result.getString("status").equals(OStatus.CANCELED.toString())) {
+                    Toast.makeText(getApplicationContext(), "Заказ отменен", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Заказ уже занят", Toast.LENGTH_LONG).show();
                 }
