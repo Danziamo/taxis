@@ -1,12 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="taxi.city.citytaxidriver.CreateCarActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -20,86 +23,105 @@
             android:visibility="gone"
             android:indeterminate="false" />
 
-        <ScrollView
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/svCreateCar"
-            android:fillViewport="false">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:text="Регистрация авто"
+            android:id="@+id/textViewCarRegistration" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:textColor="#202930"
+            android:text="Сохранить"
+            android:id="@+id/btnSaveCar"
+            android:background="@drawable/button_shape_yellow"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerCarBrand"
-                    android:spinnerMode="dialog" />
+        <Spinner
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/spinnerCarBrandModel"
+            android:spinnerMode="dialog"
+            android:layout_below="@+id/spinnerCarBrand"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
 
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerCarBrandModel"
-                    android:spinnerMode="dialog" />
+        <Spinner
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/spinnerCarBrand"
+            android:spinnerMode="dialog"
+            android:layout_below="@+id/textViewCarRegistration"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etCarColor"
-                    android:layout_below="@+id/etCarModel"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignRight="@+id/etCarModel"
-                    android:layout_alignEnd="@+id/etCarModel"
-                    android:hint="Цвет автомобиля" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etCarColor"
+            android:hint="Цвет автомобиля"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/spinnerCarBrandModel"
+            android:layout_centerHorizontal="true" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etCarNumber"
-                    android:hint="Номер автомобиля" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etTechPassport"
+            android:hint="Тех. паспорт"
+            android:layout_below="@+id/etCarColor"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etPassportSeries"
-                    android:hint="Номер и серия прав" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etCarNumber"
+            android:hint="Номер автомобиля"
+            android:layout_below="@+id/etTechPassport"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etTechPassport"
-                    android:hint="Тех. паспорт" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etNumberOfLicense"
+            android:hint="Номер и серия прав"
+            android:layout_below="@+id/etCarNumber"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etCarYear"
-                    android:hint="Год машины" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etPassportId"
+            android:hint="Пасспортные данные"
+            android:layout_below="@+id/etNumberOfLicense"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etIdInfo"
-                    android:layout_below="@+id/etCarColor"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignRight="@+id/etCarColor"
-                    android:layout_alignEnd="@+id/etCarColor"
-                    android:hint="Пасспортные данные" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/etCarYear"
+            android:hint="Год машины"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/etPassportId"
+            android:layout_alignParentTop="false"
+            android:layout_marginTop="15dp"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Сохранить"
-                    android:id="@+id/btnSaveCar"
-
-                    android:layout_below="@+id/etIdInfo"
-                    android:layout_centerHorizontal="true" />
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

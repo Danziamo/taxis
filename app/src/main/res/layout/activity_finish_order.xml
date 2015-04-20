@@ -1,6 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -12,111 +15,123 @@
         android:id="@+id/scrollViewFinishOrder"
         android:layout_centerInParent="true">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false">
-
-            <TextView android:text="Начальная точка:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvBeginPoint"
-                android:layout_marginTop="101dp"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Конечная точка:"
-                android:id="@+id/tvEndPoint"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvBeginPoint"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Стоимость:"
-                android:id="@+id/tvFeeTime"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvFeePrice"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Время:"
-                android:id="@+id/tvFeePrice"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvTime"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Расстояние:"
-                android:id="@+id/tvDistance"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvEndPoint"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Время:"
-                android:id="@+id/tvTime"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvDistance"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Стоимость:"
-                android:id="@+id/tvPrice"
-                android:textSize="15dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/tvTime"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Итоговая сумма:"
-                android:id="@+id/tvTotalPrice"
-                android:layout_gravity="center" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Оплачено"
-                android:id="@+id/btnDone"
-                android:layout_below="@+id/tvPrice"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="48dp"
-                android:textSize="25dp"
-                android:layout_gravity="center" />
-
-        </LinearLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true">
+
+        <TextView android:text="Адрес клиента:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvBeginPoint"
+            android:layout_marginTop="20dp"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/tvEndPoint"
+            android:layout_alignEnd="@+id/tvEndPoint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Конечная точка:"
+            android:id="@+id/tvEndPoint"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvBeginPoint"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Стоимость:"
+            android:id="@+id/tvFeeTime"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvFeePrice"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Время:"
+            android:id="@+id/tvFeePrice"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvTime"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Расстояние:"
+            android:id="@+id/tvDistance"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvEndPoint"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Время:"
+            android:id="@+id/tvTime"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvDistance"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Стоимость:"
+            android:id="@+id/tvPrice"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/tvTime"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Итоговая сумма:"
+            android:id="@+id/tvTotalPrice"
+            android:layout_gravity="center"
+            android:layout_below="@+id/tvFeeTime"
+            android:layout_alignLeft="@+id/tvFeeTime"
+            android:layout_alignStart="@+id/tvFeeTime"
+            android:layout_marginTop="91dp" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:background="@color/green"
+            android:text="Завершить"
+            android:id="@+id/btnDone"
+            android:textSize="25dp"
+            android:layout_gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="47dp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

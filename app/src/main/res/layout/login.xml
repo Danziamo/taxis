@@ -77,7 +77,6 @@
         android:id="@+id/btnSignUp"
         android:background="@drawable/button_shape_yellow"
         android:textColor="#ff1e0a8e"
-        android:drawableLeft="@color/lime2"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="0dp"
@@ -89,7 +88,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Забыли пароль?"
-        android:id="@+id/textView24"
         android:layout_below="@+id/login_password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
@@ -98,7 +96,6 @@
     <ImageView
         android:layout_width="240dp"
         android:layout_height="270dp"
-        android:id="@+id/imageView2"
         android:background="@drawable/logo"
         android:layout_above="@+id/login_phone"
         android:layout_centerHorizontal="true"

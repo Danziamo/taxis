@@ -75,25 +75,6 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
             }
         });
 
-        ImageButton btnShowPassword = (ImageButton)findViewById(R.id.btnShowPassword);
-        btnShowPassword.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    mPasswordView.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    mPasswordView.setSelection(mPasswordView.length());
-                    return true;
-                }
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    mPasswordView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    mPasswordView.setSelection(mPasswordView.length());
-                    return true;
-                }
-
-                return false;
-            }
-        });
-
         mLoginFormView = findViewById(R.id.svSignUp);
         mProgressView = findViewById(R.id.signup_progress);
     }
