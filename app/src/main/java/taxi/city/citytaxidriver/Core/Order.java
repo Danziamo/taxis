@@ -78,9 +78,9 @@ public class Order {
         obj.put("order_distance", (double)Math.round(this.distance*100)/100);
         obj.put("order_sum", this.sum + this.waitSum);
         obj.put("order_travel_time", getTimeFromLong(this.time));
-        obj.put("address_start_name", this.addressStart);
-        obj.put("address_stop_name", this.addressEnd);
-        obj.put("description", this.description);
+        obj.put("address_start_name", this.addressStart == null ? JSONObject.NULL : this.addressStart);
+        obj.put("address_stop_name", this.addressEnd == null ? JSONObject.NULL : this.addressEnd);
+        obj.put("description", this.description == null ? JSONObject.NULL : this.description);
 
         return obj;
     }

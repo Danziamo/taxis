@@ -48,18 +48,23 @@ public class OrderActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
-                int orderId = Integer.valueOf(text);
-                order.id = orderId;
+                try {
+                    String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
+                    int orderId = Integer.valueOf(text);
+                    order.id = orderId;
 
-                for (int i = list.size() - 1; i >= 0; i -= 1) {
-                    if (orderId == list.get(i).id) {
-                        client = list.get(i);
-                        //order.setOrder(list.get(i));
-                        break;
+                    for (int i = list.size() - 1; i >= 0; i -= 1) {
+                        if (orderId == list.get(i).id) {
+                            client = list.get(i);
+                            //order.setOrder(list.get(i));
+                            break;
+                        }
                     }
+                    goOrderDetails(client);
                 }
-                goOrderDetails(client);
+                catch (Exception e) {
+
+                }
             }
         });
         fetchData();
@@ -71,7 +76,7 @@ public class OrderActivity extends ActionBarActivity {
             Log.d(TAG, "Start to fill up list view");
             for (int i=0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
-                if (row.getString("status").equals(OStatus.CANCELED.toString()))
+                if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
                 Client client = new Client();
                 client.phone = row.getString("client_phone");
@@ -91,8 +96,6 @@ public class OrderActivity extends ActionBarActivity {
                 client.time = row.getString("order_travel_time");
                 client.waitSum = row.getString("wait_time_price");
 
-                if (client.status.equals(OStatus.ACCEPTED) || client.status.equals(OStatus.WAITING))
-                    ;
                 list.add(client);
 
             }
@@ -127,6 +130,9 @@ public class OrderActivity extends ActionBarActivity {
                 setResult(1, intent);
                 finish();
             } else {
+                list.clear();
+                lvMain.setAdapter(null);
+                fetchData();
                 //order.clear();
             }
         }
@@ -154,7 +160,7 @@ public class OrderActivity extends ActionBarActivity {
 
             JSONArray array = new JSONArray();
             try {
-                JSONObject result;
+                JSONObject result = new JSONObject();
                 if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
                     result = api.getDataFromGetRequest(null, "orders/?status=new");
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
@@ -164,10 +170,11 @@ public class OrderActivity extends ActionBarActivity {
                         }
                     }
                 }
-                result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id);
+                if (order.id != 0) array.put(order.getOrderAsJson());
+                result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id+"&status=finished");
                 if (result.getInt("status_code") == HttpStatus.SC_OK) {
                     JSONArray tempArray = result.getJSONArray("result");
-                    for (int i = 0; i < tempArray.length(); ++i) {
+                    for (int i = 0; i < tempArray.length() && i < 10; ++i) {
                         array.put(tempArray.getJSONObject(i));
                     }
                 }

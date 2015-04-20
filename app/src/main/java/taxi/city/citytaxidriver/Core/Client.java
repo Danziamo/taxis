@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Daniyar on 3/18/2015.
  */
-public class Client implements Serializable{
+public class Client implements Serializable, Comparable<Client>{
     public int id;
     public String orderTime;
     public String phone;
@@ -26,4 +26,15 @@ public class Client implements Serializable{
     public String waitSum;
 
     public Client() {}
+
+    @Override
+    public int compareTo(Client another) {
+        if (another.status == "accepted" || another.status == "ontheway" || another.status == "waiting")
+            return 0;
+        if (another.status == "new")
+            return -1;
+        else
+            return 1;
+
+    }
 }

@@ -214,8 +214,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
                     FinishTakeOrder();
                 } else if (result != null && result.getString("status").equals(OStatus.CANCELED.toString())) {
+                    order.clear();
                     Toast.makeText(getApplicationContext(), "Заказ отменен", Toast.LENGTH_LONG).show();
                 } else {
+                    order.clear();
                     Toast.makeText(getApplicationContext(), "Заказ уже занят", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
