@@ -42,77 +42,91 @@
             android:layout_centerHorizontal="true" />
 
         <Spinner
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/spinnerCarBrandModel"
             android:spinnerMode="dialog"
             android:layout_below="@+id/spinnerCarBrand"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <Spinner
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/spinnerCarBrand"
             android:spinnerMode="dialog"
             android:layout_below="@+id/textViewCarRegistration"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etCarColor"
             android:hint="Цвет автомобиля"
             android:layout_marginTop="15dp"
             android:layout_below="@+id/spinnerCarBrandModel"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etTechPassport"
             android:hint="Тех. паспорт"
             android:layout_below="@+id/etCarColor"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etCarNumber"
             android:hint="Номер автомобиля"
             android:layout_below="@+id/etTechPassport"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etNumberOfLicense"
             android:hint="Номер и серия прав"
             android:layout_below="@+id/etCarNumber"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etPassportId"
             android:hint="Пасспортные данные"
             android:layout_below="@+id/etNumberOfLicense"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <EditText
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/etCarYear"
@@ -120,7 +134,9 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/etPassportId"
             android:layout_alignParentTop="false"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
     </RelativeLayout>
 

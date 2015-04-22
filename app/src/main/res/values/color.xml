@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lime">#f4ea04</color>
+    <color name="translucent_lime">#ffec19</color>
+    <color name="lime2">#DDC522</color>
+    <color name="green">#45b320</color>
+    <color name="blacktext1">#878787</color>
+    <color name="white">#fcfcfc</color>
+    <color name="red">#ff0000</color>
+    <color name="blacktext2">#0f0d00</color>
+</resources>

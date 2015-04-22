@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textbox_background"
+        android:text="Адресс выбранной точки"
+        android:textSize="20sp"
+        android:id="@+id/textView24"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/image_search"
+        android:id="@+id/imageView2"
+        android:layout_alignBottom="@+id/textView24"
+        android:layout_alignRight="@+id/textView24"
+        android:layout_alignEnd="@+id/textView24"
+        android:layout_alignTop="@+id/textView24" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_green"
+        android:text="Да"
+        android:textColor="@color/blacktext2"
+        android:id="@+id/button35"
+        android:layout_below="@+id/textView24"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_black"
+        android:textColor="@color/white"
+        android:text="Другой адресс"
+        android:id="@+id/button36"
+        android:layout_alignTop="@+id/button35"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_green"
+        android:textColor="@color/blacktext2"
+        android:text="Вызвать"
+        android:id="@+id/button37"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="10dp" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_black"
+        android:textColor="@color/white"
+        android:text="Настройки"
+        android:id="@+id/button38"
+        android:layout_alignTop="@+id/button37"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
+</RelativeLayout>

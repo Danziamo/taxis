@@ -15,11 +15,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@drawable/textbox"/>
+            android:background="@drawable/textbox_background"/>
 
         <TextView
             android:id="@+id/orderAddress"
-            android:background="@drawable/textbox"
+            android:background="@drawable/textbox_background"
             android:layout_width="0dp"
             android:layout_weight="7"
             android:layout_height="wrap_content" />
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/textbox"
+            android:background="@drawable/textbox_background"
             android:layout_weight="3"
             android:id="@+id/textViewCustomPrice"/>
     </LinearLayout>

@@ -13,4 +13,8 @@
         <!--<item name="android:background">@drawable/main_background</item>-->
     </style>
 
+    <!--<style name="progressbar" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progressbar</item>
+    </style>-->
+
 </resources>
