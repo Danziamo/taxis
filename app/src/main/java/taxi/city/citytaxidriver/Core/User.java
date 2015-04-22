@@ -12,7 +12,7 @@ public class User implements Serializable {
 
     private static User mInstance = null;
 
-    public Integer id;
+    public int id;
     public String firstName;
     public String lastName;
     public String token;

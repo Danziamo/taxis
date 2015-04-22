@@ -15,98 +15,107 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:id="@+id/login_progress"
+        android:visibility="gone"
         android:indeterminate="false" />
 
-    <AutoCompleteTextView
-        android:orientation="vertical"
-        android:id="@+id/login_phone"
-        android:gravity="center"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
-        android:hint="@string/prompt_phone_number"
-        android:textColorHint="#000000"
-        android:background="@drawable/textbox_background"
-        android:inputType="phone"
-        android:maxLines="2"
-        android:singleLine="true"
-        android:autoText="false"
-        android:textColor="#636363"
-        android:layout_above="@+id/login_password"
-        android:layout_centerHorizontal="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/login_form">
 
-    <EditText
-        android:orientation="vertical"
-        android:id="@+id/login_password"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
-        android:hint="@string/prompt_password"
-        android:textColorHint="#000000"
-        android:imeActionId="100"
-        android:imeActionLabel="@string/action_sign_in_short"
-        android:gravity="center"
-        android:imeOptions="actionUnspecified"
-        android:inputType="textPassword"
-        android:maxLines="2"
-        android:singleLine="true"
-        android:background="@drawable/textbox_background"
-        android:password="false"
-        android:textColor="#636363"
-        android:layout_alignBottom="@+id/btnSignIn"
-        android:layout_alignLeft="@+id/login_phone"
-        android:layout_alignStart="@+id/login_phone"
-        android:layout_marginBottom="56dp" />
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="270dp"
+            android:id="@+id/imageViewLogo"
+            android:src="@drawable/logo"
+            android:layout_above="@+id/login_phone"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:maxHeight="100dp"
+            android:maxWidth="100dp"
+            android:minHeight="100dp"
+            android:minWidth="100dp" />
 
-    <Button android:id="@+id/btnSignIn"
-        style="?android:textAppearanceSmall"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
-        android:text="@string/action_sign_in"
-        android:background="@drawable/button_shape_yellow"
-        android:textColor="#ff1e0a8e"
-        android:textStyle="bold"
-        android:layout_marginBottom="71dp"
-        android:layout_above="@+id/btnSignUp"
-        android:layout_centerHorizontal="true" />
+        <AutoCompleteTextView
+            android:orientation="vertical"
+            android:id="@+id/login_phone"
+            android:gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:hint="@string/prompt_phone_number"
+            android:textColorHint="#000000"
+            android:background="@drawable/textbox_background"
+            android:inputType="phone"
+            android:maxLines="2"
+            android:singleLine="true"
+            android:autoText="false"
+            android:textColor="#636363"
+            android:layout_above="@+id/login_password"
+            android:layout_centerHorizontal="true" />
 
-    <Button
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Зарегистрироваться"
-        android:id="@+id/btnSignUp"
-        android:background="@drawable/button_shape_yellow"
-        android:textColor="#ff1e0a8e"
-        android:drawableLeft="@color/lime2"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_alignParentRight="true" />
+        <EditText
+            android:orientation="vertical"
+            android:id="@+id/login_password"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:hint="@string/prompt_password"
+            android:textColorHint="#000000"
+            android:imeActionId="100"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:gravity="center"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
+            android:maxLines="2"
+            android:singleLine="true"
+            android:background="@drawable/textbox_background"
+            android:password="false"
+            android:textColor="#636363"
+            android:layout_alignBottom="@+id/btnSignIn"
+            android:layout_alignLeft="@+id/login_phone"
+            android:layout_alignStart="@+id/login_phone"
+            android:layout_marginBottom="56dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Забыли пароль?"
-        android:id="@+id/textView24"
-        android:layout_below="@+id/login_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:textSize="25sp" />
+        <Button android:id="@+id/btnSignIn"
+            style="?android:textAppearanceSmall"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:text="@string/action_sign_in"
+            android:background="@drawable/button_shape_yellow"
+            android:textColor="#ff1e0a8e"
+            android:textStyle="bold"
+            android:layout_marginBottom="71dp"
+            android:layout_above="@+id/btnSignUp"
+            android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="240dp"
-        android:layout_height="270dp"
-        android:id="@+id/imageView2"
-        android:background="@drawable/logo"
-        android:layout_above="@+id/login_phone"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:maxHeight="100dp"
-        android:maxWidth="100dp"
-        android:minHeight="100dp"
-        android:minWidth="100dp" />
+        <Button
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Зарегистрироваться"
+            android:id="@+id/btnSignUp"
+            android:background="@drawable/button_shape_yellow"
+            android:textColor="#ff1e0a8e"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Забыли пароль?"
+            android:id="@+id/textViewForgetPassword"
+            android:layout_below="@+id/login_password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
 

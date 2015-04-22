@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -79,7 +80,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     Location gLocation;
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
-    User user = User.getInstance();
+    User user;
 
     Location prev;
     double distance;
@@ -111,7 +112,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             long millis = System.currentTimeMillis() - startTime;
             double seconds = (double) (millis / 1000);
 
-            time = (long) seconds;
+            if (order.status == OStatus.ACCEPTED || order.status == OStatus.ONPLACE || order.status == OStatus.NEW) {
+                time = 0;
+            } else {
+                time = (long) seconds;
+            }
             order.time = time;
             if (seconds % 30 < 1) {
                 SendPostRequest(order.status, order.id);
@@ -156,6 +161,10 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        user = User.getInstance();
+
+        checkUserSession();
+
         setUpMapIfNeeded();
 
         CheckEnableGPS();
@@ -175,6 +184,16 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         }
 
         SetLocationRequest();
+    }
+
+    private void checkUserSession() {
+        if (user == null || user.id == 0)
+        {
+            Toast.makeText(getApplicationContext(), "Сессия вышла, пожалуйста перезайдите", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void saveToPreferences() {
@@ -222,11 +241,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             order.id = settings.getInt("orderId", 0);
             order.clientPhone = settings.getString("orderPhone", null);
             order.time = settings.getLong("orderTime", 0);
-            order.distance = 1000*(double)settings.getFloat("orderDistance", 0);
+            order.distance = (double)settings.getFloat("orderDistance", 0);
             order.waitTime = settings.getLong("orderWaitTime", 0);
             order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
             if (mMap != null && order.startPoint != null && order.clientPhone != null) {
-                mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
+                mMap.addMarker(new MarkerOptions().position(order.startPoint)
+                        .title(order.clientPhone));
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
@@ -258,7 +279,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     }
                 });
             }
-            distance = order.distance;
+            distance = 1000*order.distance;
             startTime = System.currentTimeMillis() - order.time*1000;
             pauseTotalTime = order.waitTime;
             if (distance > freeMeters)
@@ -409,14 +430,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     }
 
     private void SetDefaultValues() {
-        startTime = System.currentTimeMillis();
         pauseTotalTime = 0;
         pauseSessionTime = 0;
         distance = 0;
         price = startPrice;
         order.sum = startPrice;
         order.waitTime = 0;
-        order.time = 0;
+        resetTimer();
 
         tvSpeed.setText("Скорость: 0 км/ч");
         tvDistance.setText("Расстояние: " + df.format(distance / 1000) + " км");
@@ -425,6 +445,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         tvFeePrice.setText(null);
         tvFeeTime.setText(null);
         tvTotalSum.setText("Общая цена: " + df.format(price + waitSum) + " сом");
+    }
+
+    private void resetTimer() {
+        order.time = 0;
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -597,6 +622,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             case R.id.beginTrip:
                 order.startPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                resetTimer();
                 if (order.status == OStatus.ACCEPTED) {
                     order.status = OStatus.ONPLACE;
                     SendPostRequest(OStatus.ONPLACE, order.id);
@@ -670,7 +696,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 Log.d(TAG, "Координаты начала пути получены " + order.startPoint);
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
+                mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker)));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
@@ -702,6 +729,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     }
                 });
             }
+            checkUserSession();
             updateViews();
         }
     }
@@ -732,6 +760,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        checkUserSession();
         switch (item.getItemId()) {
             case R.id.action_order:
                 OpenOrder();
@@ -795,8 +824,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
 
             JSONObject data = new JSONObject();
             JSONObject result = null;
@@ -805,7 +832,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     data.put("status", status);
                     data.put("driver", JSONObject.NULL);
                 } else {
-                    String travelTime = Helper.getTimeFromLong(order.time);
+                    String travelTime = Helper.getTimeFromLong(order.time, order.status);
                     data.put("status", status);
                     data.put("driver", status == OStatus.NEW ? JSONObject.NULL : driver);
                     data.put("order_sum", order.sum + order.waitSum);

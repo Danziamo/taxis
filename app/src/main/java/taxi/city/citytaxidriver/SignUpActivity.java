@@ -14,15 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.apache.http.HttpStatus;
@@ -76,7 +73,7 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
             }
         });
 
-        ImageButton btnShowPassword = (ImageButton)findViewById(R.id.btnShowPassword);
+        /*ImageButton btnShowPassword = (ImageButton)findViewById(R.id.btnShowPassword);
         btnShowPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -93,10 +90,10 @@ public class SignUpActivity extends ActionBarActivity implements LoaderManager.L
 
                 return false;
             }
-        });
+        });*/
 
-        mLoginFormView = findViewById(R.id.svSignUp);
-        mProgressView = findViewById(R.id.signup_progress);
+        mLoginFormView = findViewById(R.id.sign_up_form);
+        mProgressView = findViewById(R.id.sign_up_progress);
     }
 
     private boolean isValidEmailAddress(String email) {

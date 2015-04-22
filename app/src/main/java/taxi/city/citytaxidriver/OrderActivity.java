@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -24,14 +25,13 @@ import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
-
 public class OrderActivity extends ActionBarActivity {
 
     private String TAG = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
-    private User user = User.getInstance();
+    private User user;
     private FetchOrderTask mFetchTask = null;
 
     private Client client;
@@ -51,19 +51,17 @@ public class OrderActivity extends ActionBarActivity {
                 try {
                     String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
                     int orderId = Integer.valueOf(text);
-                    order.id = orderId;
 
                     for (int i = list.size() - 1; i >= 0; i -= 1) {
                         if (orderId == list.get(i).id) {
                             client = list.get(i);
-                            //order.setOrder(list.get(i));
                             break;
                         }
                     }
                     goOrderDetails(client);
                 }
                 catch (Exception e) {
-
+                    Log.d(TAG, "Oops something has happened when clicked on order in list view");
                 }
             }
         });
@@ -78,23 +76,7 @@ public class OrderActivity extends ActionBarActivity {
                 JSONObject row = array.getJSONObject(i);
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
-                Client client = new Client();
-                client.phone = row.getString("client_phone");
-                client.startPoint = row.getString("address_start");
-                client.endPoint = row.getString("address_stop");
-                client.driver = user.id;
-                client.id = row.getInt("id");
-                client.waitTime = row.getString("wait_time");
-                client.tariff = row.getInt("tariff");
-                client.status = row.getString("status");
-                client.orderTime = row.getString("order_time");
-                client.addressStart = row.getString("address_start_name");
-                client.description = row.getString("description");
-                client.addressEnd = row.getString("address_stop_name");
-                client.sum = row.getString("order_sum");
-                client.distance = row.getString("order_distance");
-                client.time = row.getString("order_travel_time");
-                client.waitSum = row.getString("wait_time_price");
+                Client client = new Client(row, user.id);
 
                 list.add(client);
 
@@ -132,7 +114,7 @@ public class OrderActivity extends ActionBarActivity {
             } else {
                 list.clear();
                 lvMain.setAdapter(null);
-                fetchData();
+                if (user != null && user.id != 0) fetchData();
                 //order.clear();
             }
         }
@@ -158,8 +140,9 @@ public class OrderActivity extends ActionBarActivity {
             // TODO: attempt authentication against a network service.
             // Simulate network access.
 
-            JSONArray array = new JSONArray();
+            JSONArray array = null;
             try {
+                array = new JSONArray();
                 JSONObject result = new JSONObject();
                 if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
                     result = api.getDataFromGetRequest(null, "orders/?status=new");
@@ -181,6 +164,9 @@ public class OrderActivity extends ActionBarActivity {
                 Log.d(TAG, "Finished fetching data " + result.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                array = null;
             }
 
             return array;
@@ -189,7 +175,11 @@ public class OrderActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(JSONArray result) {
             mFetchTask = null;
-            InitListView(result);
+            if (result != null) {
+                InitListView(result);
+            } else {
+                Toast.makeText(getApplicationContext(), "Не удалось получить данные с сервера", Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override

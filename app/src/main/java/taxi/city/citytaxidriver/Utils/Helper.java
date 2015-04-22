@@ -79,6 +79,12 @@ public class Helper {
         return String.format("%s:%s:%s", hrStr, mnStr, secStr);
     }
 
+    public static String getTimeFromLong(long seconds, OStatus status) {
+        if (status == OStatus.NEW || status == OStatus.ACCEPTED || status == OStatus.ONPLACE) {
+            return "00:00:00";
+        }
+        return getTimeFromLong(seconds);
+    }
 
     /**
      * Saving instance of a order from JSONObject

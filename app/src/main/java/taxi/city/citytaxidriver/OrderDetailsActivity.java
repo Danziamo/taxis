@@ -234,6 +234,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
 
     private void FinishTakeOrder() {
         Helper.setOrder(mClient);
+        order.status = OStatus.ACCEPTED;
         Intent intent = new Intent();
         intent.putExtra("returnCode", true);
         setResult(1, intent);
