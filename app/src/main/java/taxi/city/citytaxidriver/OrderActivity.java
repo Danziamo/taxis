@@ -36,12 +36,16 @@ public class OrderActivity extends ActionBarActivity {
 
     private Client client;
     ListView lvMain;
+    private boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         user = User.getInstance();
+
+        Intent intent = getIntent();
+        isNew = intent.getExtras().getBoolean("NEW", false);
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,7 +115,7 @@ public class OrderActivity extends ActionBarActivity {
                 intent.putExtra("returnCode", true);
                 setResult(1, intent);
                 finish();
-            } else {
+            } else if (isNew) {
                 list.clear();
                 lvMain.setAdapter(null);
                 if (user != null && user.id != 0) fetchData();
@@ -144,24 +148,26 @@ public class OrderActivity extends ActionBarActivity {
             try {
                 array = new JSONArray();
                 JSONObject result = new JSONObject();
-                if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
-                    result = api.getDataFromGetRequest(null, "orders/?status=new");
+                if (isNew) {
+                    if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
+                        result = api.getDataFromGetRequest(null, "orders/?status=new");
+                        if (result.getInt("status_code") == HttpStatus.SC_OK) {
+                            JSONArray tempArray = result.getJSONArray("result");
+                            for (int i = 0; i < tempArray.length(); ++i) {
+                                array.put(tempArray.getJSONObject(i));
+                            }
+                        }
+                    }
+                    if (order.id != 0) array.put(order.getOrderAsJson());
+                } else {
+                    result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=20");
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
-                        for (int i = 0; i < tempArray.length(); ++i) {
+                        for (int i = 0; i < tempArray.length() && i < 20; ++i) {
                             array.put(tempArray.getJSONObject(i));
                         }
                     }
                 }
-                if (order.id != 0) array.put(order.getOrderAsJson());
-                result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id+"&status=finished");
-                if (result.getInt("status_code") == HttpStatus.SC_OK) {
-                    JSONArray tempArray = result.getJSONArray("result");
-                    for (int i = 0; i < tempArray.length() && i < 10; ++i) {
-                        array.put(tempArray.getJSONObject(i));
-                    }
-                }
-                Log.d(TAG, "Finished fetching data " + result.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {

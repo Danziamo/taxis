@@ -112,7 +112,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             long millis = System.currentTimeMillis() - startTime;
             double seconds = (double) (millis / 1000);
 
-            if (order.status == OStatus.ACCEPTED || order.status == OStatus.ONPLACE || order.status == OStatus.NEW) {
+            if (order.status == OStatus.ACCEPTED || order.status == OStatus.WAITING || order.status == OStatus.NEW) {
                 time = 0;
             } else {
                 time = (long) seconds;
@@ -122,9 +122,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 SendPostRequest(order.status, order.id);
             }
             tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
-            tvTotalSum.setText("Общая сумма: " + (order.sum + order.waitSum) + " сом");
+            tvTotalSum.setText("Общая сумма: " + df.format(order.getTotalSum()) + " сом");
             tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
-            tvPrice.setText("Цена: " + df.format(price) + "сом");
+            tvPrice.setText("Цена: " + df.format(order.getTravelSum()) + "сом");
             saveToPreferences();
             timerHandler.postDelayed(this, 1000);
         }
@@ -148,10 +148,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             }
             //waitSum = tempTime <= 15*60 ? (double)(3*tempTime/60) : (double)(15*tempTime/60);
         }
-        tvFeePrice.setText("Сумма ожидания: " + df.format(waitSum) + " сом");
-        tvFeeTime.setText("Время ожидания: " + Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
         order.waitTime = pauseTotalTime + pauseSessionTime;
         order.waitSum = waitSum;
+        tvFeePrice.setText("Сумма ожидания: " + df.format(order.getWaitSum()) + " сом");
+        tvFeeTime.setText("Время ожидания: " + Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
+
         pauseHandler.postDelayed(this, 1000);
         }
     };
@@ -201,6 +202,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat("orderDistance", (float)order.distance);
         editor.putInt("orderId", order.id);
+        editor.putFloat("orderFixedPrice", (float)order.fixedPrice);
         editor.putLong("orderTime", order.time);
         editor.putLong("orderWaitTime", order.waitTime);
         editor.putString("orderPhone", order.clientPhone);
@@ -234,13 +236,14 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
             String pStatus = settings.getString("orderStatus", "");
             if (pStatus.equals(OStatus.ONTHEWAY.toString()))
-                order.status = OStatus.WAITING;
+                order.status = OStatus.PENDING;
             else
                 order.status = Helper.getStatus(pStatus);
 
             order.id = settings.getInt("orderId", 0);
             order.clientPhone = settings.getString("orderPhone", null);
             order.time = settings.getLong("orderTime", 0);
+            order.fixedPrice = (double)settings.getFloat("orderFixedPrice", 0);
             order.distance = (double)settings.getFloat("orderDistance", 0);
             order.waitTime = settings.getLong("orderWaitTime", 0);
             order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
@@ -302,11 +305,11 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             timerHandler.postDelayed(timerRunnable, 0);
             tvSpeed.setText("Скорость: 0 км/ч");
             tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
-            tvPrice.setText("Цена: " + df.format(price) + "сом");
+            tvPrice.setText("Цена: " + df.format(order.getTravelSum()) + "сом");
             tvDistance.setText("Расстояние: " + df.format(distance / 1000) + "км");
-            tvFeePrice.setText("Сумма ожидания: " + df.format(waitSum) + " сом");
+            tvFeePrice.setText("Сумма ожидания: " + df.format(order.getWaitSum()) + " сом");
             tvFeeTime.setText("Время ожидания: " + Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
-            tvTotalSum.setText("Общая сумма: " + (order.sum + order.waitSum) + " сом");
+            tvTotalSum.setText("Общая сумма: " + df.format(order.getTotalSum()) + " сом");
         }
     }
 
@@ -398,13 +401,13 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 btnEndTrip.setVisibility(View.VISIBLE);
                 btnEndTrip.setText("ОТАКЗАТЬ");
                 btnPauseTrip.setVisibility(View.GONE);
-            } else if (order.status == OStatus.ONPLACE) {
+            } else if (order.status == OStatus.WAITING) {
                 btnBeginTrip.setVisibility(View.VISIBLE);
                 btnBeginTrip.setText("НАЧАТЬ");
                 btnPauseTrip.setVisibility(View.GONE);
                 btnEndTrip.setVisibility(View.GONE);
                 llMain.setVisibility(View.GONE);
-            } else if (order.status == OStatus.WAITING) {
+            } else if (order.status == OStatus.PENDING) {
                 btnBeginTrip.setVisibility(View.GONE);
                 btnBeginTrip.setText("НАЧАТЬ");
                 btnEndTrip.setVisibility(View.VISIBLE);
@@ -470,9 +473,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        // Connected to Google Play services!
-        // The good stuff goes here.
-        Log.i(TAG, "Location services connected.");
         startLocationUpdates();
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -624,9 +624,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 resetTimer();
                 if (order.status == OStatus.ACCEPTED) {
-                    order.status = OStatus.ONPLACE;
-                    SendPostRequest(OStatus.ONPLACE, order.id);
-                } else if (order.status == OStatus.ONPLACE) {
+                    order.status = OStatus.WAITING;
+                    SendPostRequest(OStatus.WAITING, order.id);
+                } else if (order.status == OStatus.WAITING) {
                     SetDefaultValues();
                     order.status = OStatus.ONTHEWAY;
                     SendPostRequest(OStatus.ONTHEWAY, order.id);
@@ -635,12 +635,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                 break;
             case R.id.pauseTrip:
                 if (order.status == OStatus.ONTHEWAY) {
-                    order.status = OStatus.WAITING;
-                    SendPostRequest(OStatus.WAITING, order.id);
+                    order.status = OStatus.PENDING;
+                    SendPostRequest(OStatus.PENDING, order.id);
                     pauseSessionTime = 0;
                     pauseStartTime = System.currentTimeMillis();
                     pauseHandler.postDelayed(pauseRunnable, 0);
-                } else if (order.status == OStatus.WAITING) {
+                } else if (order.status == OStatus.PENDING) {
                     order.status = OStatus.ONTHEWAY;
                     SendPostRequest(OStatus.ONTHEWAY, order.id);
                     pauseHandler.removeCallbacks(pauseRunnable);
@@ -693,7 +693,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             if (data != null && data.getBooleanExtra("returnCode", false)) {
                 timerHandler.postDelayed(timerRunnable, 0);
                 Toast.makeText(getApplicationContext(), "Заказ выбран ", Toast.LENGTH_LONG).show();
-                Log.d(TAG, "Координаты начала пути получены " + order.startPoint);
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone)
@@ -781,11 +780,12 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             }
         }
         Intent intent = new Intent(this, OrderActivity.class);
+        intent.putExtra("NEW", true);
         startActivityForResult(intent, MAKE_ORDER_ID);
     }
 
     private void OpenSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, GarajActivity.class);
         startActivity(intent);
     }
 
@@ -803,7 +803,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
         }
 
-        if (order.status == OStatus.ACCEPTED || order.status == OStatus.ONPLACE) {
+        if (order.status == OStatus.ACCEPTED || order.status == OStatus.WAITING) {
             order.time = 0;
         }
 
@@ -835,7 +835,8 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
                     String travelTime = Helper.getTimeFromLong(order.time, order.status);
                     data.put("status", status);
                     data.put("driver", status == OStatus.NEW ? JSONObject.NULL : driver);
-                    data.put("order_sum", order.sum + order.waitSum);
+                    data.put("order_sum", order.getTotalSum());
+                    data.put("wait_time_price", order.getWaitSum());
                     data.put("address_stop", status == OStatus.NEW ? JSONObject.NULL : Helper.getFormattedLatLng(order.endPoint));
                     data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
                     data.put("order_distance", (double) Math.round(order.distance * 100) / 100);

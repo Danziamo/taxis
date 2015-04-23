@@ -404,7 +404,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         } else {
             intent = new Intent(LoginActivity.this, CreateCarActivity.class);
         }
-        intent.putExtra("User", user);
+        intent.putExtra("NEW", true);
         startActivity(intent);
         finish();
     }

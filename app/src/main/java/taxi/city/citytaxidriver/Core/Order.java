@@ -5,8 +5,6 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-
 import taxi.city.citytaxidriver.Enums.OStatus;
 
 /**
@@ -31,6 +29,7 @@ public class Order {
 
     public double distance;
     public double sum;
+    public double fixedPrice;
     public long time;
     public double waitSum;
 
@@ -71,12 +70,12 @@ public class Order {
         obj.put("address_start", getFormattedLatLng(this.startPoint));
         obj.put("address_stop", getFormattedLatLng(this.endPoint));
         obj.put("wait_time", getTimeFromLong(this.waitTime));
-        obj.put("wait_time_price", this.waitSum);
+        obj.put("wait_time_price", getWaitSum());
         obj.put("tariff", this.tariff);
         obj.put("driver", this.driver);
         obj.put("order_time", this.orderTime);
         obj.put("order_distance", (double)Math.round(this.distance*100)/100);
-        obj.put("order_sum", this.sum + this.waitSum);
+        obj.put("order_sum", getTotalSum());
         obj.put("order_travel_time", getTimeFromLong(this.time));
         obj.put("address_start_name", this.addressStart == null ? JSONObject.NULL : this.addressStart);
         obj.put("address_stop_name", this.addressEnd == null ? JSONObject.NULL : this.addressEnd);
@@ -85,6 +84,24 @@ public class Order {
         return obj;
     }
 
+    public boolean isFixedPrice() {
+        return this.fixedPrice >= 50;
+    }
+
+    public double getTotalSum() {
+        if (this.fixedPrice >= 50) return this.fixedPrice;
+        return this.sum + this.waitSum;
+    }
+
+    public double getWaitSum() {
+        if (this.fixedPrice >= 50) return 0;
+        return this.waitSum;
+    }
+
+    public double getTravelSum() {
+        if (this.fixedPrice >= 50) return fixedPrice;
+        return this.sum;
+    }
 
     public void clear() {
         this.id = 0;
@@ -103,5 +120,6 @@ public class Order {
         this.addressStart = null;
         this.description = null;
         this.waitSum = 0;
+        this.fixedPrice = 0;
     }
 }

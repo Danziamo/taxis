@@ -56,12 +56,12 @@ public class Helper {
     public static OStatus getStatus(String s) {
         if (s.equals(OStatus.NEW.toString())) return OStatus.NEW;
         if (s.equals(OStatus.ACCEPTED.toString())) return OStatus.ACCEPTED;
-        if (s.equals(OStatus.WAITING.toString())) return OStatus.WAITING;
+        if (s.equals(OStatus.PENDING.toString())) return OStatus.PENDING;
         if (s.equals(OStatus.CANCELED.toString())) return OStatus.CANCELED;
         if (s.equals(OStatus.FINISHED.toString())) return OStatus.FINISHED;
         if (s.equals(OStatus.ONTHEWAY.toString())) return OStatus.ONTHEWAY;
         if (s.equals(OStatus.SOS.toString())) return OStatus.SOS;
-        if (s.equals(OStatus.ONPLACE.toString())) return OStatus.ONPLACE;
+        if (s.equals(OStatus.WAITING.toString())) return OStatus.WAITING;
         return null;
     }
 
@@ -80,7 +80,7 @@ public class Helper {
     }
 
     public static String getTimeFromLong(long seconds, OStatus status) {
-        if (status == OStatus.NEW || status == OStatus.ACCEPTED || status == OStatus.ONPLACE) {
+        if (status == OStatus.NEW || status == OStatus.ACCEPTED || status == OStatus.WAITING) {
             return "00:00:00";
         }
         return getTimeFromLong(seconds);
@@ -104,6 +104,7 @@ public class Helper {
         order.distance = object.has("order_distance") ? object.getDouble("order_distance") : 0;
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
+        order.fixedPrice = object.has("fixed_price") ? object.getDouble("fixed_price") : 0;
     }
 
     /**
@@ -119,6 +120,7 @@ public class Helper {
         order.orderTime = client.orderTime;
         order.addressStart = client.addressStart;
         order.description = client.description;
+        order.fixedPrice = Double.valueOf(client.fixedPrice);
     }
 
     /**

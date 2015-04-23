@@ -37,6 +37,8 @@ public class OrderDetailsActivity extends ActionBarActivity {
     TextView tvWaitTime;
     TextView tvWaitSum;
     TextView tvTotalSum;
+    TextView tvFixedPrice;
+    TextView tvEndAddress;
 
     SendPostRequestTask sendTask;
     Order order;
@@ -86,21 +88,36 @@ public class OrderDetailsActivity extends ActionBarActivity {
         tvWaitTime = (TextView) findViewById(R.id.textViewOrderWaitTime);
         tvWaitSum = (TextView) findViewById(R.id.textViewOrderWaitSum);
         tvTotalSum = (TextView) findViewById(R.id.textViewOrderTotalSum);
+        tvFixedPrice = (TextView) findViewById(R.id.textViewFixedPrice);
+        tvEndAddress = (TextView) findViewById(R.id.textViewEndAddress);
 
         LinearLayout llDescription = (LinearLayout) findViewById(R.id.linearLayoutOrderDetails);
 
         Button btnTake = (Button) findViewById(R.id.buttonTakeOrder);
         Button btnCancel = (Button) findViewById(R.id.buttonCancelOrder);
 
+        double mFixedPrice = 0;
+        try {
+            mFixedPrice = Double.valueOf(mClient.fixedPrice);
+        } catch (Exception e) {
+            mFixedPrice = 0;
+        }
+
         tvAddress.setText(mClient.addressStart);
         tvClientPhone.setText(mClient.phone);
         double totalSum = 0;
-        //if (mClient.addressEnd != null && !mClient.addressEnd.equals("null"))
+
         if (mClient.description != null)
             tvDescription.setText(mClient.description);
         if (mClient.sum != null) {
             totalSum += Double.valueOf(mClient.sum);
             tvSum.setText("Сумма: " + mClient.sum + " сом");
+        }
+        if (mFixedPrice >= 50) {
+            tvFixedPrice.setVisibility(View.VISIBLE);
+            tvFixedPrice.setText("Фиксированная сумма:" + mClient.fixedPrice);
+            tvEndAddress.setVisibility(View.VISIBLE);
+            tvEndAddress.setText("Куда: " + mClient.addressEnd);
         }
         if (mClient.distance != null)
             tvDistance.setText("Путь: " + mClient.distance + " км");

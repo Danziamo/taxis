@@ -25,6 +25,7 @@ public class Client implements Serializable{
     public String time;
     public String distance;
     public String waitSum;
+    public String fixedPrice;
 
     public Client() {}
 
@@ -45,5 +46,6 @@ public class Client implements Serializable{
         this.distance = row.getString("order_distance");
         this.time = row.getString("order_travel_time");
         this.waitSum = row.getString("wait_time_price");
+        this.fixedPrice = row.getString("fixed_price");
     }
 }

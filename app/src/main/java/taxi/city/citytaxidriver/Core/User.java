@@ -5,9 +5,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-/**
- * Created by Daniyar on 3/26/2015.
- */
 public class User implements Serializable {
 
     private static User mInstance = null;
@@ -18,6 +15,7 @@ public class User implements Serializable {
     public String token;
     public String phone;
     public String password;
+    public double balance;
 
     private User() {}
 
@@ -34,6 +32,7 @@ public class User implements Serializable {
         this.lastName = json.getString("last_name");
         this.token = json.getString("token");
         this.phone = json.getString("phone");
+        this.balance = json.getDouble("balance");
     }
 
     public String getToken() {

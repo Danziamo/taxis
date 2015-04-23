@@ -7,9 +7,9 @@ package taxi.city.citytaxidriver.Enums;
 public enum OStatus {
     NEW,
     ACCEPTED,
-    ONPLACE,
-    ONTHEWAY,
     WAITING,
+    ONTHEWAY,
+    PENDING,
     SOS,
     CANCELED,
     FINISHED;
@@ -21,12 +21,12 @@ public enum OStatus {
                 return "new";
             case ACCEPTED:
                 return "accepted";
-            case ONPLACE:
+            case WAITING:
                 return "waiting";
             case ONTHEWAY:
                 return "ontheway";
-            case WAITING:
-                return "waiting";
+            case PENDING:
+                return "pending";
             case SOS:
                 return "sos";
             case CANCELED:

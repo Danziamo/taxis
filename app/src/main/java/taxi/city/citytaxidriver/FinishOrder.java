@@ -49,10 +49,10 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
         tvEndPoint.setText(order.addressEnd);
         tvDistance.setText("Путь: " + Helper.getFormattedDistance(order.distance) + " км");
         tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
-        tvPrice.setText("Цена: " + order.sum + " сом");
+        tvPrice.setText("Цена: " + order.getTravelSum() + " сом");
         tvFeeTime.setText("Время ожидания: " + Helper.getTimeFromLong(order.waitTime));
-        tvFeePrice.setText("Штраф: " + order.waitSum + " сом");
-        tvTotalPrice.setText("Итого: " + (order.sum + order.waitSum) + " сом");
+        tvFeePrice.setText("Штраф: " + order.getWaitSum() + " сом");
+        tvTotalPrice.setText("Итого: " + order.getTotalSum() + " сом");
     }
 
     protected void GetItems() {

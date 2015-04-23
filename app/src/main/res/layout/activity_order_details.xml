@@ -40,6 +40,18 @@
                     android:id="@+id/textViewDescription"
                     android:layout_gravity="center" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/textViewFixedPrice" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/textViewEndAddress" />
+
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"

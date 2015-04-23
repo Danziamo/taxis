@@ -52,18 +52,27 @@ public class ClientAdapter extends ArrayAdapter<Client> {
                     viewHolder.id.setTextColor(Color.rgb(160,32,240));
                     break;
             }
-            /*if (client.status.equals("finished") || client.status.equals("canceled"))
-                convertView.setBackgroundColor(Color.RED);
-            else if (client.status.equals("new"))
-                convertView.setBackgroundColor(Color.GREEN);
-            else
-                convertView.setBackgroundColor(Color.YELLOW);*/
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        double mFixedPrice = 0;
+        try {
+            mFixedPrice = Double.valueOf(client.fixedPrice);
+        } catch (Exception e) {
+            mFixedPrice = 0;
+        }
+
         viewHolder.id.setText(String.valueOf(client.id));
-        viewHolder.address.setText(client.addressStart);
+
+        if (mFixedPrice < 50) {
+            viewHolder.address.setText(client.addressStart);
+        } else {
+            String text = String.valueOf(client.addressStart) + ": " + "Фиксированная сумма: " + client.fixedPrice;
+            viewHolder.address.setText(text);
+        }
         return convertView;
     }
 }
