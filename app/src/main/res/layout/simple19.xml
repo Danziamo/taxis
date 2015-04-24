@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Настройки авто"
+        android:id="@+id/textView35"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textSize="25sp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="420dp"
+        android:layout_below="@+id/textView35"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+
+        <Spinner
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/spinner"
+            android:layout_gravity="center_horizontal" />
+
+        <Spinner
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/spinner2"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <Spinner
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:id="@+id/spinner3"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:text="Серия и номер тех паспорта"
+            android:id="@+id/textView36"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:text="Номер автомобиля"
+            android:id="@+id/textView37"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:text="Серия и номер прав"
+            android:id="@+id/textView38"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="340dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_background"
+            android:text="Серия и номер паспортных данных"
+            android:id="@+id/textView39"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_yellow"
+            android:textColor="@color/blacktext2"
+            android:text="Сохранить"
+            android:id="@+id/button32"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_yellow"
+        android:textColor="@color/blacktext2"
+        android:text="Назад"
+        android:id="@+id/button33"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_shape_red"
+        android:text="Выход"
+        android:id="@+id/button34"
+        android:layout_alignTop="@+id/button33"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
+</RelativeLayout>

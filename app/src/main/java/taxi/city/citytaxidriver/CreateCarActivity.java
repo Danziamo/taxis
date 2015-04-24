@@ -59,12 +59,11 @@ public class CreateCarActivity extends ActionBarActivity {
         spinnerCarBrandModel = (Spinner)findViewById(R.id.spinnerCarBrandModel);
         editTextCarColor = (EditText)findViewById(R.id.etCarColor);
         editTextCarNumber = (EditText)findViewById(R.id.etCarNumber);
-        editTextCarSeriesNumber = (EditText)findViewById(R.id.etPassportSeries);
+        editTextCarSeriesNumber = (EditText)findViewById(R.id.etNumberOfLicense);
         editTextCarTechPassport = (EditText)findViewById(R.id.etTechPassport);
-        editTextIdInfo = (EditText) findViewById(R.id.etIdInfo);
+        editTextIdInfo = (EditText) findViewById(R.id.etPassportId);
         editTextCarYear = (EditText) findViewById(R.id.etCarYear);
 
-        mLoginFormView = findViewById(R.id.svCreateCar);
         mProgressView = findViewById(R.id.progressBarCreateCar);
 
         Button btn = (Button) findViewById(R.id.btnSaveCar);

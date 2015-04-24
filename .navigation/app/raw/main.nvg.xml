@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.FinishOrder"/>
+      <point      
+        x = "500"      
+        y = "2120"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.LoginActivity"/>
+      <point      
+        x = "550"      
+        y = "2170"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.CreateCarActivity"/>
+      <point      
+        x = "600"      
+        y = "2220"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.ConfirmSignUpActivity"/>
+      <point      
+        x = "700"      
+        y = "2320"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.SettingsActivity"/>
+      <point      
+        x = "650"      
+        y = "2270"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.SignUpActivity"/>
+      <point      
+        x = "750"      
+        y = "2370"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.OrderActivity"/>
+      <point      
+        x = "800"      
+        y = "2420"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "taxi.city.citytaxidriver.MapsActivity"/>
+      <point      
+        x = "1996"      
+        y = "360"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.MapsActivity"/>
+      <point      
+        x = "500"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.OrderDetailsActivity"/>
+      <point      
+        x = "850"      
+        y = "2470"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

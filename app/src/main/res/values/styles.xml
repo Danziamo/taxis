@@ -10,9 +10,13 @@
     </style>
 
     <style name="MainTheme" parent="Theme.AppCompat.NoActionBar">
-        <!--<item name="android:background">@drawable/taxi_background</item>-->
+        <item name="android:background">@drawable/taxi_background</item>
         <item name="android:textColor">@color/blacktext2</item>
         <item name="android:imeOptions">actionDone</item>NS
     </style>
+
+    <!--<style name="progressbar" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progressbar</item>
+    </style>-->
 
 </resources>

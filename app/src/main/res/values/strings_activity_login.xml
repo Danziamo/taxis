@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Strings related to login -->
-    <string name="prompt_phone_number">Номер телефона</string>
+    <string name="prompt_phone_number">Телефон</string>
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
     <string name="action_sign_in_short">Войти</string>
