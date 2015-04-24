@@ -15,7 +15,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center">
 
             <TextView android:text="Адрес клиента:"
                 android:layout_width="wrap_content"
@@ -31,21 +32,22 @@
                 android:layout_centerHorizontal="true" />
 
             <EditText
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/textbox_background"
                 android:text="Адрес откуда надо забрать"
                 android:textColor="@color/blacktext1"
                 android:id="@+id/editTextStartAddress"
-                android:layout_marginTop="10dp"
                 android:layout_below="@+id/textViewStartAddress"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Начислено:"
+
                 android:textColor="@color/translucent_lime"
                 android:textSize="25sp"
                 android:id="@+id/textViewCharged"
@@ -60,35 +62,39 @@
                 android:orientation="horizontal"
                 android:layout_width="350dp"
                 android:layout_height="50dp"
-                android:gravity="center"
+                android:weightSum="10"
+                android:id="@+id/linearLayoutWaitingTime"
                 android:layout_below="@+id/textViewCharged"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:id="@+id/linearLayoutWaitingTime">
+                android:layout_centerHorizontal="true"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Ожидание:"
+                    android:gravity="center|left"
+                    android:layout_weight="4.0"
                     android:textColor="@color/white"
-                    android:textSize="25sp"/>
+                    android:textSize="@dimen/text_size_medium" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:gravity="right"
                     android:text="00:20"
-                    android:textSize="25sp"
+                    android:layout_weight="3.0"
+                    android:textSize="@dimen/text_size_large"
                     android:textColor="@color/white"
-                    android:id="@+id/textViewWaitingTime"
-                    android:layout_marginLeft="20dp" />
+                    android:id="@+id/textViewWaitingTime" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="2dp"
                     android:text="минут"
-                    android:textSize="20sp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="40dp" />
+                    android:layout_weight="3.0"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -96,35 +102,39 @@
                 android:layout_width="350dp"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:layout_below="@+id/linearLayoutWaitingTime"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:weightSum="10"
                 android:id="@+id/linearLayoutWaitingSum"
-                android:layout_marginLeft="-10dp">
+                android:layout_below="@+id/linearLayoutWaitingTime"
+                android:layout_centerHorizontal="true">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Сумма за ожидание:"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="40"
-                    android:textSize="25sp"
+                    android:layout_weight="4.0"
+                    android:gravity="center|left"
+                    android:textSize="@dimen/text_size_medium"
                     android:textColor="@color/white"
-                    android:id="@+id/textViewWaitingSum"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_gravity="bottom" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="40"
+                    android:layout_weight="3.0"
+                    android:textSize="@dimen/text_size_large"
+                    android:textColor="@color/white"
+                    android:id="@+id/textViewWaitingSum" />
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="сом"
+                    android:layout_weight="3.0"
+                    android:padding="2dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:layout_marginLeft="55dp" />
+                    android:textSize="@dimen/text_size" />
             </LinearLayout>
 
             <LinearLayout
@@ -132,80 +142,90 @@
                 android:layout_width="350dp"
                 android:layout_height="50dp"
                 android:gravity="center"
+                android:weightSum="10"
+                android:id="@+id/linearLayoutDistance"
                 android:layout_below="@+id/linearLayoutWaitingSum"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="-10dp"
-                android:id="@+id/linearLayoutDistance">
+                android:layout_alignLeft="@+id/linearLayoutWaitingSum"
+                android:layout_alignStart="@+id/linearLayoutWaitingSum">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Расстояние:"
+                    android:gravity="left"
+                    android:layout_weight="4.5"
                     android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    android:textSize="@dimen/text_size_medium"
+                    />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="10"
+                    android:gravity="right"
+                    android:layout_weight="2.5"
                     android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:id="@+id/textViewDistance"
-                    android:layout_marginLeft="35dp" />
+                    android:textSize="@dimen/text_size_large"
+                    android:id="@+id/textViewDistance" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="км"
-                    android:textSize="20sp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="57dp" />
+                    android:layout_weight="3.0"
+                    android:padding="2dp"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="350dp"
                 android:layout_height="50dp"
+                android:weightSum="10"
                 android:layout_below="@+id/linearLayoutDistance"
                 android:layout_alignLeft="@+id/linearLayoutDistance"
                 android:layout_alignStart="@+id/linearLayoutDistance"
-                android:id="@+id/linearLayoutSum">
+                android:id="@+id/linearLayoutSum"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Сумма:"
+                    android:gravity="left"
+                    android:layout_weight="4.5"
                     android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:layout_marginLeft="25dp" />
+                    android:textSize="@dimen/text_size_medium" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="200"
+                    android:gravity="right"
+                    android:layout_weight="2.5"
                     android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:id="@+id/textViewSum"
-                    android:layout_marginLeft="85dp" />
+                    android:textSize="@dimen/text_size_large"
+                    android:id="@+id/textViewSum" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="сом"
+                    android:layout_weight="3.0"
+                    android:padding="2dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:layout_marginLeft="45dp" />
+                    android:textSize="@dimen/text_size"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:layout_below="@+id/linearLayoutSum"
                 android:weightSum="10"
-                android:id="@+id/linearLayoutFixedPrice">
+                android:id="@+id/linearLayoutFixedPrice"
+                android:layout_margin="10dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -213,6 +233,8 @@
                     android:layout_weight="8"
                     android:background="@drawable/textbox_background"
                     android:text="Фиксированная плата:"
+                    android:padding="5dp"
+                    android:gravity="center|left"
                     android:textColor="@color/red"
                     android:id="@+id/textViewFixedPriceLabel" />
 
@@ -220,7 +242,11 @@
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="40dp"
-                    android:id="@+id/textViewFixedPrice"/>
+                    android:gravity="center|right"
+                    android:padding="5dp"
+                    android:background="@drawable/textbox_background"
+                    android:id="@+id/textViewFixedPrice"
+                    android:textColor="@color/red" />
 
             </LinearLayout>
 
@@ -229,34 +255,39 @@
                 android:orientation="horizontal"
                 android:layout_width="350dp"
                 android:layout_height="40dp"
+                android:id="@+id/linearLayoutTotal"
                 android:layout_below="@+id/linearLayoutFixedPrice"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="10dp"
-                android:id="@+id/linearLayoutTotal">
+                android:layout_centerHorizontal="true">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Итого:"
+                    android:gravity="left"
+                    android:layout_weight="4.5"
                     android:textSize="25sp"
                     android:textColor="@color/white"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="240"
-                    android:textSize="25sp"
+                    android:gravity="right"
+                    android:layout_weight="2.5"
+                    android:textSize="35sp"
                     android:id="@+id/textViewTotalSum"
                     android:textColor="@color/white"
                     android:layout_marginLeft="80dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="сом"
+                    android:padding="2dp"
+                    android:layout_weight="3.5"
                     android:textSize="25sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="50dp" />
+                     />
             </LinearLayout>
 
             <TextView
@@ -275,15 +306,17 @@
 
 
             <EditText
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/textbox_background"
                 android:text="Адрес куда надо доставить:"
                 android:textColor="@color/blacktext1"
                 android:id="@+id/editTextStopAddress"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textViewStopAddress"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:layout_margin="10dp" />
 
         </RelativeLayout>
 
