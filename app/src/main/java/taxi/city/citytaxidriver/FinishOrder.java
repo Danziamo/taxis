@@ -56,10 +56,10 @@ public class FinishOrder extends ActionBarActivity implements View.OnClickListen
     }
 
     protected void GetItems() {
-        tvBeginPoint = (TextView) findViewById(R.id.tvBeginPoint);
+        tvBeginPoint = (TextView) findViewById(R.id.textViewStartAddress);
         tvEndPoint = (TextView) findViewById(R.id.tvEndPoint);
         tvPrice = (TextView) findViewById(R.id.tvPrice);
-        tvDistance = (TextView) findViewById(R.id.tvDistance);
+        tvDistance = (TextView) findViewById(R.id.textViewDistanceLabel);
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvFeePrice = (TextView) findViewById(R.id.tvFeePrice);
         tvFeeTime = (TextView) findViewById(R.id.tvFeeTime);

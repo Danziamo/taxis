@@ -24,7 +24,7 @@
             <TextView android:text="Начальная точка:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvBeginPoint"
+                android:id="@+id/textViewStartAddress"
                 android:layout_marginTop="101dp"
                 android:textSize="15dp"
                 android:textAlignment="center"
@@ -39,7 +39,7 @@
                 android:id="@+id/tvEndPoint"
                 android:textSize="15dp"
                 android:textAlignment="center"
-                android:layout_below="@+id/tvBeginPoint"
+                android:layout_below="@+id/textViewStartAddress"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center" />
 
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Расстояние:"
-                android:id="@+id/tvDistance"
+                android:id="@+id/textViewDistanceLabel"
                 android:textSize="15dp"
                 android:textAlignment="center"
                 android:layout_below="@+id/tvEndPoint"
@@ -83,7 +83,7 @@
                 android:id="@+id/tvTime"
                 android:textSize="15dp"
                 android:textAlignment="center"
-                android:layout_below="@+id/tvDistance"
+                android:layout_below="@+id/textViewDistanceLabel"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center" />
 

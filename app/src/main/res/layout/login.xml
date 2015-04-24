@@ -109,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Забыли пароль?"
+            android:textColor="@color/white"
             android:id="@+id/textViewForgetPassword"
             android:layout_below="@+id/login_password"
             android:layout_centerHorizontal="true"

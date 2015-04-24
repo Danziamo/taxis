@@ -1,19 +1,42 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:weightSum="10"
+    android:layout_centerHorizontal="true">
 
     <TextView
         android:id="@+id/orderId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"/>
+        android:layout_weight="0"
+        android:background="@drawable/textbox_background"/>
 
     <TextView
         android:id="@+id/orderAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/orderId"/>
+        android:background="@drawable/textbox_background"
+        android:paddingLeft="10sp"
+        android:textColor="@color/blacktext1"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    <View
+        android:id="@+id/viewSeparator"
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:visibility="gone"
+        android:background="@color/blacktext2"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox_background"
+        android:gravity="center_vertical|right"
+        android:paddingRight="10sp"
+        android:textColor="@color/blacktext1"
+        android:layout_weight="3"
+        android:id="@+id/orderFixedPrice"/>
+</LinearLayout>

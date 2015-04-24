@@ -20,6 +20,8 @@ public class ClientAdapter extends ArrayAdapter<Client> {
     private static class ViewHolder {
         TextView id;
         TextView address;
+        TextView fixedPrice;
+        View separator;
     }
 
     public ClientAdapter(Context context, ArrayList<Client> clients) {
@@ -38,6 +40,8 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             convertView = inflater.inflate(R.layout.activity_order_list_item, parent, false);
             viewHolder.id = (TextView) convertView.findViewById(R.id.orderId);
             viewHolder.address = (TextView) convertView.findViewById(R.id.orderAddress);
+            viewHolder.fixedPrice = (TextView) convertView.findViewById(R.id.orderFixedPrice);
+            viewHolder.separator = (View)convertView.findViewById(R.id.viewSeparator);
 
 
             switch (client.status) {
@@ -52,7 +56,6 @@ public class ClientAdapter extends ArrayAdapter<Client> {
                     viewHolder.id.setTextColor(Color.rgb(160,32,240));
                     break;
             }
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -66,12 +69,13 @@ public class ClientAdapter extends ArrayAdapter<Client> {
         }
 
         viewHolder.id.setText(String.valueOf(client.id));
+        viewHolder.address.setText(client.addressStart);
 
-        if (mFixedPrice < 50) {
-            viewHolder.address.setText(client.addressStart);
-        } else {
-            String text = String.valueOf(client.addressStart) + ": " + "Фиксированная сумма: " + client.fixedPrice;
-            viewHolder.address.setText(text);
+        if (mFixedPrice >= 50) {
+            viewHolder.separator.setVisibility(View.VISIBLE);
+            viewHolder.fixedPrice.setText(String.valueOf((int)mFixedPrice) + "сом");
+            viewHolder.fixedPrice.setTextColor(this.getContext().getResources().getColor(R.color.red));
+
         }
         return convertView;
     }

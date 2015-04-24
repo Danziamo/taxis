@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +26,7 @@ import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Enums.OStatus;
 import taxi.city.citytaxidriver.Service.ApiService;
 
-public class OrderActivity extends ActionBarActivity {
+public class OrderActivity extends ActionBarActivity implements View.OnClickListener {
 
     private String TAG = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
@@ -36,6 +37,9 @@ public class OrderActivity extends ActionBarActivity {
 
     private Client client;
     ListView lvMain;
+    Button btnMap;
+    Button btnRefresh;
+    Button btnMoreOrders;
     private boolean isNew;
 
     @Override
@@ -69,7 +73,24 @@ public class OrderActivity extends ActionBarActivity {
                 }
             }
         });
-        fetchData();
+
+        btnMap = (Button)findViewById(R.id.buttonMap);
+        btnRefresh = (Button)findViewById(R.id.buttonRefresh);
+        btnMoreOrders = (Button)findViewById(R.id.buttonMoreOrder);
+
+        btnMap.setOnClickListener(this);
+        btnRefresh.setOnClickListener(this);
+        btnMoreOrders.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (isNew) {
+            list.clear();
+            lvMain.setAdapter(null);
+            if (user != null && user.id != 0) fetchData();
+        }
     }
 
     private void InitListView(JSONArray array) {
@@ -115,11 +136,6 @@ public class OrderActivity extends ActionBarActivity {
                 intent.putExtra("returnCode", true);
                 setResult(1, intent);
                 finish();
-            } else if (isNew) {
-                list.clear();
-                lvMain.setAdapter(null);
-                if (user != null && user.id != 0) fetchData();
-                //order.clear();
             }
         }
     }
@@ -133,6 +149,17 @@ public class OrderActivity extends ActionBarActivity {
         mFetchTask = new FetchOrderTask();
         mFetchTask.execute((Void) null);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.buttonMap:
+                finish();
+                break;
+            default:
+                fetchData();
+        }
     }
 
     public class FetchOrderTask extends AsyncTask<Void, Void, JSONArray>{

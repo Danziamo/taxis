@@ -99,11 +99,15 @@
         <activity
             android:name=".UserDetailsActivity"
             android:label="@string/title_activity_user_details"
-            android:theme="@style/MainTheme"
-            android:parentActivityName=".GarajActivity" >
+            android:parentActivityName=".GarajActivity"
+            android:theme="@style/MainTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="taxi.city.citytaxidriver.GarajActivity" />
+        </activity>
+        <activity
+            android:name=".FinishOrderDetailsActivity"
+            android:label="@string/title_activity_finish_order_details" >
         </activity>
     </application>
 
