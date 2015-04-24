@@ -16,6 +16,12 @@ public class User implements Serializable {
     public String phone;
     public String password;
     public double balance;
+    public String passportNumber;
+    public String driverLicenseNumber;
+    public String email;
+    public String dob;
+    public String address;
+    public String deviceToken;
 
     private User() {}
 
@@ -33,6 +39,11 @@ public class User implements Serializable {
         this.token = json.getString("token");
         this.phone = json.getString("phone");
         this.balance = json.getDouble("balance");
+        this.email = json.getString("email");
+        this.passportNumber = json.getString("passport_number");
+        this.driverLicenseNumber = json.getString("driver_license_number");
+        this.dob = json.getString("date_of_birth");
+        this.address = json.getString("address");
     }
 
     public String getToken() {

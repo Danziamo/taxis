@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import taxi.city.citytaxidriver.Core.CarEntity;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
 
@@ -44,20 +45,6 @@ public class CreateCarActivity extends ActionBarActivity {
 
     private View mProgressView;
     private View mLoginFormView;
-
-    class Entity {
-        public int id;
-        public String name;
-
-        public Entity(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String toString() {
-            return this.name;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +95,16 @@ public class CreateCarActivity extends ActionBarActivity {
     }
 
     private void FillBrandSpinnerArray(JSONArray array) {
-        List<Entity> list = new ArrayList<>();
+        List<CarEntity> list = new ArrayList<>();
         try {
             for (int i = 0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
-                list.add(new Entity(row.getInt("id"), row.getString("brand_name")));
+                list.add(new CarEntity(row.getInt("id"), row.getString("brand_name")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ArrayAdapter<Entity> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCarBrand.setAdapter(adapter);
         spinnerCarBrand.setSelection(0);
@@ -135,18 +122,18 @@ public class CreateCarActivity extends ActionBarActivity {
     }
 
     private void FillBrandCarModelSpinnerArray(JSONArray array) {
-        List<Entity> list = new ArrayList<>();
+        List<CarEntity> list = new ArrayList<>();
 
         try {
             for (int i = 0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
-                list.add(new Entity(row.getInt("id"), row.getString("brand_model_name")));
+                list.add(new CarEntity(row.getInt("id"), row.getString("brand_model_name")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ArrayAdapter<Entity> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCarBrandModel.setAdapter(adapter);
         spinnerCarBrandModel.setSelection(0);
@@ -168,8 +155,8 @@ public class CreateCarActivity extends ActionBarActivity {
             return;
         }
 
-        Entity carBrand = (Entity)spinnerCarBrand.getSelectedItem();
-        Entity carBrandModel = (Entity)spinnerCarBrandModel.getSelectedItem();
+        CarEntity carBrand = (CarEntity)spinnerCarBrand.getSelectedItem();
+        CarEntity carBrandModel = (CarEntity)spinnerCarBrandModel.getSelectedItem();
 
         if (carBrand == null || carBrand.id == 0)
             return;
@@ -212,11 +199,11 @@ public class CreateCarActivity extends ActionBarActivity {
     private class FetchCarBrandTask extends AsyncTask<Void, Void, JSONArray> {
         private JSONObject json = new JSONObject();
         String api;
-        Entity carBrand;
+        CarEntity carBrand;
         boolean isModel;
 
         FetchCarBrandTask(boolean isModel) {
-            carBrand = (Entity)spinnerCarBrand.getSelectedItem();
+            carBrand = (CarEntity)spinnerCarBrand.getSelectedItem();
             this.isModel = isModel;
             if (isModel) {
                 api = "cars/carbrandmodels/?car_brand=" + carBrand.id;

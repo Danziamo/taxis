@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver.Utils;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -155,4 +156,10 @@ public class Helper {
         return res;
     }
 
+    public static boolean isSuccess(int status) {
+        if (status == HttpStatus.SC_OK) return true;
+        if (status == HttpStatus.SC_ACCEPTED) return true;
+        if (status == HttpStatus.SC_CREATED) return true;
+        return false;
+    }
 }

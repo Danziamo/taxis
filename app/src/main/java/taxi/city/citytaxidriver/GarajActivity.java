@@ -109,7 +109,6 @@ public class GarajActivity extends ActionBarActivity {
         private void openAccountNumber() {
             final AlertDialog.Builder builder =
                     new AlertDialog.Builder(getActivity());
-            //final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
             final String title = "Ваш лицевой счёт и баланс";
             final TextView tvAccountNumber = new TextView(getActivity());
             tvAccountNumber.setText("Лицевой счёт: " + User.getInstance().phone);
@@ -134,14 +133,15 @@ public class GarajActivity extends ActionBarActivity {
         }
 
         private void openCarInfo() {
-            /*Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
+            Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
             intent.putExtra("NEW", false);
-            startActivityForResult(intent, 5);*/
+            startActivityForResult(intent, 5);
         }
 
         private void openDriverInfo() {
-            /*Intent intent = new Intent(getActivity(), CreateCarActivity.class);
-            startActivityForResult(intent, 5);*/
+            Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
+            intent.putExtra("NEW", false);
+            startActivityForResult(intent, 5);
         }
 
     }

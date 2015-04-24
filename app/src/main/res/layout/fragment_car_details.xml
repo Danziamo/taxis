@@ -14,7 +14,8 @@
         android:id="@+id/textViewCarSettings"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColor="@color/white"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,64 +26,78 @@
         android:layout_marginTop="10dp">
 
         <Spinner
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
+            android:popupBackground="@drawable/textbox_background"
             android:id="@+id/spinnerCarBrand"
+            android:textColor="@color/blacktext2"
             android:layout_gravity="center_horizontal" />
 
         <Spinner
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
+            android:popupBackground="@drawable/textbox_background"
             android:id="@+id/spinnerCarModel"
+            android:textColor="@color/blacktext2"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:id="@+id/spinnerCarColor"
             android:hint="Цвет"
+            android:textColorHint="@color/blacktext1"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/blacktext2"
             android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:hint="Серия и номер тех паспорта"
+            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextTechPassport"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/blacktext2"
             android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:hint="Номер автомобиля"
+            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextCarNumber"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/blacktext2"
             android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:hint="Серия и номер прав"
+            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextDriverLicense"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/blacktext2"
             android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/textbox_background"
             android:text="Серия и номер паспортных данных"
             android:id="@+id/editTextPassportNumber"
+            android:textColorHint="@color/blacktext1"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
+            android:textColor="@color/blacktext2"
             android:inputType="text" />
 
         <Button
