@@ -157,7 +157,7 @@ public class CarDetailsActivity extends ActionBarActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.buttonSave:
-                    updateTask(true);
+                    //updateTask(true);
                     break;
                 default:
                     getActivity().finish();

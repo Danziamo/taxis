@@ -102,8 +102,8 @@ public class UserDetailsActivity extends ActionBarActivity {
             try {
                 json.put("first_name", etFirstName.getText().toString());
                 json.put("last_name", etLastName.getText().toString());
-                json.put("phone", etPhone.getText().toString());
-                json.put("password", etPassword.getText().toString());
+                //json.put("phone", etPhone.getText().toString());
+                //json.put("password", etPassword.getText().toString());
             } catch (JSONException e)  {
                 e.printStackTrace();
             }

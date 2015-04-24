@@ -1,5 +1,6 @@
 package taxi.city.citytaxidriver;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -7,6 +8,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import taxi.city.citytaxidriver.Core.Client;
+import taxi.city.citytaxidriver.Core.Order;
+import taxi.city.citytaxidriver.Enums.OStatus;
 
 
 public class FinishOrderDetailsActivity extends ActionBarActivity {
@@ -33,7 +44,15 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class FinishOrderDetailsFragment extends Fragment {
+    public static class FinishOrderDetailsFragment extends Fragment implements View.OnClickListener {
+
+        private Client mClient;
+        private Order order;
+
+        private Button btnMap;
+        private Button btnWait;
+        private Button btnFinish;
+        private EditText etStopAddress;
 
         public FinishOrderDetailsFragment() {
         }
@@ -43,7 +62,90 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_finish_order_details, container, false);
 
+            Intent intent = getActivity().getIntent();
+            mClient = (Client)intent.getExtras().getSerializable("DATA");
+
+            EditText tvAddressStart = (EditText)rootView.findViewById(R.id.editTextStartAddress);
+            TextView tvWaitTime = (TextView)rootView.findViewById(R.id.textViewWaitingTime);
+            TextView tvWaitSum = (TextView)rootView.findViewById(R.id.textViewWaitingSum);
+            TextView tvDistance = (TextView)rootView.findViewById(R.id.textViewDistance);
+            TextView tvSum = (TextView)rootView.findViewById(R.id.textViewSum);
+            TextView tvTotalSum = (TextView)rootView.findViewById(R.id.textViewTotalSum);
+            TextView tvFixedPrice = (TextView)rootView.findViewById(R.id.textViewFixedPrice);
+            EditText etAddressStop = (EditText)rootView.findViewById(R.id.editTextStopAddress);
+            LinearLayout llFixedPrice = (LinearLayout)rootView.findViewById(R.id.linearLayoutFixedPrice);
+            llFixedPrice.setVisibility(View.GONE);
+
+            double totalSum = 0;
+            try {
+                totalSum += Double.valueOf(mClient.waitSum);
+                totalSum += Double.valueOf(mClient.sum);
+            } catch (Exception e) {
+                totalSum = 0;
+            }
+
+            tvAddressStart.setText(mClient.addressStart);
+            tvWaitTime.setText(mClient.waitTime);
+            tvWaitSum.setText(mClient.waitSum);
+            tvDistance.setText(mClient.distance);
+            tvSum.setText(mClient.sum);
+            tvTotalSum.setText(String.valueOf((int)totalSum));
+            etAddressStop.setText(mClient.addressEnd);
+
+            double fixedPrice;
+            try {
+                fixedPrice = Double.valueOf(mClient.fixedPrice);
+            } catch (Exception e) {
+                fixedPrice = 0;
+            }
+
+            if (fixedPrice >= 50) {
+                tvFixedPrice.setText((int)fixedPrice + " сом");
+                llFixedPrice.setVisibility(View.VISIBLE);
+            }
+
+            btnMap = (Button)rootView.findViewById(R.id.buttonMap);
+            btnWait = (Button)rootView.findViewById(R.id.buttonWait);
+            btnFinish = (Button)rootView.findViewById(R.id.buttonFinish);
+
+            btnMap.setOnClickListener(this);
+            btnFinish.setOnClickListener(this);
+            btnWait.setOnClickListener(this);
+
+            updateViews();
+
             return rootView;
         }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.buttonMap:
+                    getActivity().finish();
+                    break;
+                case R.id.buttonWait:
+                    waitOrder();
+                    break;
+                case R.id.buttonFinish:
+                    finishOrder();
+                    break;
+            }
+        }
+
+        private void finishOrder() {
+
+        }
+
+        private void waitOrder() {
+
+        }
+
+        private void updateViews() {
+            if (mClient.status.equals(OStatus.FINISHED.toString())) {
+                btnMap.setVisibility(View.GONE);
+                btnWait.setVisibility(View.GONE);
+            }
+        }
     }
+
 }

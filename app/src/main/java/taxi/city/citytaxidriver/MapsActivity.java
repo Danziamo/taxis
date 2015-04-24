@@ -85,9 +85,9 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     Location prev;
     double distance;
     double price;
-    double ratio = 10;
+    double ratio = 12;
     double freeMeters = 2000;
-    double startPrice = 60;
+    double startPrice = 50;
     double waitSum = 0;
     long time;
 
