@@ -169,6 +169,13 @@ public class Helper {
         return false;
     }
 
+    public static boolean isSuccess (JSONObject object) throws JSONException {
+        if (object == null) return false;
+        if (!object.has("status_code")) return false;
+        if (!isSuccess(object.getInt("status_code"))) return false;
+        return true;
+    }
+
     public static double getDouble(String number) {
         double result = 0;
         try {

@@ -47,6 +47,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import taxi.city.citytaxidriver.Core.GlobalParameters;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Enums.OStatus;
@@ -80,6 +81,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     Location gLocation;
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
+    GlobalParameters gp = GlobalParameters.getInstance();
     User user;
 
     Location prev;
@@ -476,6 +478,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         startLocationUpdates();
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        gp
         this.location = location;
         if (location != null)
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
