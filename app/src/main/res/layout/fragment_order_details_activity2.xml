@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/linearLayoutMapInfo">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                 android:layout_centerHorizontal="true" />
 
             <TextView
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/textbox_background"
@@ -39,7 +40,8 @@
                 android:id="@+id/textViewStartAddress"
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/textViewClientAddressLabel"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,28 +55,26 @@
                 android:layout_centerHorizontal="true" />
 
             <TextView
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="@drawable/textbox_background"
                 android:text="Телефон"
                 android:gravity="center"
                 android:id="@+id/textViewClientPhone"
+                android:textColor="@color/blacktext1"
                 android:layout_below="@+id/textViewClientPhoneLabel"
-                android:layout_alignLeft="@+id/textViewStartAddress"
-                android:layout_alignStart="@+id/textViewStartAddress"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/blacktext1" />
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/image_tube"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/image_tube"
+
                 android:layout_alignTop="@+id/textViewClientPhone"
                 android:layout_alignRight="@+id/textViewClientPhone"
                 android:layout_alignEnd="@+id/textViewClientPhone"
                 android:layout_alignBottom="@+id/textViewClientPhone"
-                android:layout_toRightOf="@+id/textViewClientPhoneLabel"
-                android:layout_toEndOf="@+id/textViewClientPhoneLabel"
                 android:id="@+id/imageButtonCallIcon" />
 
             <TextView
@@ -87,10 +87,10 @@
                 android:layout_alignLeft="@+id/textViewClientPhoneLabel"
                 android:layout_alignStart="@+id/textViewClientPhoneLabel"
                 android:layout_marginTop="15dp"
-                android:textSize="25sp" />
+                android:textSize="@dimen/text_size_large" />
 
             <TextView
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:hint="Адрес куда надо доставить"
                 android:textColorHint="@color/blacktext1"
@@ -98,18 +98,19 @@
                 android:background="@drawable/textbox_background"
                 android:id="@+id/textViewStopAddress"
                 android:layout_below="@+id/textViewStopAddressLabel"
-                android:layout_alignLeft="@+id/textViewClientPhone"
-                android:layout_alignStart="@+id/textViewClientPhone"
-                android:layout_marginTop="15dp" />
+                android:layout_alignParentRight="false"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp" />
 
             <LinearLayout
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:id="@+id/linearLayoutFixedPrice"
                 android:layout_below="@+id/textViewStopAddress"
                 android:layout_marginTop="15dp"
                 android:weightSum="10"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -144,43 +145,67 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Дополнительная информация:"
+                android:textSize="@dimen/text_size_large"
+                android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/textViewDescriptionLabel"
                 android:layout_below="@+id/linearLayoutFixedPrice"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:textSize="23dp" />
+                />
 
             <TextView
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textbox_background"
                 android:id="@+id/textViewDescription"
                 android:layout_below="@+id/textViewDescriptionLabel"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:layout_margin="10dp" />
         </RelativeLayout>
     </ScrollView>
 
-    <Button
-        android:layout_width="169dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/button_shape_green"
-        android:text="На карте"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:weightSum="10"
+        android:id="@+id/linearLayoutMapInfo"
         android:layout_above="@+id/linearLayoutOkCancelGroup"
-        android:id="@+id/buttonMapInfo"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
+        android:layout_margin="10dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="5"
+            android:layout_marginRight="15dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_green"
+
+            android:text="На карте"
+            android:layout_weight="5"
+            android:id="@+id/buttonMapInfo"
+            android:layout_above="@+id/linearLayoutOkCancelGroup"
+            android:layout_alignRight="@+id/linearLayoutOkCancelGroup"
+            android:layout_alignEnd="@+id/linearLayoutOkCancelGroup"
+            android:layout_marginLeft="15dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayoutOkCancelGroup"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:weightSum="10"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -188,12 +213,8 @@
             android:background="@drawable/button_shape_green"
             android:text="На месте"
             android:layout_weight="5"
-            android:id="@+id/buttonActionOk"/>
-
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:visibility="invisible"/>
+            android:id="@+id/buttonActionOk"
+            android:layout_marginRight="15dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -201,7 +222,9 @@
             android:layout_weight="5"
             android:background="@drawable/button_shape_red"
             android:text="Отказ"
-            android:id="@+id/buttonActionCancel" />
+            android:id="@+id/buttonActionCancel"
+            android:layout_marginLeft="15dp" />
 
     </LinearLayout>
+
 </RelativeLayout>
