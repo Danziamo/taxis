@@ -28,14 +28,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
@@ -51,10 +55,17 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private static final String PREFS_NAME = "MyPrefsFile";
     private UserLoginTask mAuthTask = null;
 
+    public static final String EXTRA_MESSAGE = "message";
+    public static final String PROPERTY_REG_ID = "registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "LoginActivity";
+
     // UI references.
     private AutoCompleteTextView mPhoneView;
     private EditText mPasswordView;
     private View mProgressView;
+    private Button mPhoneSignInButton;
     //private View mLoginFormView;
     private User user = User.getInstance();
     private int statusCode;
@@ -63,6 +74,9 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private Order order = Order.getInstance();
 
     private SharedPreferences settings;
+    String SENDER_ID = "400358386973";
+    String mRegId;
+    GoogleCloudMessaging gcm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +99,9 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             }
         });
 
-        setPreferences();
 
-        Button mPhoneSignInButton = (Button) findViewById(R.id.btnSignIn);
+        mPhoneSignInButton = (Button) findViewById(R.id.btnSignIn);
+        mPhoneSignInButton.setEnabled(false);
         mPhoneSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +117,19 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             }
         });
 
+        setPreferences();
+
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+
+            if (mRegId == null || mRegId.length() < 10 || mRegId.isEmpty()) {
+                registerInBackground();
+            } else {
+                mPhoneSignInButton.setEnabled(true);
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
         //mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -124,11 +151,12 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private void setPreferences() {
         settings = getSharedPreferences(PREFS_NAME, 0);
         if (settings.contains("phoneKey")) {
-            mPhoneView.setText(settings.getString("phoneKey", ""));
+            mPhoneView.setText(settings.getString("phoneKey", null));
             if (settings.contains("passwordKey")) {
-                mPasswordView.setText(settings.getString("passwordKey", ""));
+                mPasswordView.setText(settings.getString("passwordKey", null));
             }
         }
+        if (settings.contains("deviceTokenKey")) mRegId = settings.getString("deviceTokenKey", null);
     }
 
     private void savePreferences(User user) {
@@ -136,6 +164,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         editor.putString("phoneKey", mPhoneView.getText().toString());
         editor.putString("passwordKey", mPasswordView.getText().toString());
         editor.putString("tokenKey", user.getToken());
+        editor.putString("deviceTokenKey", user.deviceToken);
         api.setToken(user.getToken());
         editor.apply();
     }
@@ -331,6 +360,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                 user.password = mPassword;
                 json.put("phone", mPhone);
                 json.put("password", mPassword);
+                json.put("android_token", mRegId);
                 JSONObject object = api.loginRequest(json, "login/");
                 if (object != null) {
                     statusCode = object.getInt("status_code");
@@ -397,5 +427,52 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         intent.putExtra("NEW", true);
         startActivity(intent);
         finish();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Registers the application with GCM servers asynchronously.
+     * <p>
+     * Stores the registration ID and the app versionCode in the application's
+     * shared preferences.
+     */
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    mRegId = gcm.register(SENDER_ID);
+                    msg = "done";
+
+                } catch (IOException ex) {
+                    msg = "err";
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                if (msg.equals("done")) mPhoneSignInButton.setEnabled(true);
+                else Toast.makeText(getApplicationContext(), "Cannot fetch ID from google", Toast.LENGTH_LONG).show();
+            }
+        }.execute(null, null, null);
     }
 }

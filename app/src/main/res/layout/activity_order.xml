@@ -35,12 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:weightSum="11"
+        android:weightSum="10"
         android:id="@+id/linearLayoutButtonGroupOrder"
         android:layout_marginTop="5dp">
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/button_shape_yellow"
             android:text="Карта"
@@ -51,7 +51,7 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="60dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/order_f5"
             android:id="@+id/buttonRefresh"
@@ -59,7 +59,7 @@
             android:layout_marginLeft="20dp" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="5"
             android:text="Ещё заказы"

@@ -44,6 +44,7 @@ public class User implements Serializable {
         this.driverLicenseNumber = json.getString("driver_license_number");
         this.dob = json.getString("date_of_birth");
         this.address = json.getString("address");
+        this.deviceToken = json.getString("android_token");
     }
 
     public String getToken() {

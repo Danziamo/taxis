@@ -121,7 +121,13 @@ public class Helper {
         order.orderTime = client.orderTime;
         order.addressStart = client.addressStart;
         order.description = client.description;
-        order.fixedPrice = Double.valueOf(client.fixedPrice);
+        double fixedPrice = 0;
+        try {
+            fixedPrice = Double.valueOf(client.fixedPrice);
+        } catch (Exception e) {
+            fixedPrice = 0;
+        }
+        order.fixedPrice = fixedPrice;
     }
 
     /**

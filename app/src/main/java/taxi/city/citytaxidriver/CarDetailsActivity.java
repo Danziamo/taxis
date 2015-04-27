@@ -310,18 +310,20 @@ public class CarDetailsActivity extends ActionBarActivity {
             ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             carModelSpinner.setAdapter(adapter);
-            carModelSpinner.setSelection(mBrandModelId - 1);
-            carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (mBrandModelId <= array.length()) {
+                carModelSpinner.setSelection(mBrandModelId - 1);
+                carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                }
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
+                    }
+                });
+            }
         }
 
         private void FillBrandSpinnerArray(JSONArray array) {

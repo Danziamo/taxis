@@ -52,7 +52,6 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
         private Button btnMap;
         private Button btnWait;
         private Button btnFinish;
-        private EditText etStopAddress;
 
         public FinishOrderDetailsFragment() {
         }
@@ -65,7 +64,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
             Intent intent = getActivity().getIntent();
             mClient = (Client)intent.getExtras().getSerializable("DATA");
 
-            EditText tvAddressStart = (EditText)rootView.findViewById(R.id.editTextStartAddress);
+            EditText etAddressStart = (EditText)rootView.findViewById(R.id.editTextStartAddress);
             TextView tvWaitTime = (TextView)rootView.findViewById(R.id.textViewWaitingTime);
             TextView tvWaitSum = (TextView)rootView.findViewById(R.id.textViewWaitingSum);
             TextView tvDistance = (TextView)rootView.findViewById(R.id.textViewDistance);
@@ -77,20 +76,31 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
             llFixedPrice.setVisibility(View.GONE);
 
             double totalSum = 0;
+            double waitSum = 0;
+            double sum = 0;
             try {
-                totalSum += Double.valueOf(mClient.waitSum);
-                totalSum += Double.valueOf(mClient.sum);
+                waitSum = Double.valueOf(mClient.waitSum);
+                sum = Double.valueOf(mClient.sum);
+                totalSum = waitSum + sum;
             } catch (Exception e) {
                 totalSum = 0;
             }
 
-            tvAddressStart.setText(mClient.addressStart);
-            tvWaitTime.setText(mClient.waitTime);
-            tvWaitSum.setText(mClient.waitSum);
+            String waitTime = mClient.waitTime;
+            if (waitTime.length() > 5) {
+                waitTime = waitTime.substring(0, waitTime.length() - 3);
+            }
+
+            etAddressStart.setText(mClient.addressStart);
+            tvWaitTime.setText(waitTime);
+            tvWaitSum.setText(String.valueOf((int)waitSum));
             tvDistance.setText(mClient.distance);
-            tvSum.setText(mClient.sum);
+            tvSum.setText(String.valueOf((int)sum));
             tvTotalSum.setText(String.valueOf((int)totalSum));
             etAddressStop.setText(mClient.addressEnd);
+
+            etAddressStart.setEnabled(false);
+            etAddressStop.setEnabled(false);
 
             double fixedPrice;
             try {
@@ -133,7 +143,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
         }
 
         private void finishOrder() {
-
+            getActivity().finish();
         }
 
         private void waitOrder() {
@@ -144,6 +154,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
             if (mClient.status.equals(OStatus.FINISHED.toString())) {
                 btnMap.setVisibility(View.GONE);
                 btnWait.setVisibility(View.GONE);
+                btnFinish.setText("ЗАКРЫТЬ");
             }
         }
     }
