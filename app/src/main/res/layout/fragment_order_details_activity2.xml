@@ -1,0 +1,207 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_background"
+    tools:context="taxi.city.citytaxidriver.OrderDetailsActivity2.OrderDetailsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Адрес клиента:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/textViewClientAddressLabel"
+                android:layout_marginTop="10dp"
+                android:textSize="25dp"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="@drawable/textbox_background"
+                android:text="Адрес откуда надо забрать"
+                android:textColor="@color/blacktext1"
+                android:id="@+id/textViewStartAddress"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/textViewClientAddressLabel"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Телефон клиента:"
+                android:textColor="@color/white"
+                android:id="@+id/textViewClientPhoneLabel"
+                android:layout_marginTop="10dp"
+                android:textSize="25sp"
+                android:layout_below="@+id/textViewStartAddress"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:background="@drawable/textbox_background"
+                android:text="Телефон"
+                android:gravity="center"
+                android:id="@+id/textViewClientPhone"
+                android:layout_below="@+id/textViewClientPhoneLabel"
+                android:layout_alignLeft="@+id/textViewStartAddress"
+                android:layout_alignStart="@+id/textViewStartAddress"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/blacktext1" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_tube"
+                android:layout_alignTop="@+id/textViewClientPhone"
+                android:layout_alignRight="@+id/textViewClientPhone"
+                android:layout_alignEnd="@+id/textViewClientPhone"
+                android:layout_alignBottom="@+id/textViewClientPhone"
+                android:layout_toRightOf="@+id/textViewClientPhoneLabel"
+                android:layout_toEndOf="@+id/textViewClientPhoneLabel"
+                android:id="@+id/imageButtonCallIcon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Адрес назначения:"
+                android:textColor="@color/white"
+                android:id="@+id/textViewStopAddressLabel"
+                android:layout_below="@+id/textViewClientPhone"
+                android:layout_alignLeft="@+id/textViewClientPhoneLabel"
+                android:layout_alignStart="@+id/textViewClientPhoneLabel"
+                android:layout_marginTop="15dp"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:hint="Адрес куда надо доставить"
+                android:textColorHint="@color/blacktext1"
+                android:gravity="center"
+                android:background="@drawable/textbox_background"
+                android:id="@+id/textViewStopAddress"
+                android:layout_below="@+id/textViewStopAddressLabel"
+                android:layout_alignLeft="@+id/textViewClientPhone"
+                android:layout_alignStart="@+id/textViewClientPhone"
+                android:layout_marginTop="15dp" />
+
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:id="@+id/linearLayoutFixedPrice"
+                android:layout_below="@+id/textViewStopAddress"
+                android:layout_marginTop="15dp"
+                android:weightSum="10"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:background="@drawable/textbox_background"
+                    android:text="Фиксированная плата"
+                    android:textColor="@color/red"
+                    android:gravity="left|center"
+                    android:paddingLeft="5dp"
+                    android:id="@+id/textViewFixedPriceLabel" />
+
+                <View
+                    android:id="@+id/viewSeparator"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/blacktext2"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/textbox_background"
+                    android:textColor="@color/red"
+                    android:id="@+id/textViewFixedPrice"
+                    android:layout_height="match_parent" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Дополнительная информация:"
+                android:textColor="@color/white"
+                android:id="@+id/textViewDescriptionLabel"
+                android:layout_below="@+id/linearLayoutFixedPrice"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:textSize="23dp" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textbox_background"
+                android:id="@+id/textViewDescription"
+                android:layout_below="@+id/textViewDescriptionLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:layout_width="169dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button_shape_green"
+        android:text="На карте"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/linearLayoutOkCancelGroup"
+        android:id="@+id/buttonMapInfo"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutOkCancelGroup"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:weightSum="10"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_green"
+            android:text="На месте"
+            android:layout_weight="5"
+            android:id="@+id/buttonActionOk"/>
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="invisible"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="5"
+            android:background="@drawable/button_shape_red"
+            android:text="Отказ"
+            android:id="@+id/buttonActionCancel" />
+
+    </LinearLayout>
+</RelativeLayout>

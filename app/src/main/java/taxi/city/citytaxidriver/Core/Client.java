@@ -48,4 +48,12 @@ public class Client implements Serializable{
         this.waitSum = row.getString("wait_time_price");
         this.fixedPrice = row.getString("fixed_price");
     }
+
+    public Client(Order order) {
+        this.phone = order.clientPhone;
+        this.addressStart = order.addressStart;
+        this.addressEnd = order.addressEnd;
+        this.fixedPrice = String.valueOf((int)order.fixedPrice);
+        this.description = order.description;
+    }
 }

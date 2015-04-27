@@ -168,4 +168,14 @@ public class Helper {
         if (status == HttpStatus.SC_CREATED) return true;
         return false;
     }
+
+    public static double getDouble(String number) {
+        double result = 0;
+        try {
+            result = Double.valueOf(number);
+        } catch (Exception e) {
+            result = 0;
+        }
+        return result;
+    }
 }

@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/white"
-            android:id="@+id/tvBeginPoint"
+            android:id="@+id/textViewClientAddressLabel"
             android:layout_marginTop="10dp"
             android:textSize="25dp"
             android:textAlignment="center"
@@ -50,19 +50,19 @@
             android:background="@drawable/textbox_background"
             android:text="Адрес откуда надо забрать"
             android:textColor="@color/blacktext1"
-            android:id="@+id/adressclients"
+            android:id="@+id/textViewStartAddress"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/tvBeginPoint"
+            android:layout_below="@+id/textViewClientAddressLabel"
             android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Телефон клиента:"
-            android:id="@+id/textView26"
+            android:id="@+id/textViewClientPhoneLabel"
             android:layout_marginTop="10dp"
             android:textSize="25sp"
-            android:layout_below="@+id/adressclients"
+            android:layout_below="@+id/textViewStartAddress"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -71,10 +71,10 @@
             android:background="@drawable/textbox_background"
             android:text="Телефон"
             android:gravity="center"
-            android:id="@+id/textView27"
-            android:layout_below="@+id/textView26"
-            android:layout_alignLeft="@+id/adressclients"
-            android:layout_alignStart="@+id/adressclients"
+            android:id="@+id/textViewClientPhone"
+            android:layout_below="@+id/textViewClientPhoneLabel"
+            android:layout_alignLeft="@+id/textViewStartAddress"
+            android:layout_alignStart="@+id/textViewStartAddress"
             android:layout_marginTop="15dp"
             android:textColor="@color/blacktext1" />
 
@@ -82,22 +82,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/image_tube"
-            android:id="@+id/imageButton"
-            android:layout_alignTop="@+id/textView27"
-            android:layout_alignRight="@+id/textView27"
-            android:layout_alignEnd="@+id/textView27"
-            android:layout_alignBottom="@+id/textView27"
-            android:layout_toRightOf="@+id/textView26"
-            android:layout_toEndOf="@+id/textView26" />
+            android:id="@+id/imageButtonCallIcon"
+            android:layout_alignTop="@+id/textViewClientPhone"
+            android:layout_alignRight="@+id/textViewClientPhone"
+            android:layout_alignEnd="@+id/textViewClientPhone"
+            android:layout_alignBottom="@+id/textViewClientPhone"
+            android:layout_toRightOf="@+id/textViewClientPhoneLabel"
+            android:layout_toEndOf="@+id/textViewClientPhoneLabel" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Адрес назначения:"
-            android:id="@+id/textView28"
-            android:layout_below="@+id/textView27"
-            android:layout_alignLeft="@+id/textView26"
-            android:layout_alignStart="@+id/textView26"
+            android:id="@+id/textViewStopAddressLabel"
+            android:layout_below="@+id/textViewClientPhone"
+            android:layout_alignLeft="@+id/textViewClientPhoneLabel"
+            android:layout_alignStart="@+id/textViewClientPhoneLabel"
             android:layout_marginTop="15dp"
             android:textSize="25sp" />
 
@@ -107,10 +107,10 @@
             android:text="Адрес куда надо доставить"
             android:gravity="center"
             android:background="@drawable/textbox_background"
-            android:id="@+id/textView29"
-            android:layout_below="@+id/textView28"
-            android:layout_alignLeft="@+id/textView27"
-            android:layout_alignStart="@+id/textView27"
+            android:id="@+id/textViewStopAddress"
+            android:layout_below="@+id/textViewStopAddressLabel"
+            android:layout_alignLeft="@+id/textViewClientPhone"
+            android:layout_alignStart="@+id/textViewClientPhone"
             android:layout_marginTop="15dp" />
 
         <TextView
@@ -120,8 +120,8 @@
             android:text="Фиксированная плата"
             android:textColor="@color/red"
             android:gravity="center"
-            android:id="@+id/textView30"
-            android:layout_below="@+id/textView29"
+            android:id="@+id/textViewFixedPriceLabel"
+            android:layout_below="@+id/textViewStopAddress"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp" />
 
@@ -129,8 +129,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Дополнительная информация:"
-            android:id="@+id/textView31"
-            android:layout_below="@+id/textView30"
+            android:id="@+id/textViewDescriptionLabel"
+            android:layout_below="@+id/textViewFixedPriceLabel"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:textSize="23dp" />
@@ -139,8 +139,8 @@
             android:layout_width="300dp"
             android:layout_height="100dp"
             android:background="@drawable/textbox_background"
-            android:id="@+id/textView32"
-            android:layout_below="@+id/textView31"
+            android:id="@+id/textViewDescription"
+            android:layout_below="@+id/textViewDescriptionLabel"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp" />
 
@@ -149,10 +149,10 @@
             android:layout_height="50dp"
             android:background="@drawable/button_shape_green"
             android:text="На борту"
-            android:id="@+id/button10"
-            android:layout_below="@+id/textView32"
-            android:layout_toLeftOf="@+id/textView28"
-            android:layout_toStartOf="@+id/textView28"
+            android:id="@+id/buttonActionOk"
+            android:layout_below="@+id/textViewDescription"
+            android:layout_toLeftOf="@+id/textViewStopAddressLabel"
+            android:layout_toStartOf="@+id/textViewStopAddressLabel"
             android:layout_marginTop="68dp" />
 
         <Button
@@ -160,20 +160,20 @@
             android:layout_height="50dp"
             android:background="@drawable/button_shape_green"
             android:text="Доп. инфо"
-            android:id="@+id/button11"
-            android:layout_alignTop="@+id/button10"
-            android:layout_toRightOf="@+id/textView28"
-            android:layout_toEndOf="@+id/textView28" />
+            android:id="@+id/buttonMapInfo"
+            android:layout_alignTop="@+id/buttonActionOk"
+            android:layout_toRightOf="@+id/textViewStopAddressLabel"
+            android:layout_toEndOf="@+id/textViewStopAddressLabel" />
 
         <Button
             android:layout_width="150dp"
             android:layout_height="50dp"
             android:background="@drawable/button_shape_red"
             android:text="Отказ"
-            android:id="@+id/button12"
-            android:layout_below="@+id/button11"
-            android:layout_alignLeft="@+id/button11"
-            android:layout_alignStart="@+id/button11"
+            android:id="@+id/buttonActionCancel"
+            android:layout_below="@+id/buttonMapInfo"
+            android:layout_alignLeft="@+id/buttonMapInfo"
+            android:layout_alignStart="@+id/buttonMapInfo"
             android:layout_marginTop="15dp" />
 
 

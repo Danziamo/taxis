@@ -122,8 +122,8 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
 
     private void goOrderDetails(Client mClient) {
         if (isNew) {
-            Intent intent = new Intent(this, OrderDetailsActivity.class);
-            intent.putExtra("data", mClient);
+            Intent intent = new Intent(this, OrderDetailsActivity2.class);
+            intent.putExtra("DATA", mClient);
             startActivityForResult(intent, 1);
         } else {
             Intent intent = new Intent(this, FinishOrderDetailsActivity.class);

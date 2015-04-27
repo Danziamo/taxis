@@ -100,7 +100,7 @@ public class CarDetailsActivity extends ActionBarActivity {
             carModelSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarModel);
             etCarColor = (EditText) rootView.findViewById(R.id.spinnerCarColor);
             etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
-            etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicense);
+            etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
             etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
             etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
 

@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/white"
-            android:id="@+id/tvBeginPoint"
+            android:id="@+id/textViewClientAddressLabel"
             android:layout_marginTop="10dp"
             android:textSize="25dp"
             android:textAlignment="center"
@@ -62,9 +62,9 @@
             android:background="@drawable/textbox_background"
             android:text="Адрес откуда надо забрать"
             android:textColor="@color/blacktext1"
-            android:id="@+id/adressclients"
+            android:id="@+id/textViewStartAddress"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/tvBeginPoint"
+            android:layout_below="@+id/textViewClientAddressLabel"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -74,9 +74,9 @@
             android:textColor="@color/translucent_lime"
             android:textSize="25sp"
             android:id="@+id/credited_with"
-            android:layout_below="@+id/adressclients"
-            android:layout_alignLeft="@+id/tvBeginPoint"
-            android:layout_alignStart="@+id/tvBeginPoint"
+            android:layout_below="@+id/textViewStartAddress"
+            android:layout_alignLeft="@+id/textViewClientAddressLabel"
+            android:layout_alignStart="@+id/textViewClientAddressLabel"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="23dp" />
 
@@ -227,8 +227,8 @@
             android:textColor="@color/red"
             android:id="@+id/editText2"
             android:layout_below="@+id/linearLayout4"
-            android:layout_alignLeft="@+id/adressclients"
-            android:layout_alignStart="@+id/adressclients" />
+            android:layout_alignLeft="@+id/textViewStartAddress"
+            android:layout_alignStart="@+id/textViewStartAddress" />
 
         <LinearLayout
             android:orientation="horizontal"
