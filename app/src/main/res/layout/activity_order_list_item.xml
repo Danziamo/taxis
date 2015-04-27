@@ -14,7 +14,7 @@
 
     <TextView
         android:id="@+id/orderAddress"
-        android:background="@drawable/textbox_background"
+        android:background="@drawable/textbox_background_2"
         android:paddingLeft="10sp"
         android:textColor="@color/blacktext1"
         android:gravity="center_vertical"
@@ -33,7 +33,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/textbox_background"
+        android:background="@drawable/textbox_background_2"
         android:gravity="center_vertical|right"
         android:paddingRight="10sp"
         android:textColor="@color/blacktext1"

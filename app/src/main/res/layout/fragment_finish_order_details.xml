@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ожидание:"
                     android:gravity="center|left"
-                    android:layout_weight="4.0"
+                    android:layout_weight="5"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_medium" />
 
@@ -82,8 +82,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="00:20"
-                    android:layout_weight="3.0"
-                    android:textSize="@dimen/text_size_large"
+                    android:layout_weight="2.5"
+                    android:textSize="@dimen/text_size_medium"
                     android:textColor="@color/white"
                     android:id="@+id/textViewWaitingTime" />
 
@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="2dp"
                     android:text="минут"
-                    android:layout_weight="3.0"
+                    android:layout_weight="2.5"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -111,7 +111,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Сумма за ожидание:"
-                    android:layout_weight="4.0"
+                    android:layout_weight="5.0"
                     android:gravity="center|left"
                     android:textSize="@dimen/text_size_medium"
                     android:textColor="@color/white"
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="40"
-                    android:layout_weight="3.0"
+                    android:layout_weight="2.5"
                     android:textSize="@dimen/text_size_large"
                     android:textColor="@color/white"
                     android:id="@+id/textViewWaitingSum" />
@@ -131,7 +131,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="сом"
-                    android:layout_weight="3.0"
+                    android:layout_weight="2.5"
                     android:padding="2dp"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size" />
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:text="Расстояние:"
                     android:gravity="left"
-                    android:layout_weight="4.5"
+                    android:layout_weight="5"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_medium"
                     />
@@ -172,7 +172,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="км"
-                    android:layout_weight="3.0"
+                    android:layout_weight="2.5"
                     android:padding="2dp"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/white" />
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:text="Сумма:"
                     android:gravity="left"
-                    android:layout_weight="4.5"
+                    android:layout_weight="5"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_medium" />
 
@@ -212,7 +212,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="сом"
-                    android:layout_weight="3.0"
+                    android:layout_weight="2.5"
                     android:padding="2dp"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size"/>
