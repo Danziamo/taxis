@@ -78,7 +78,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
     TextView tvFeeTime;
     TextView tvFeePrice;
     TextView tvTotalSum;
-    Location gLocation;
+
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
     GlobalParameters gp = GlobalParameters.getInstance();
@@ -478,13 +478,14 @@ public class MapsActivity extends ActionBarActivity implements GoogleApiClient.C
         startLocationUpdates();
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        gp
         this.location = location;
-        if (location != null)
+        if (location != null) {
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
+            gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        }
 
         if (location != null) {
-            gLocation = location;
+            gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }

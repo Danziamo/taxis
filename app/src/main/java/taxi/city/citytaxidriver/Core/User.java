@@ -40,8 +40,12 @@ public class User implements Serializable {
         this.phone = json.getString("phone");
         this.balance = json.getDouble("balance");
         this.email = json.getString("email");
-        this.passportNumber = json.getString("passport_number");
-        this.driverLicenseNumber = json.getString("driver_license_number");
+        String passportNumber = json.getString("passport_number");
+        String driverLicenseNumber = json.getString("driver_license_number");
+        passportNumber = passportNumber == null || passportNumber.equals("null") ? null : passportNumber;
+        driverLicenseNumber = driverLicenseNumber == null || driverLicenseNumber.equals("null") ? null : driverLicenseNumber;
+        this.passportNumber = passportNumber;
+        this.driverLicenseNumber = driverLicenseNumber;
         this.dob = json.getString("date_of_birth");
         this.address = json.getString("address");
         this.deviceToken = json.getString("android_token");

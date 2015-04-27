@@ -162,9 +162,6 @@ public class ApiService {
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(request);
             json = parseData(response);
-
-            Log.d(TAG, json.toString());
-
         } catch (IOException e) {
             json = null;
             // TODO Auto-generated catch block

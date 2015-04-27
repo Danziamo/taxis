@@ -185,4 +185,11 @@ public class Helper {
         }
         return result;
     }
+
+    public static String getStringFromJson(JSONObject object, String key) throws JSONException{
+        if (!object.has(key)) return null;
+        String value = object.getString(key);
+        if (value == null || value.equals("null")) return null;
+        return value;
+    }
 }

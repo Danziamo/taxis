@@ -34,7 +34,7 @@ public class ConfirmSignUpActivity extends Activity {
         setContentView(R.layout.activity_confirm_sign_up);
         Intent intent = getIntent();
         try {
-            mUserObject =  new JSONObject(intent.getStringExtra("data"));
+            mUserObject =  new JSONObject(intent.getStringExtra("DATA"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -167,8 +167,9 @@ public class ConfirmSignUpActivity extends Activity {
     }
 
     private void Finish() {
-        Intent intent = new Intent();
-        setResult(2, intent);
+        Intent intent = new Intent(this, CarDetailsActivity.class);
+        intent.putExtra("NEW", true);
+        startActivity(intent);
         finish();
     }
 }

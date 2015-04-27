@@ -1,5 +1,6 @@
 package taxi.city.citytaxidriver;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpStatus;
@@ -27,6 +30,7 @@ import java.util.List;
 import taxi.city.citytaxidriver.Core.CarEntity;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.Utils.Helper;
 
 
 public class CarDetailsActivity extends ActionBarActivity {
@@ -71,6 +75,7 @@ public class CarDetailsActivity extends ActionBarActivity {
     public static class CarDetailsFragment extends Fragment implements View.OnClickListener{
         private CarUpdateTask mUpdateTask = null;
         private FetchCarBrandTask mFetchTask = null;
+        private boolean isNew = true;
         private User mUser;
         private int mBrandId = 0;
         private int mBrandModelId = 0;
@@ -79,13 +84,18 @@ public class CarDetailsActivity extends ActionBarActivity {
         Spinner carModelSpinner;
         Spinner carColorSpinner;
         EditText etCarColor;
+        EditText etCarYear;
         EditText etTechPassport;
         EditText etCarNumber;
         EditText etPassportNumber;
         EditText etDriverLicense;
+        TextView tvTitle;
+
         Button btnBack;
         Button btnSave;
         Button btnExit;
+
+        LinearLayout llbackExitGroup;
 
         public CarDetailsFragment() {
         }
@@ -95,14 +105,18 @@ public class CarDetailsActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_car_details, container, false);
 
+            isNew = getActivity().getIntent().getBooleanExtra("NEW", false);
             mUser = User.getInstance();
             carBrandSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarBrand);
             carModelSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarModel);
             etCarColor = (EditText) rootView.findViewById(R.id.spinnerCarColor);
+            etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
             etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
             etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
             etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
             etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
+            llbackExitGroup = (LinearLayout)rootView.findViewById(R.id.linearLayoutBackExitGroup);
+            tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
 
             btnSave = (Button)rootView.findViewById(R.id.buttonSave);
             btnBack = (Button)rootView.findViewById(R.id.buttonBack);
@@ -115,10 +129,20 @@ public class CarDetailsActivity extends ActionBarActivity {
             etDriverLicense.setText(mUser.driverLicenseNumber);
             etPassportNumber.setText(mUser.passportNumber);
 
+            updateViews();
             updateTask(false);
 
-
             return rootView;
+        }
+
+        private void updateViews() {
+            if (isNew) {
+                llbackExitGroup.setVisibility(View.GONE);
+                tvTitle.setText("Регистрация авто");
+            } else {
+                llbackExitGroup.setVisibility(View.VISIBLE);
+                tvTitle.setText("Настройки Авто");
+            }
         }
 
         private void updateTask(boolean update){
@@ -136,16 +160,21 @@ public class CarDetailsActivity extends ActionBarActivity {
                 if (carBrandModel == null || carBrandModel.id == 0)
                     return;
                 try {
-                    carJSON.put("brand", carBrand.id);
-                    carJSON.put("brand_model", carBrandModel.id);
+                    carJSON.put("driver", mUser.id);
+                    carJSON.put("brand", carBrand.id + 1);
+                    carJSON.put("brand_model", carBrandModel.id + 1);
                     carJSON.put("car_number", etCarNumber.getText().toString());
+                    carJSON.put("year", etCarYear.getText().toString());
                     carJSON.put("color", etCarColor.getText().toString());
                     carJSON.put("technical_certificate", etTechPassport.getText().toString());
-
                     userJSON.put("passport_number", etPassportNumber.getText().toString());
                     userJSON.put("driver_license_number", etDriverLicense.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
                 }
             }
 
@@ -157,7 +186,7 @@ public class CarDetailsActivity extends ActionBarActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.buttonSave:
-                    //updateTask(true);
+                    updateTask(true);
                     break;
                 default:
                     getActivity().finish();
@@ -178,14 +207,17 @@ public class CarDetailsActivity extends ActionBarActivity {
 
             @Override
             protected JSONObject doInBackground(Void... params) {
-                // TODO: attempt authentication against a network service.
-                // Simulate network access.
-
                 if (isUpdate) {
-                    JSONObject result = ApiService.getInstance().patchRequest(userJson, "/users/" + mUser.id);
-                    return ApiService.getInstance().patchRequest(carJson, "userscars/");
+                    JSONObject result = new JSONObject();
+                    if (isNew) {
+                        result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id);
+                        result = ApiService.getInstance().createCar(carJson, "usercars/");
+                    } else {
+                        result = ApiService.getInstance().patchRequest(userJson, "/users/" + mUser.id);
+                        //result = ApiService.getInstance().patchRequest(carJson, "userscars/");
+                    }
+                    return result;
                 } else {
-                    //return ApiService.getInstance().getDataFromGetRequest(null, "usercars/?driver=" + mUser.id + "/");
                     return ApiService.getInstance().getDataFromGetRequest(null, "usercars/");
                 }
             }
@@ -195,14 +227,23 @@ public class CarDetailsActivity extends ActionBarActivity {
                 mUpdateTask = null;
                 int statusCode = -1;
                 try {
-                    if(result != null && result.has("status_code")) {
+                    if(Helper.isSuccess(result)) {
                         statusCode = result.getInt("status_code");
-                    }
-                    if (isUpdate) return;
-                    if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED || statusCode == HttpStatus.SC_CREATED) {
-                        fillForms(result.getJSONArray("result"));
                     } else {
                         Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                    }
+                    if (!isUpdate) {
+                        if (Helper.isSuccess(statusCode)) {
+                            fillForms(result.getJSONArray("result"));
+                        } else {
+                            Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (Helper.isSuccess(statusCode)) {
+                            finishUpdate();
+                        } else {
+                            Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -215,17 +256,30 @@ public class CarDetailsActivity extends ActionBarActivity {
             }
         }
 
+        private void finishUpdate() {
+            if (isNew) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        }
+
         private void fillForms(JSONArray array) throws JSONException{
-            if (array.length() < 1) return;
+            if (array.length() < 1 && !isNew) return;
+            if (isNew) {
+                FillCarBrands();
+            }
             for (int i = 0; i < array.length(); ++i) {
                 JSONObject object = array.getJSONObject(i);
                 if (object.getInt("driver") != mUser.id) continue;
-                String color = object.has("color") ? object.getString("color") : null;
-                String techPassport = object.has("technical_certificate") ? object.getString("technical_certificate") : null;
-                String carNumber = object.has("car_number") ? object.getString("car_number") : null;
+                String color = Helper.getStringFromJson(object, "color");
+                String techPassport = Helper.getStringFromJson(object, "technical_certificate");
+                String carNumber = Helper.getStringFromJson(object, "car_number");
+                String carYear = Helper.getStringFromJson(object, "year");
                 etCarColor.setText(color);
                 etTechPassport.setText(techPassport);
                 etCarNumber.setText(carNumber);
+                etCarYear.setText(carYear);
                 mBrandId = object.has("brand") ? object.getInt("brand") : 0;
                 mBrandModelId = object.has("brand_model") ? object.getInt("brand_model") : 0;
                 FillCarBrands();

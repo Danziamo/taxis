@@ -141,8 +141,7 @@ public class GarajActivity extends ActionBarActivity {
         private void openDriverInfo() {
             Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
             intent.putExtra("NEW", false);
-            startActivityForResult(intent, 5);
+            startActivity(intent);
         }
-
     }
 }

@@ -53,6 +53,8 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
         Button btnCancel;
         Button btnMap;
 
+        LinearLayout llBtnMap;
+
         public OrderDetailsFragment() {
         }
 
@@ -68,6 +70,7 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
             TextView tvDescription = (TextView) rootView.findViewById(R.id.textViewDescription);
             TextView tvFixedPrice = (TextView) rootView.findViewById(R.id.textViewFixedPrice);
             LinearLayout llFixedPrice = (LinearLayout) rootView.findViewById(R.id.linearLayoutFixedPrice);
+            llBtnMap = (LinearLayout) rootView.findViewById(R.id.linearLayoutMapInfo);
 
             tvAddressStart.setText(mClient.addressStart);
             tvClientPhone.setText(mClient.phone);
@@ -84,20 +87,45 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
             btnCancel.setOnClickListener(this);
             btnMap.setOnClickListener(this);
 
+            updateViews();
+
             return rootView;
         }
 
         private void updateViews() {
-
+            if (mClient.status.equals(OStatus.NEW.toString())) {
+                llBtnMap.setVisibility(View.GONE);
+                btnOk.setText("Взять");
+                btnCancel.setText("Заказы");
+                btnCancel.setBackgroundResource(R.drawable.button_shape_yellow);
+            } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                llBtnMap.setVisibility(View.VISIBLE);
+                btnOk.setText("На месте");
+                btnCancel.setText("Отказ");
+                btnCancel.setBackgroundResource(R.drawable.button_shape_red);
+            } else {
+                llBtnMap.setVisibility(View.VISIBLE);
+                btnOk.setText("На борту");
+                btnCancel.setText("Отказ");
+                btnCancel.setBackgroundColor(R.drawable.button_shape_red);
+            }
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.buttonActionOk:
+                    if (mClient.status.equals(OStatus.NEW.toString())) {
+                        SendPostRequest(OStatus.ACCEPTED);
+                    } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                        SendPostRequest(OStatus.PENDING);
+                    } else if (mClient.status.equals(OStatus.PENDING.toString())) {
+                        SendPostRequest(OStatus.ONTHEWAY);
+                    }
                     break;
                 case R.id.buttonActionCancel:
-                    cancelOrder();
+                    if (!mClient.status.equals(OStatus.NEW.toString())) cancelOrder();
+                    getActivity().finish();
                     break;
                 default:
                     getActivity().finish();
@@ -132,9 +160,6 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
 
             @Override
             protected JSONObject doInBackground(Void... params) {
-                // TODO: attempt authentication against a network service.
-                // Simulate network access.
-
                 JSONObject res = new JSONObject();
                 JSONObject data = new JSONObject();
                 try {
@@ -145,7 +170,7 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
                     if (mClient.status.equals(OStatus.NEW.toString())) {
                         JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
                         if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
-                            Toast.makeText(getActivity(), "Заказ невозможно взять", Toast.LENGTH_LONG);
+                            Toast.makeText(getActivity(), "Заказ невозможно взять", Toast.LENGTH_LONG).show();
                             return null;
                         }
                     }
@@ -164,17 +189,15 @@ public class OrderDetailsActivity2 extends ActionBarActivity {
                 try {
                     if (Helper.isSuccess(result)) {
                         Toast.makeText(getActivity(), "Заказ обновлён", Toast.LENGTH_LONG).show();
+                        if (result.getString("status").equals(OStatus.CANCELED.toString())) order.clear();
                         updateViews();
-                    } else if (result != null && result.getString("status").equals(OStatus.CANCELED.toString())) {
-                        order.clear();
-                        Toast.makeText(getActivity(), "Заказ отменен", Toast.LENGTH_LONG).show();
                     } else {
-                        order.clear();
-                        Toast.makeText(getActivity(), "Заказ уже занят", Toast.LENGTH_LONG).show();
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getActivity(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+
                 }
             }
 

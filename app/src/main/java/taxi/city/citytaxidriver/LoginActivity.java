@@ -135,8 +135,9 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     }
 
     private void signUp() {
-        Intent intent = new Intent(this, SignUpActivity.class);
-        startActivityForResult(intent, 1);
+        Intent intent = new Intent(this, UserDetailsActivity.class);
+        intent.putExtra("NEW", true);
+        startActivity(intent);
     }
 
     @Override
@@ -422,7 +423,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         if (hasCar) {
             intent = new Intent(LoginActivity.this, MapsActivity.class);
         } else {
-            intent = new Intent(LoginActivity.this, CreateCarActivity.class);
+            intent = new Intent(LoginActivity.this, CarDetailsActivity.class);
         }
         intent.putExtra("NEW", true);
         startActivity(intent);

@@ -58,9 +58,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_margin="10dp">
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="6"
@@ -71,11 +71,10 @@
                 android:textColorHint="@color/blacktext1"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:id="@+id/textView"
+                android:id="@+id/textViewExtra"
                 android:textSize="20sp"
-                android:textColor="@color/blacktext2"
-                android:layout_margin="10dp"/>
+                android:inputType="phone"
+                android:textColor="@color/blacktext2"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -85,13 +84,12 @@
                 android:hint="Телефон"
                 android:padding="5dp"
                 android:textColorHint="@color/blacktext1"
-                android:id="@+id/editTextPhone"
+                android:id="@+id/textViewPhone"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:inputType="phone"
+                android:layout_marginLeft="5dp"
+                android:inputType="number"
                 android:textSize="20sp"
-                android:textColor="@color/blacktext2"
-                android:layout_margin="10dp" />
+                android:textColor="@color/blacktext2"/>
         </LinearLayout>
 
         <EditText
@@ -125,6 +123,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
+        android:id="@+id/linearLayoutBackExitGroup"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp">
