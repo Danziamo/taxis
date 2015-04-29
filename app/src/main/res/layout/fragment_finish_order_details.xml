@@ -10,7 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonMap"
+        android:layout_above="@+id/linearLayoutTopButtons"
         android:id="@+id/scrollViewOrderInfo">
 
         <RelativeLayout
@@ -36,8 +36,7 @@
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/textbox_background"
-                android:text="Адрес откуда надо забрать"
-                android:textColor="@color/blacktext1"
+                android:textColor="@color/blacktext2"
                 android:id="@+id/editTextStartAddress"
                 android:layout_below="@+id/textViewStartAddress"
                 android:layout_centerHorizontal="true"
@@ -83,7 +82,7 @@
                     android:gravity="right"
                     android:text="00:20"
                     android:layout_weight="2.5"
-                    android:textSize="@dimen/text_size_medium"
+                    android:textSize="@dimen/text_size_large"
                     android:textColor="@color/white"
                     android:id="@+id/textViewWaitingTime" />
 
@@ -322,36 +321,60 @@
 
     </ScrollView>
 
-    <Button
-        android:layout_width="150dp"
+    <LinearLayout
+        android:id="@+id/linearLayoutTopButtons"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_shape_green"
-        android:text="Ожидание"
-        android:id="@+id/buttonWait"
-        android:layout_above="@+id/buttonFinish"
-        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:weightSum="2"
         android:layout_margin="5dp"
-        android:layout_marginLeft="25dp" />
+        android:visibility="gone"
+        android:layout_above="@+id/linearLayoutBottomButtons">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_green"
+            android:text="Ожидание"
+            android:id="@+id/buttonWait"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp" />
 
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_shape_green"
-        android:text="На карте"
-        android:id="@+id/buttonMap"
-        android:layout_above="@+id/buttonFinish"
-        android:layout_alignParentRight="true"
-        android:layout_margin="5dp"
-        android:layout_marginRight="25dp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:layout_marginLeft="10dp"/>
 
-    <Button
-        android:layout_width="150dp"
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutBottomButtons"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_shape_green"
-        android:text="Доставил"
-        android:id="@+id/buttonFinish"
-        android:layout_marginLeft="25dp"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
         android:layout_margin="5dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_green"
+            android:text="Доставил"
+            android:layout_weight="1"
+            android:id="@+id/buttonFinish"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape_green"
+            android:text="На карте"
+            android:id="@+id/buttonMap"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

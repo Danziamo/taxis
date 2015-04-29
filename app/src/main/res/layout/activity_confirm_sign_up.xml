@@ -33,15 +33,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="25sp"
+            android:textColor="@color/white"
             android:text="Авторизация"
             android:id="@+id/textViewCarRegistration"
             android:layout_marginTop="10dp" />
-
-         <ScrollView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:id="@+id/svActivationCode"
-             android:fillViewport="false" />
 
         <RelativeLayout
             android:orientation="vertical"
@@ -54,6 +49,7 @@
                 android:layout_height="30dp"
                 android:id="@+id/etActivationCode"
                 android:background="@drawable/textbox_background"
+                android:textColor="@color/blacktext2"
                 android:hint="Код авторизации"
                 android:paddingRight="9dp"
                 android:paddingTop="1dp"

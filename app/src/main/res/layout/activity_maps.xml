@@ -27,124 +27,210 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/llTop"
-                    android:weightSum="2"
+                    android:id="@+id/linearLayoutMapWaitTime"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp">
+                    android:weightSum="10">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Ожидание:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="00:00"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_weight="3"
+                        android:id="@+id/textViewWaitTime"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="мин"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutMapWaitSum"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Сумма:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="right"
+                        android:text="0000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:id="@+id/textViewWaitSum"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="сом"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutMapDistance"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Расстояние:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="right"
+                        android:text="00000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
                         android:id="@+id/textViewDistance"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:paddingRight="5dp" />
+                        android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewSpeed"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:paddingLeft="5dp" />
+                        android:layout_weight="3"
+                        android:text="км"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/llCenter"
-                    android:weightSum="2"
+                    android:id="@+id/linearLayoutMapSum"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp">
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/textViewPrice"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:layout_weight="5"
+                        android:text="Сумма проезда:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewTime"
-                        android:layout_weight="1"
-                        android:gravity="center"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llBottom"
-                    android:weightSum="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp">
+                        android:layout_weight="3"
+                        android:gravity="right"
+                        android:text="000000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:id="@+id/textViewSum"
+                        android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:id="@+id/textViewFeePrice"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textViewFeeTime"
-                        android:layout_weight="1"
-                        android:gravity="center"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textViewMapsTotalSum"/>
+                        android:layout_weight="2"
+                        android:text="сом"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/beginTrip"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="НАЧАТЬ"
-                android:padding="10dp"
-                android:textSize="10dp"
-                android:paddingRight="10dp"/>
+                android:id="@+id/linearLayoutWaitInfo"
+                android:layout_above="@+id/linearLayoutStartCancelMap"
+                android:weightSum="2">
 
-            <Button
-                android:id="@+id/pauseTrip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ОЖИДАНИЕ"
-                android:padding="10dp"
-                android:textSize="10dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"/>
+                <Button
+                    android:id="@+id/buttonWaitTrip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_shape_green"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"/>
 
-            <Button
-                android:id="@+id/endTrip"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/buttonAdditionalInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_shape_green"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/pauseTrip"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
+                android:id="@+id/linearLayoutStartCancelMap"
                 android:layout_alignParentBottom="true"
-                android:text="ЗАВЕРШИТЬ"
-                android:padding="10dp"
-                android:textSize="10dp"
-                android:paddingRight="10dp"/>
+                android:layout_centerHorizontal="true"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/buttonStartAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_shape_green"
+                    android:layout_margin="10dp"/>
+
+                <Button
+                    android:id="@+id/buttonDeclineSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_shape_red"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 

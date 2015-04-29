@@ -19,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,13 +88,17 @@ public class CarDetailsActivity extends ActionBarActivity {
         EditText etCarNumber;
         EditText etPassportNumber;
         EditText etDriverLicense;
+        EditText etDriverLicenseSeries;
+        EditText etPassportSeries;
         TextView tvTitle;
 
         Button btnBack;
         Button btnSave;
         Button btnExit;
 
-        LinearLayout llbackExitGroup;
+        int userCarId = 0;
+
+        LinearLayout llBackExitGroup;
 
         public CarDetailsFragment() {
         }
@@ -113,9 +116,11 @@ public class CarDetailsActivity extends ActionBarActivity {
             etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
             etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
             etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
+            etDriverLicenseSeries = (EditText)rootView.findViewById(R.id.editTextDriverLicenseSeries);
             etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
             etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
-            llbackExitGroup = (LinearLayout)rootView.findViewById(R.id.linearLayoutBackExitGroup);
+            etPassportSeries = (EditText)rootView.findViewById(R.id.editTextPassportSeries);
+            llBackExitGroup = (LinearLayout)rootView.findViewById(R.id.linearLayoutBackExitGroup);
             tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
 
             btnSave = (Button)rootView.findViewById(R.id.buttonSave);
@@ -126,8 +131,19 @@ public class CarDetailsActivity extends ActionBarActivity {
             btnExit.setOnClickListener(this);
             btnSave.setOnClickListener(this);
 
-            etDriverLicense.setText(mUser.driverLicenseNumber);
-            etPassportNumber.setText(mUser.passportNumber);
+            String driverLicenseExtra = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
+                    ? mUser.driverLicenseNumber.substring(0, 2) : null;
+            String driverLicense = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
+                    ? mUser.driverLicenseNumber.substring(2) : null;
+            String passportExtra = mUser.passportNumber != null && mUser.passportNumber.length() > 2
+                    ? mUser.passportNumber.substring(0, 2) : null;
+            String passport = mUser.passportNumber != null && mUser.passportNumber.length() > 2
+                    ? mUser.passportNumber.substring(2) : null;
+
+            etDriverLicenseSeries.setText(driverLicenseExtra);
+            etDriverLicense.setText(driverLicense);
+            etPassportSeries.setText(passportExtra);
+            etPassportNumber.setText(passport);
 
             updateViews();
             updateTask(false);
@@ -137,10 +153,10 @@ public class CarDetailsActivity extends ActionBarActivity {
 
         private void updateViews() {
             if (isNew) {
-                llbackExitGroup.setVisibility(View.GONE);
-                tvTitle.setText("Регистрация авто");
+                llBackExitGroup.setVisibility(View.GONE);
+                tvTitle.setText("Регистрация Авто");
             } else {
-                llbackExitGroup.setVisibility(View.VISIBLE);
+                llBackExitGroup.setVisibility(View.VISIBLE);
                 tvTitle.setText("Настройки Авто");
             }
         }
@@ -152,23 +168,85 @@ public class CarDetailsActivity extends ActionBarActivity {
             JSONObject carJSON = new JSONObject();
             JSONObject userJSON = new JSONObject();
             if (update) {
+
                 CarEntity carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
                 CarEntity carBrandModel = (CarEntity)carModelSpinner.getSelectedItem();
 
-                if (carBrand == null || carBrand.id == 0)
+                if (carBrand == null || carBrand.id == 0) {
+                    carBrandSpinner.requestFocus();
+                    Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
                     return;
-                if (carBrandModel == null || carBrandModel.id == 0)
+                }
+                /*if (carBrandModel == null || carBrandModel.id == 0)
+                    return;*/
+
+                String passportNumberExtra = etPassportSeries.getText().toString();
+                String passportNumber = passportNumberExtra + etPassportNumber.getText().toString();
+                String driverLicenseExtra = etDriverLicenseSeries.getText().toString();
+                String driverLicense = driverLicenseExtra + etDriverLicense.getText().toString();
+                String techPassport = etTechPassport.getText().toString();
+                String carNumber =etCarNumber.getText().toString();
+                String color = etCarColor.getText().toString();
+                String year = etCarYear.getText().toString();
+
+                if (passportNumberExtra == null || passportNumberExtra.length() != 2) {
+                    etPassportSeries.setError("Неверно задано. 2 символа");
+                    etPassportSeries.requestFocus();
                     return;
+                }
+
+                if (passportNumber == null || passportNumber.length() < 6) {
+                    etPassportNumber.setError("Неверно задано");
+                    etPassportNumber.requestFocus();
+                    return;
+                }
+
+                if (driverLicenseExtra == null || driverLicenseExtra.length() != 2) {
+                    etDriverLicenseSeries.setError("Неверно задано. 2 символа");
+                    etDriverLicenseSeries.requestFocus();
+                    return;
+                }
+
+                if (driverLicense == null || driverLicense.length() < 6) {
+                    etDriverLicense.setError("Неверно задано");
+                    etDriverLicense.requestFocus();
+                    return;
+                }
+
+                if (techPassport == null || techPassport.length() < 6) {
+                    etTechPassport.setError("Неверно задано");
+                    etTechPassport.requestFocus();
+                    return;
+                }
+
+                if (carNumber == null || carNumber.length() < 6) {
+                    etCarNumber.setError("Неверно задано");
+                    etCarNumber.requestFocus();
+                    return;
+                }
+
+                if (year == null || !Helper.isYearValid(year)) {
+                    etCarYear.setError("Неверно задано");
+                    etCarYear.requestFocus();
+                    return;
+                }
+
+                if (color == null || color.length() < 3) {
+                    etCarColor.setError("Неверно задано");
+                    etCarColor.requestFocus();
+                    return;
+                }
+
                 try {
                     carJSON.put("driver", mUser.id);
-                    carJSON.put("brand", carBrand.id + 1);
-                    carJSON.put("brand_model", carBrandModel.id + 1);
-                    carJSON.put("car_number", etCarNumber.getText().toString());
-                    carJSON.put("year", etCarYear.getText().toString());
-                    carJSON.put("color", etCarColor.getText().toString());
-                    carJSON.put("technical_certificate", etTechPassport.getText().toString());
-                    userJSON.put("passport_number", etPassportNumber.getText().toString());
-                    userJSON.put("driver_license_number", etDriverLicense.getText().toString());
+                    carJSON.put("brand", carBrand.id);
+                    carJSON.put("brand_model", carBrandModel == null || carBrandModel.id == 0 ? 1 : carBrandModel.id);
+                    carJSON.put("car_number", carNumber);
+                    carJSON.put("year", year);
+                    carJSON.put("color", color);
+                    carJSON.put("technical_certificate", techPassport);
+                    userJSON.put("passport_number", passportNumber);
+                    userJSON.put("driver_license_number", driverLicense);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return;
@@ -210,15 +288,16 @@ public class CarDetailsActivity extends ActionBarActivity {
                 if (isUpdate) {
                     JSONObject result = new JSONObject();
                     if (isNew) {
-                        result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id);
+                        result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
                         result = ApiService.getInstance().createCar(carJson, "usercars/");
+                        return result;
                     } else {
-                        result = ApiService.getInstance().patchRequest(userJson, "/users/" + mUser.id);
-                        //result = ApiService.getInstance().patchRequest(carJson, "userscars/");
+                        result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
+                        result = ApiService.getInstance().patchRequest(carJson, "usercars/" + userCarId + "/");
+                        return result;
                     }
-                    return result;
                 } else {
-                    return ApiService.getInstance().getDataFromGetRequest(null, "usercars/");
+                    return ApiService.getInstance().getDataFromGetRequest(null, "usercars/?driver=" + mUser.id);
                 }
             }
 
@@ -257,6 +336,8 @@ public class CarDetailsActivity extends ActionBarActivity {
         }
 
         private void finishUpdate() {
+            mUser.driverLicenseNumber = etDriverLicenseSeries.getText().toString() + etDriverLicense.getText().toString();
+            mUser.passportNumber = etPassportSeries.getText().toString() + etPassportNumber.getText().toString();
             if (isNew) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
@@ -272,6 +353,7 @@ public class CarDetailsActivity extends ActionBarActivity {
             for (int i = 0; i < array.length(); ++i) {
                 JSONObject object = array.getJSONObject(i);
                 if (object.getInt("driver") != mUser.id) continue;
+                userCarId = object.getInt("id");
                 String color = Helper.getStringFromJson(object, "color");
                 String techPassport = Helper.getStringFromJson(object, "technical_certificate");
                 String carNumber = Helper.getStringFromJson(object, "car_number");
@@ -297,9 +379,9 @@ public class CarDetailsActivity extends ActionBarActivity {
                 carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
                 this.isModel = isModel;
                 if (isModel) {
-                    api = "cars/carbrandmodels/?car_brand=" + carBrand.id;
+                    api = "cars/carbrandmodels/?limit=200&car_brand=" + carBrand.id;
                 } else {
-                    api = "cars/carbrands/";
+                    api = "cars/carbrands/?limit=200&ordering=brand_name";
                 }
             }
 
@@ -363,9 +445,13 @@ public class CarDetailsActivity extends ActionBarActivity {
 
             ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            CarEntity tempEntity = new CarEntity(mBrandModelId, "");
+            int position = adapter.getPosition(tempEntity);
+
             carModelSpinner.setAdapter(adapter);
             if (mBrandModelId <= array.length()) {
-                carModelSpinner.setSelection(mBrandModelId - 1);
+                carModelSpinner.setSelection(position);
                 carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -392,8 +478,12 @@ public class CarDetailsActivity extends ActionBarActivity {
             }
             ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            CarEntity tempEntity = new CarEntity(mBrandId, "");
+            int position = adapter.getPosition(tempEntity);
+
             carBrandSpinner.setAdapter(adapter);
-            carBrandSpinner.setSelection(mBrandId - 1);
+            carBrandSpinner.setSelection(position);
             carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

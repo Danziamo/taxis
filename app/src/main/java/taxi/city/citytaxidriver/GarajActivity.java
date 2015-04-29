@@ -108,12 +108,14 @@ public class GarajActivity extends ActionBarActivity {
 
         private void openAccountNumber() {
             final AlertDialog.Builder builder =
-                    new AlertDialog.Builder(getActivity());
+                    new AlertDialog.Builder(getActivity(), R.style.DialogBoxTheme);
             final String title = "Ваш лицевой счёт и баланс";
             final TextView tvAccountNumber = new TextView(getActivity());
             tvAccountNumber.setText("Лицевой счёт: " + User.getInstance().phone);
+            tvAccountNumber.setPadding(5, 0,0, 0);
             final TextView tvBalance = new TextView(getActivity());
             tvBalance.setText("Баланс: " + String.valueOf(User.getInstance().balance));
+            tvBalance.setPadding(5, 0, 0, 0);
             final LinearLayout ll = new LinearLayout(getActivity());
             ll.setOrientation(LinearLayout.VERTICAL);
             ll.setGravity(Gravity.CENTER);

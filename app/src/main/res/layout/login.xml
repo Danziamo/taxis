@@ -11,15 +11,15 @@
     <!-- Login progress -->
 
     <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+        android:indeterminateDrawable="@drawable/progressbar"
         android:id="@+id/login_progress"
+        android:indeterminateOnly="true"
+        android:animationResolution="33"
+        android:layout_height="50dp"
+        android:layout_width="50dp"
         android:visibility="gone"
-        android:indeterminate="false" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,51 +34,42 @@
             android:layout_above="@+id/login_phone"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="30dp"
-            android:maxHeight="100dp"
-            android:maxWidth="100dp"
             android:minHeight="100dp"
             android:minWidth="100dp" />
 
         <AutoCompleteTextView
-            android:orientation="vertical"
             android:id="@+id/login_phone"
             android:gravity="center"
             android:layout_width="300dp"
             android:layout_height="40dp"
             android:hint="@string/prompt_phone_number"
-            android:textColorHint="#000000"
+            android:textColorHint="@color/blacktext1"
             android:background="@drawable/textbox_background"
             android:inputType="phone"
-            android:maxLines="2"
             android:singleLine="true"
-            android:autoText="false"
-            android:textColor="#636363"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/blacktext2"
             android:layout_above="@+id/login_password"
             android:layout_centerHorizontal="true" />
 
         <EditText
-            android:orientation="vertical"
             android:id="@+id/login_password"
             android:layout_width="300dp"
             android:layout_height="40dp"
             android:hint="@string/prompt_password"
-            android:textColorHint="#000000"
-            android:imeActionId="100"
-            android:imeActionLabel="@string/action_sign_in_short"
+            android:textColorHint="@color/blacktext1"
             android:gravity="center"
-            android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
-            android:maxLines="2"
-            android:singleLine="true"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/textbox_background"
-            android:password="false"
-            android:textColor="#636363"
-            android:layout_alignBottom="@+id/btnSignIn"
-            android:layout_alignLeft="@+id/login_phone"
-            android:layout_alignStart="@+id/login_phone"
-            android:layout_marginBottom="56dp" />
+            android:textColor="@color/blacktext2"
+            android:layout_above="@+id/btnSignIn"
+            android:layout_marginBottom="15dp" />
 
-        <Button android:id="@+id/btnSignIn"
+        <Button
+            android:id="@+id/btnSignIn"
             style="?android:textAppearanceSmall"
             android:layout_width="300dp"
             android:layout_height="40dp"
@@ -86,9 +77,22 @@
             android:background="@drawable/button_shape_yellow"
             android:textColor="#ff1e0a8e"
             android:textStyle="bold"
-            android:layout_marginBottom="71dp"
-            android:layout_above="@+id/btnSignUp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="22dp"
+            android:layout_above="@+id/textViewForgetPassword"
             android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Забыли пароль?"
+            android:textColor="@color/white"
+            android:id="@+id/textViewForgetPassword"
+            android:layout_above="@+id/btnSignUp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="22dp"
+            android:textSize="25sp" />
 
         <Button
             android:orientation="vertical"
@@ -99,22 +103,8 @@
             android:background="@drawable/button_shape_yellow"
             android:textColor="#ff1e0a8e"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_marginBottom="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_alignParentRight="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Забыли пароль?"
-            android:textColor="@color/white"
-            android:id="@+id/textViewForgetPassword"
-            android:layout_below="@+id/login_password"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="22dp"
-            android:textSize="25sp" />
+            android:layout_marginTop="0dp" />
 
     </RelativeLayout>
 

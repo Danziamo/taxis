@@ -81,6 +81,8 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         btnMap.setOnClickListener(this);
         btnRefresh.setOnClickListener(this);
         btnMoreOrders.setOnClickListener(this);
+
+        if (!isNew) fetchData();
     }
 
     @Override
@@ -122,13 +124,13 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
 
     private void goOrderDetails(Client mClient) {
         if (isNew) {
-            Intent intent = new Intent(this, OrderDetailsActivity2.class);
+            Intent intent = new Intent(this, OrderDetailsActivity.class);
             intent.putExtra("DATA", mClient);
             startActivityForResult(intent, 1);
         } else {
             Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
             intent.putExtra("DATA", mClient);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, 2);
         }
     }
 
@@ -196,7 +198,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=10");
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
-                        for (int i = 0; i < tempArray.length() && i < 20; ++i) {
+                        for (int i = 0; i < tempArray.length() && i < 10; ++i) {
                             array.put(tempArray.getJSONObject(i));
                         }
                     }

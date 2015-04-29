@@ -46,6 +46,7 @@ public class UserDetailsActivity extends ActionBarActivity {
         private EditText etPhoneExtra;
         private TextView tvTitle;
         private EditText etPassword;
+        private EditText etEmail;
         private boolean isNew = false;
 
         Button btnSave;
@@ -70,6 +71,7 @@ public class UserDetailsActivity extends ActionBarActivity {
 
             etLastName = (EditText)rootView.findViewById(R.id.editTextLastName);
             etFirstName = (EditText)rootView.findViewById(R.id.editTextFirstName);
+            etEmail = (EditText)rootView.findViewById(R.id.editTextEmail);
             etPhone = (EditText) rootView.findViewById(R.id.textViewPhone);
             etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
             etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
@@ -80,6 +82,7 @@ public class UserDetailsActivity extends ActionBarActivity {
                 etLastName.setText(user.lastName);
                 etFirstName.setText(user.firstName);
                 etPassword.setText(user.password);
+                etEmail.setText(user.email);
                 String extra = user.phone.substring(0, 4);
                 String phone = user.phone.substring(4);
                 etPhone.setText(phone);
@@ -129,15 +132,52 @@ public class UserDetailsActivity extends ActionBarActivity {
         private void updateTask() {
             if (mTask != null) return;
 
+            String firstName = etFirstName.getText().toString();
+            String lastName = etLastName.getText().toString();
+            String phone = etPhoneExtra.getText().toString() + etPhone.getText().toString();
+            String password = etPassword.getText().toString();
+            String email = etEmail.getText().toString();
+
+            if (firstName == null || firstName.length() < 2) {
+                etFirstName.setError("Имя неправильно задано");
+                etFirstName.requestFocus();
+                return;
+            }
+
+            if (lastName == null || lastName.length() < 2) {
+                etLastName.setError("Фамилия неправильно задано");
+                etLastName.requestFocus();
+                return;
+            }
+
+            if (email != null && !Helper.isValidEmailAddress(email)) {
+                etEmail.setError("Email неправильно задано");
+                etEmail.requestFocus();
+                return;
+            }
+
+            if (phone.length() != 13) {
+                etPhone.setError("Телефон должен состоять из 13 символов");
+                etLastName.requestFocus();
+                return;
+            }
+
+            if (password == null || password.length() < 3) {
+                etPassword.setError("Пароль неправильно задан");
+                etPassword.requestFocus();
+                return;
+            }
+
             JSONObject json = new JSONObject();
             try {
-                json.put("first_name", etFirstName.getText().toString());
-                json.put("last_name", etLastName.getText().toString());
+                json.put("first_name", firstName);
+                json.put("last_name", lastName);
+                json.put("email", email);
+                json.put("password", password);
                 if (isNew) {
-                    json.put("phone", etPhoneExtra.getText().toString() + etPhone.getText().toString());
+                    json.put("phone", phone);
                     json.put("activation_code", "11111");
                 }
-                json.put("password", etPassword.getText().toString());
             } catch (JSONException e)  {
                 e.printStackTrace();
             }
@@ -198,6 +238,7 @@ public class UserDetailsActivity extends ActionBarActivity {
             user.firstName = etPhone.getText().toString();
             user.lastName = etLastName.getText().toString();
             user.password = etPassword.getText().toString();
+            user.email = etEmail.getText().toString();
             if (isNew) {
                 try {
                     user.setUser(object);

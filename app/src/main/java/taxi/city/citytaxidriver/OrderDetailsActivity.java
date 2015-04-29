@@ -1,20 +1,27 @@
 package taxi.city.citytaxidriver;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import taxi.city.citytaxidriver.Core.Client;
+import taxi.city.citytaxidriver.Core.GlobalParameters;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Enums.OStatus;
@@ -24,237 +31,246 @@ import taxi.city.citytaxidriver.Utils.Helper;
 
 public class OrderDetailsActivity extends ActionBarActivity {
 
-    private static final int NEW = 1;
-    private static final int FINISHED = 2;
-    private static final int ACTIVE = 3;
-
-    TextView tvAddress;
-    TextView tvDescription;
-    TextView tvClientPhone;
-    TextView tvSum;
-    TextView tvDistance;
-    TextView tvTravelTime;
-    TextView tvWaitTime;
-    TextView tvWaitSum;
-    TextView tvTotalSum;
-    TextView tvFixedPrice;
-    TextView tvEndAddress;
-
-    SendPostRequestTask sendTask;
-    Order order;
-    User user;
-    ApiService api;
-    int orderType;
-    Client mClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_details);
+        setContentView(R.layout.activity_order_details_activity);
 
-        Intent intent = getIntent();
-        Client client = (Client)intent.getExtras().getSerializable("data");
-        int type = 0;
-        if (client != null) {
-            switch (client.status) {
-                case "new":
-                    type = NEW;
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new OrderDetailsFragment())
+                    .commit();
+        }
+    }
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class OrderDetailsFragment extends Fragment implements View.OnClickListener{
+        private Client mClient;
+        private ApiService api = ApiService.getInstance();
+        private Order order = Order.getInstance();
+        private User user = User.getInstance();
+        private GlobalParameters gp = GlobalParameters.getInstance();
+        private SendPostRequestTask mTask = null;
+
+        TextView tvClientPhone;
+        TextView tvClientPhoneLabel;
+        ImageButton imgBtnCallClient;
+
+        Button btnOk;
+        Button btnCancel;
+        Button btnMap;
+
+        LinearLayout llBtnMap;
+
+        public OrderDetailsFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_order_details_activity, container, false);
+            mClient = (Client)getActivity().getIntent().getSerializableExtra("DATA");
+
+            TextView tvAddressStart = (TextView) rootView.findViewById(R.id.textViewStartAddress);
+            tvClientPhone = (TextView) rootView.findViewById(R.id.textViewClientPhone);
+            tvClientPhoneLabel = (TextView) rootView.findViewById(R.id.textViewClientPhoneLabel);
+            TextView tvAddressStop = (TextView) rootView.findViewById(R.id.textViewStopAddress);
+            TextView tvDescription = (TextView) rootView.findViewById(R.id.textViewDescription);
+            TextView tvFixedPrice = (TextView) rootView.findViewById(R.id.textViewFixedPrice);
+            LinearLayout llFixedPrice = (LinearLayout) rootView.findViewById(R.id.linearLayoutFixedPrice);
+            llBtnMap = (LinearLayout) rootView.findViewById(R.id.linearLayoutMapInfo);
+            imgBtnCallClient = (ImageButton) rootView.findViewById(R.id.imageButtonCallClient);
+
+            tvAddressStart.setText(mClient.addressStart);
+            tvClientPhone.setText(mClient.phone);
+            tvAddressStop.setText(mClient.addressEnd);
+            tvDescription.setText(mClient.description);
+            double fixedPrice = Helper.getDouble(mClient.fixedPrice);
+            tvFixedPrice.setText((int)fixedPrice + " сом");
+            if (fixedPrice < 50) llFixedPrice.setVisibility(View.GONE);
+
+            btnOk = (Button) rootView.findViewById(R.id.buttonActionOk);
+            btnCancel = (Button) rootView.findViewById(R.id.buttonActionCancel);
+            btnMap = (Button) rootView.findViewById(R.id.buttonMapInfo);
+            btnOk.setOnClickListener(this);
+            btnCancel.setOnClickListener(this);
+            btnMap.setOnClickListener(this);
+
+            updateViews();
+
+            return rootView;
+        }
+
+        private void updateViews() {
+            if (mClient.status.equals(OStatus.NEW.toString())) {
+                llBtnMap.setVisibility(View.GONE);
+                btnOk.setText("Взять");
+                btnCancel.setText("Заказы");
+                tvClientPhone.setVisibility(View.GONE);
+                tvClientPhoneLabel.setVisibility(View.GONE);
+                imgBtnCallClient.setVisibility(View.GONE);
+                btnCancel.setBackgroundResource(R.drawable.button_shape_yellow);
+            } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                llBtnMap.setVisibility(View.VISIBLE);
+                btnOk.setText("На месте");
+                btnCancel.setText("Отказ");
+                tvClientPhone.setVisibility(View.VISIBLE);
+                tvClientPhoneLabel.setVisibility(View.VISIBLE);
+                imgBtnCallClient.setVisibility(View.VISIBLE);
+                btnCancel.setBackgroundResource(R.drawable.button_shape_red);
+            } else {
+                llBtnMap.setVisibility(View.VISIBLE);
+                tvClientPhone.setVisibility(View.VISIBLE);
+                tvClientPhoneLabel.setVisibility(View.VISIBLE);
+                imgBtnCallClient.setVisibility(View.VISIBLE);
+                btnOk.setText("На борту");
+                btnCancel.setText("Отказ");
+                btnCancel.setBackgroundResource(R.drawable.button_shape_red);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.buttonActionOk:
+                    if (mClient.status.equals(OStatus.NEW.toString())) {
+                        SendPostRequest(OStatus.ACCEPTED);
+                    } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                        mClient.status = OStatus.PENDING.toString();
+                        order.status = OStatus.PENDING;
+                        SendPostRequest(OStatus.PENDING);
+                    } else if (mClient.status.equals(OStatus.PENDING.toString())) {
+                        mClient.status = OStatus.ONTHEWAY.toString();
+                        order.status = OStatus.ONTHEWAY;
+                        SendPostRequest(OStatus.ONTHEWAY);
+                    }
                     break;
-                case "finished":
-                    type = FINISHED;
+                case R.id.buttonActionCancel:
+                    if (!mClient.status.equals(OStatus.NEW.toString())) cancelOrder();
+                    getActivity().finish();
+                    break;
+                case R.id.imageButtonCallClient:
+                    callClient();
                     break;
                 default:
-                    type = ACTIVE;
-                    break;
+                    getActivity().finish();
             }
         }
 
-        orderType = type;
-        mClient = client;
-        Initialize(type);
-    }
+        private void callClient() {
+            final AlertDialog.Builder builder =
+                    new AlertDialog.Builder(getActivity());
+            //final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+            final String message = "Вы уверены что хотите позвонить?";
+            final String title = order.clientPhone;
 
-    private void Initialize(int type) {
-        order = Order.getInstance();
-        user = User.getInstance();
-        api = ApiService.getInstance();
-
-        tvAddress = (TextView) findViewById(R.id.textViewStartAddress);
-        tvDescription = (TextView) findViewById(R.id.textViewDescription);
-        tvClientPhone = (TextView) findViewById(R.id.textViewClientPhone);
-        tvSum = (TextView) findViewById(R.id.textViewOrderTravelSum);
-        tvDistance = (TextView) findViewById(R.id.textViewOrderDistance);
-        tvTravelTime = (TextView) findViewById(R.id.textViewOrderTime);
-        tvWaitTime = (TextView) findViewById(R.id.textViewOrderWaitTime);
-        tvWaitSum = (TextView) findViewById(R.id.textViewOrderWaitSum);
-        tvTotalSum = (TextView) findViewById(R.id.textViewOrderTotalSum);
-        tvFixedPrice = (TextView) findViewById(R.id.textViewFixedPrice);
-        tvEndAddress = (TextView) findViewById(R.id.textViewEndAddress);
-
-        LinearLayout llDescription = (LinearLayout) findViewById(R.id.linearLayoutOrderDetails);
-
-        Button btnTake = (Button) findViewById(R.id.buttonTakeOrder);
-        Button btnCancel = (Button) findViewById(R.id.buttonCancelOrder);
-
-        double mFixedPrice = 0;
-        try {
-            mFixedPrice = Double.valueOf(mClient.fixedPrice);
-        } catch (Exception e) {
-            mFixedPrice = 0;
+            builder.setMessage(message)
+                    .setTitle(title)
+                    .setPositiveButton("Позвонить",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                    callIntent.setData(Uri.parse("tel:" + mClient.phone));
+                                    startActivity(callIntent);
+                                    d.dismiss();
+                                }
+                            })
+                    .setNegativeButton("Отмена",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    d.cancel();
+                                }
+                            });
+            builder.create().show();
         }
 
-        tvAddress.setText(mClient.addressStart);
-        tvClientPhone.setText(mClient.phone);
-        double totalSum = 0;
+        private void cancelOrder() {
+            SendPostRequest(OStatus.NEW);
+        }
 
-        if (mClient.description != null)
-            tvDescription.setText(mClient.description);
-        if (mClient.sum != null) {
-            totalSum += Double.valueOf(mClient.sum);
-            tvSum.setText("Сумма: " + mClient.sum + " сом");
-        }
-        if (mFixedPrice >= 50) {
-            tvFixedPrice.setVisibility(View.VISIBLE);
-            tvFixedPrice.setText("Фиксированная сумма:" + mClient.fixedPrice);
-            tvEndAddress.setVisibility(View.VISIBLE);
-            tvEndAddress.setText("Куда: " + mClient.addressEnd);
-        }
-        if (mClient.distance != null)
-            tvDistance.setText("Путь: " + mClient.distance + " км");
-        if (mClient.time != null)
-            tvTravelTime.setText("Время: " + mClient.time);
-        if (mClient.waitTime != null)
-            tvWaitTime.setText("Время ожидания: " + mClient.waitTime);
-        if (mClient.waitSum != null) {
-            try {
-                totalSum += Double.valueOf(mClient.waitSum);
-                tvWaitSum.setText("Сумма ожидания: " + mClient.waitSum + " сом");
+        private void SendPostRequest(OStatus status) {
+            if (mTask != null) {
+                return;
             }
-            catch (Exception e) {
 
+            mTask = new SendPostRequestTask(status, mClient.id);
+            mTask.execute((Void) null);
+        }
+
+        private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
+            private String mDriver;
+            private String mStatus;
+            private String mCurrPosition;
+            private String mId;
+
+            SendPostRequestTask(OStatus type, int orderId) {
+                mStatus = type.toString();
+                mDriver = type == OStatus.NEW ? null : String.valueOf(user.id);
+                mCurrPosition = gp.getPosition();
+                mId = orderId == 0 ? null : String.valueOf(orderId);
             }
-        }
 
-        tvTotalSum.setText("Общая сумма: " + totalSum + " сом");
-
-        if (type == NEW) {
-            btnTake.setText("Взять");
-            btnCancel.setText("Назад");
-            tvClientPhone.setVisibility(View.GONE);
-            llDescription.setVisibility(View.GONE);
-        } else if (type == FINISHED) {
-            llDescription.setVisibility(View.VISIBLE);
-            btnCancel.setText("Назад");
-            btnTake.setVisibility(View.GONE);
-            tvClientPhone.setVisibility(View.GONE);
-        } else if (type == ACTIVE) {
-            llDescription.setVisibility(View.VISIBLE);
-            btnTake.setVisibility(View.GONE);
-            btnCancel.setText("Назад");
-            tvClientPhone.setVisibility(View.VISIBLE);
-        }
-
-        btnTake.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (orderType == NEW) {
-                    order.clear();
-                    Helper.setOrder(mClient);
-                    SendPostRequest(OStatus.ACCEPTED);
-                }
-            }
-        });
+            protected JSONObject doInBackground(Void... params) {
+                JSONObject res = new JSONObject();
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("status", mStatus);
+                    data.put("driver", mDriver == null ? JSONObject.NULL : mDriver);
+                    if (mCurrPosition != null) data.put("address_stop", mCurrPosition);
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (orderType == NEW) {
-                    Intent intent = new Intent();
-                    intent.putExtra("returnCode", false);
-                    setResult(1, intent);
-                    finish();
-                } else {
-                    finish();
-                }
-            }
-        });
-    }
+                    if (mClient.status.equals(OStatus.NEW.toString())) {
+                        JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
+                        if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
+                            Toast.makeText(getActivity(), "Заказ невозможно взять", Toast.LENGTH_LONG).show();
+                            return null;
+                        }
+                    }
 
-    private void SendPostRequest(OStatus status) {
-        if (sendTask != null) {
-            return;
-        }
-
-        sendTask = new SendPostRequestTask(status);
-        sendTask.execute((Void) null);
-    }
-
-    private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
-        SendPostRequestTask(OStatus type) {
-            order.status = type;
-            order.driver = user.id;
-        }
-
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
-
-            JSONObject res = new JSONObject();
-            JSONObject data = new JSONObject();
-            try {
-                data.put("status", order.status);
-                data.put("driver", order.driver);
-                if (order.endPoint != null) {
-                    data.put("address_stop", Helper.getFormattedLatLng(order.endPoint));
-                }
-                JSONObject object = api.getOrderRequest(null, "orders/" + order.id + "/");
-                if (object != null && object.getInt("status_code") == HttpStatus.SC_OK
-                            && object.getString("status").equals(OStatus.NEW.toString())) {
-                    res = api.patchRequest(data, "orders/" + order.id + "/");
-                } else {
+                    res = api.patchRequest(data, "orders/" + mId + "/");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                     res = null;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                res = null;
+                return res;
             }
 
-            return res;
-        }
+            @Override
+            protected void onPostExecute(JSONObject result) {
+                mTask = null;
+                try {
+                    if (Helper.isSuccess(result)) {
+                        Toast.makeText(getActivity(), "Заказ обновлён", Toast.LENGTH_LONG).show();
+                        if (result.getString("status").equals(OStatus.CANCELED.toString())) order.clear();
+                        else if (result.getString("status").equals(OStatus.ACCEPTED.toString())) {
+                            mClient.status = OStatus.ACCEPTED.toString();
+                            Helper.setOrder(result);
+                        } else if (result.getString("status").equals(OStatus.NEW.toString())) {
+                            order.clear();
+                            getActivity().finish();
+                        }
+                        updateViews();
+                    } else {
 
-        @Override
-        protected void onPostExecute(JSONObject result) {
-            sendTask = null;
-            try {
-                if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
-                    Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_LONG).show();
-                    FinishTakeOrder();
-                } else if (result != null && result.getString("status").equals(OStatus.CANCELED.toString())) {
-                    order.clear();
-                    Toast.makeText(getApplicationContext(), "Заказ отменен", Toast.LENGTH_LONG).show();
-                } else {
-                    order.clear();
-                    Toast.makeText(getApplicationContext(), "Заказ уже занят", Toast.LENGTH_LONG).show();
+                    }
+                    if (order.status == OStatus.ONTHEWAY) {
+                        Intent intent = new Intent();
+                        getActivity().setResult(3, intent);
+                        getActivity().finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Ошибка при отправке на сервер", Toast.LENGTH_LONG).show();
+                updateViews();
+            }
+
+            @Override
+            protected void onCancelled() {
+                mTask = null;
             }
         }
-
-        @Override
-        protected void onCancelled() {
-            sendTask = null;
-        }
-    }
-
-    private void FinishTakeOrder() {
-        Helper.setOrder(mClient);
-        order.status = OStatus.ACCEPTED;
-        Intent intent = new Intent();
-        intent.putExtra("returnCode", true);
-        setResult(1, intent);
-        finish();
     }
 }

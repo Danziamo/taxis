@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import taxi.city.citytaxidriver.Utils.Helper;
+
 /**
  * Created by Daniyar on 3/18/2015.
  */
@@ -26,6 +28,7 @@ public class Client implements Serializable{
     public String distance;
     public String waitSum;
     public String fixedPrice;
+    public String totalSum;
 
     public Client() {}
 
@@ -50,10 +53,26 @@ public class Client implements Serializable{
     }
 
     public Client(Order order) {
+        this.id = order.id;
         this.phone = order.clientPhone;
         this.addressStart = order.addressStart;
         this.addressEnd = order.addressEnd;
         this.fixedPrice = String.valueOf((int)order.fixedPrice);
         this.description = order.description;
+        this.status = order.status.toString();
+        this.waitSum = String.valueOf((int)order.getWaitSum());
+        this.waitTime = Helper.getTimeFromLong(order.waitTime);
+        this.sum = String.valueOf((int)order.getTravelSum());
+        this.totalSum = String.valueOf((int)order.getTotalSum());
+    }
+
+    public JSONObject getClientAsJSON() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("wait_sum", this.waitSum);
+        object.put("wait_time", this.waitTime);
+        object.put("order_travel_time", this.time);
+        object.put("order_sum", this.sum);
+        object.put("distance", this.distance);
+        return object;
     }
 }

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,6 +99,7 @@ public class Helper {
         order.status = object.has("status") ? getStatus(object.getString("status")) : OStatus.NEW;
         order.startPoint = object.has("address_start") ? getLatLng(object.getString("address_start")) : null;
         order.addressStart = object.has("address_start_name") ? object.getString("address_start_name") : null;
+        order.addressEnd = object.has("address_stop_name") ? object.getString("address_stop_name") : null;
         order.tariff = object.has("tariff") ? object.getInt("tariff") : 0;
         order.driver = object.has("driver") ? object.getInt("driver") : 0;
         order.description = object.has("description") ? object.getString("description") : null;
@@ -120,6 +122,7 @@ public class Helper {
         order.clientPhone = client.phone;
         order.orderTime = client.orderTime;
         order.addressStart = client.addressStart;
+        order.addressEnd = client.addressEnd;
         order.description = client.description;
         double fixedPrice = 0;
         try {
@@ -191,5 +194,31 @@ public class Helper {
         String value = object.getString(key);
         if (value == null || value.equals("null")) return null;
         return value;
+    }
+
+    public static boolean isOrderActive(Order order) {
+        if (order == null || order.id == 0) return false;
+        OStatus status = order.status;
+        if (status == OStatus.NEW) return false;
+        if (status == OStatus.FINISHED) return false;
+        if (status == OStatus.CANCELED) return false;
+        return true;
+    }
+
+    public static boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    public static boolean isYearValid(String s) {
+        int year = 0;
+        try {
+            year = Integer.valueOf(s);
+        } catch (Exception e) {
+            return false;
+        }
+        return !(year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR));
     }
 }

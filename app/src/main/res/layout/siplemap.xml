@@ -125,7 +125,7 @@
                 android:text="00:00"
                 android:textColor="@color/blacktext2"
                 android:textSize="20sp"
-                android:id="@+id/textView4"
+                android:id="@+id/textViewWaitTime"
                 android:layout_marginLeft="20dp" />
 
             <TextView
@@ -159,7 +159,7 @@
                 android:text="0000"
                 android:textColor="@color/blacktext2"
                 android:textSize="20sp"
-                android:id="@+id/textView7"
+                android:id="@+id/textViewWaitSum"
                 android:layout_marginLeft="20dp" />
 
             <TextView
@@ -193,7 +193,7 @@
                 android:text="00000"
                 android:textColor="@color/blacktext2"
                 android:textSize="20sp"
-                android:id="@+id/textView11"
+                android:id="@+id/textViewDistance"
                 android:layout_marginLeft="20dp" />
 
             <TextView
@@ -227,7 +227,7 @@
                 android:text="000000"
                 android:textColor="@color/blacktext2"
                 android:textSize="20sp"
-                android:id="@+id/textView14"
+                android:id="@+id/textViewSum"
                 android:layout_marginLeft="20dp" />
 
             <TextView

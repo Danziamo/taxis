@@ -66,7 +66,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private EditText mPasswordView;
     private View mProgressView;
     private Button mPhoneSignInButton;
-    //private View mLoginFormView;
+    private View mLoginFormView;
     private User user = User.getInstance();
     private int statusCode;
 
@@ -101,7 +101,6 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
 
 
         mPhoneSignInButton = (Button) findViewById(R.id.btnSignIn);
-        mPhoneSignInButton.setEnabled(false);
         mPhoneSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,13 +123,11 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
 
             if (mRegId == null || mRegId.length() < 10 || mRegId.isEmpty()) {
                 registerInBackground();
-            } else {
-                mPhoneSignInButton.setEnabled(true);
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
-        //mLoginFormView = findViewById(R.id.login_form);
+        mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
@@ -250,6 +247,15 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -361,26 +367,22 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
                 user.password = mPassword;
                 json.put("phone", mPhone);
                 json.put("password", mPassword);
-                json.put("android_token", mRegId);
                 JSONObject object = api.loginRequest(json, "login/");
                 if (object != null) {
                     statusCode = object.getInt("status_code");
                     if (statusCode == HttpStatus.SC_OK) {
                         user.setUser(object);
                         id = object.getInt("id");
-                        JSONArray cars = api.hasCar(null, "usercars/");
-                        if (cars != null && cars.length() > 0) {
-                            for (int i = 0; i < cars.length(); ++i) {
-                                JSONObject row = cars.getJSONObject(i);
-                                if (row.getInt("driver") == id) {
-                                    hasCar = true;
-                                    break;
-                                }
-                            }
+                        JSONObject cars = api.getDataFromGetRequest(null, "usercars/?driver=" + user.id);
+                        if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
+                        if (mRegId != null) {
+                            JSONObject regObject = new JSONObject();
+                            regObject.put("android_token", mRegId);
+                            JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         }
                         JSONObject resultObject = api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/");
                         driverHasOrder(resultObject);
-                        resultObject = api.getDataFromGetRequest("?status=waiting&driver="+user.id, "orders/");
+                        resultObject = api.getDataFromGetRequest("?status=pending&driver="+user.id, "orders/");
                         driverHasOrder(resultObject);
                         resultObject = api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/");
                         driverHasOrder(resultObject);
@@ -470,10 +472,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
             }
 
             @Override
-            protected void onPostExecute(String msg) {
-                if (msg.equals("done")) mPhoneSignInButton.setEnabled(true);
-                else Toast.makeText(getApplicationContext(), "Cannot fetch ID from google", Toast.LENGTH_LONG).show();
-            }
+            protected void onPostExecute(String msg) {}
         }.execute(null, null, null);
     }
 }

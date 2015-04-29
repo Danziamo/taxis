@@ -12,11 +12,19 @@
     <style name="MainTheme" parent="Theme.AppCompat.NoActionBar">
         <!--<item name="android:background">@drawable/main_background</item>-->
         <item name="android:textColor">@color/blacktext2</item>
-        <item name="android:imeOptions">actionDone</item>NS
+        <!--<item name="android:inputType">text</item>-->
+        <item name="android:imeOptions">actionDone</item>
     </style>
 
-    <!--<style name="progressbar" parent="@android:style/Widget.ProgressBar">
+    <style name="DialogBoxTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:textColor">@color/blacktext2</item>
+
+    </style>
+
+    <style name="progressbar" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateDrawable">@drawable/progressbar</item>
-    </style>-->
+    </style>
 
 </resources>
