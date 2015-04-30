@@ -90,10 +90,8 @@
         android:layout_marginRight="20dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        style="@style/mediumButton.Green"
         android:text="Взять"
-        android:background="@drawable/button_shape_green"
         android:id="@+id/button5"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -101,11 +99,9 @@
         android:layout_marginBottom="41dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        style="@style/mediumButton.Yellow"
         android:text="Заказы"
         android:textColor="@color/blacktext2"
-        android:background="@drawable/button_shape_yellow"
         android:id="@+id/button6"
         android:layout_alignTop="@+id/button5"
         android:layout_alignParentRight="true"

@@ -10,9 +10,7 @@
 
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:text="На месте"
         android:textColor="@color/blacktext2"
         android:id="@+id/button18"
@@ -22,9 +20,7 @@
         android:layout_marginBottom="20dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:text="Доп. инфо"
         android:textColor="@color/blacktext2"
         android:id="@+id/button19"
@@ -34,9 +30,7 @@
         android:layout_marginBottom="20dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_red"
+        style="@style/mediumButton.Red"
         android:text="Отказ"
         android:textColor="@color/blacktext2"
         android:id="@+id/button20"

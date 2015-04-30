@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@drawable/main_background"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -23,8 +23,8 @@
         android:indeterminate="false" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/sign_up_form">
 
         <TextView
@@ -37,85 +37,49 @@
             android:id="@+id/textViewRegistration" />
 
         <Button
-            android:layout_marginTop="59dp"
-            android:layout_below="@+id/etrPassword"
-            android:background="@drawable/button_shape_yellow"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Yellow"
             android:text="Подтвердить"
-            android:textColor="#040f1a"
             android:id="@+id/btnSignUp"
-            android:layout_marginBottom="68dp"
+            android:layout_below="@+id/etrPassword"
             android:layout_centerHorizontal="true" />
 
-        <AutoCompleteTextView
-            android:layout_width="320dp"
-            android:layout_height="40dp"
+        <EditText
+            style="@style/mediumEditText"
             android:inputType="textPersonName"
-            android:background="@drawable/textbox_background"
-            android:ems="10"
             android:id="@+id/etrLastName"
             android:hint="Фамилия"
-            android:textColor="#000000"
-            android:textColorHint="#a1000000"
-            android:layout_below="@+id/textViewRegistration"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="35dp" />
+            android:layout_below="@+id/textViewRegistration" />
 
-        <AutoCompleteTextView
-            android:layout_width="320dp"
-            android:layout_height="40dp"
+        <EditText
+            style="@style/mediumEditText"
             android:inputType="textPersonName"
-            android:background="@drawable/textbox_background"
-            android:ems="10"
             android:id="@+id/etrFirstName"
             android:hint="Имя"
-            android:textColor="#000000"
-            android:textColorHint="#a1000000"
             android:layout_below="@+id/etrLastName"
             android:layout_alignLeft="@+id/etrLastName"
-            android:layout_alignStart="@+id/etrLastName"
-            android:layout_marginTop="20dp" />
+            android:layout_alignStart="@+id/etrLastName" />
 
-        <AutoCompleteTextView
-            android:layout_width="320dp"
-            android:layout_height="40dp"
+        <EditText
+            style="@style/mediumEditText"
             android:inputType="textEmailAddress"
-            android:background="@drawable/textbox_background"
             android:id="@+id/etrEmail"
             android:hint="E-mail"
-            android:textColor="#000000"
-            android:textColorHint="#a1000000"
-            android:layout_below="@+id/etrFirstName"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp" />
+            android:layout_below="@+id/etrFirstName" />
 
-        <AutoCompleteTextView
-            android:layout_width="320dp"
-            android:layout_height="40dp"
+        <EditText
+            style="@style/mediumEditText"
             android:inputType="phone"
-            android:background="@drawable/textbox_background"
             android:id="@+id/etrPhone"
             android:hint="Введите номер телефона"
-            android:textColor="#000000"
-            android:textColorHint="#a1000000"
-            android:layout_marginTop="20dp"
             android:layout_below="@+id/etrEmail"
             android:layout_alignLeft="@+id/etrEmail"
             android:layout_alignStart="@+id/etrEmail" />
 
         <EditText
-            android:layout_width="320dp"
-            android:layout_height="40dp"
+            style="@style/mediumEditText"
             android:inputType="textPassword"
-            android:background="@drawable/textbox_background"
-            android:ems="10"
             android:id="@+id/etrPassword"
             android:hint="Пароль"
-            android:textColor="#000000"
-            android:textColorHint="#a1000000"
-            android:layout_weight="9"
-            android:layout_marginTop="20dp"
             android:layout_below="@+id/etrPhone"
             android:layout_alignLeft="@+id/etrPhone"
             android:layout_alignStart="@+id/etrPhone" />

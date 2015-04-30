@@ -27,108 +27,64 @@
         android:layout_marginTop="10dp">
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/textbox_background"
+            style="@style/mediumEditText"
             android:hint="Фамилия"
-            android:padding="5dp"
-            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextLastName"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:textColor="@color/blacktext2"
             android:inputType="text"
-            android:layout_margin="10dp" />
+            android:layout_gravity="center_horizontal" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/textbox_background"
+            style="@style/mediumEditText"
             android:hint="Имя"
-            android:padding="5dp"
-            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextFirstName"
-            android:layout_gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/blacktext2"
             android:inputType="text"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/textbox_background"
+            style="@style/mediumEditText"
             android:hint="e-mail"
-            android:padding="5dp"
-            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextEmail"
             android:inputType="textEmailAddress"
-            android:layout_gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/blacktext2"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp">
 
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="6"
+                style="@style/SmallEditText"
                 android:hint="+996"
                 android:text="+996"
-                android:background="@drawable/textbox_background"
-                android:padding="5dp"
-                android:textColorHint="@color/blacktext1"
-                android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:id="@+id/textViewExtra"
-                android:textSize="20sp"
-                android:inputType="phone"
-                android:textColor="@color/blacktext2"/>
+                android:inputType="phone" />
 
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@drawable/textbox_background"
-                android:layout_weight="2"
+                style="@style/ShortEditText"
                 android:hint="Телефон"
-                android:padding="5dp"
-                android:textColorHint="@color/blacktext1"
                 android:id="@+id/textViewPhone"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="5dp"
                 android:inputType="number"
-                android:textSize="20sp"
                 android:textColor="@color/blacktext2"/>
         </LinearLayout>
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/textbox_background"
+            style="@style/mediumEditText"
             android:hint="Пароль"
-            android:padding="5dp"
-            android:textColorHint="@color/blacktext1"
             android:id="@+id/editTextPassword"
             android:inputType="textPassword"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:textColor="@color/blacktext2"
             android:layout_margin="10dp" />
 
         <Button
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Yellow"
             android:text="Сохранить"
-            android:visibility="visible"
-            android:background="@drawable/button_shape_yellow"
             android:textColor="@color/blacktext2"
             android:id="@+id/buttonSave"
             android:layout_gravity="center_horizontal"
@@ -146,22 +102,17 @@
         android:layout_marginBottom="10dp">
 
         <Button
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Yellow"
             android:text="Назад"
             android:textColor="@color/blacktext2"
-            android:background="@drawable/button_shape_yellow"
             android:id="@+id/buttonBack"
-            android:layout_weight="2.5"
             android:layout_margin="10dp" />
 
         <Button
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Red"
             android:text="Выход"
             android:background="@drawable/button_shape_red"
             android:id="@+id/buttonExit"
-            android:layout_weight="2.5"
             android:layout_margin="10dp" />
     </LinearLayout>
 

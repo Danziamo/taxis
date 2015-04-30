@@ -8,11 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" tools:context=".LoginActivity">
 
-
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:text="На борту"
         android:textColor="@color/blacktext2"
         android:id="@+id/button18"
@@ -22,9 +19,7 @@
         android:layout_marginBottom="20dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:text="Доп. инфо"
         android:textColor="@color/blacktext2"
         android:id="@+id/button19"
@@ -34,9 +29,7 @@
         android:layout_marginBottom="20dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_shape_red"
+        style="@style/mediumButton.Red"
         android:text="Отказ"
         android:textColor="@color/blacktext2"
         android:id="@+id/openpopup"

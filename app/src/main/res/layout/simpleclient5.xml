@@ -25,9 +25,7 @@
         android:layout_alignTop="@+id/textView24" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:text="Да"
         android:textColor="@color/blacktext2"
         android:id="@+id/button35"
@@ -38,9 +36,7 @@
         android:layout_marginLeft="10dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_shape_black"
+        style="@style/mediumButton.Black"
         android:textColor="@color/white"
         android:text="Другой адресс"
         android:id="@+id/button36"
@@ -50,9 +46,7 @@
         android:layout_marginRight="10dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_shape_green"
+        style="@style/mediumButton.Green"
         android:textColor="@color/blacktext2"
         android:text="Вызвать"
         android:id="@+id/button37"
@@ -63,9 +57,7 @@
         android:layout_marginLeft="10dp" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_shape_black"
+        style="@style/mediumButton.Black"
         android:textColor="@color/white"
         android:text="Настройки"
         android:id="@+id/button38"

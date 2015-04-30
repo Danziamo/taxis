@@ -32,12 +32,10 @@
             android:id="@+id/textViewCarRegistration" />
 
         <Button
-            android:layout_width="250dp"
-            android:layout_height="35dp"
-            android:textColor="#202930"
+            style="@style/mediumButton.Yellow"
+            android:textColor="@color/blacktext2"
             android:text="Сохранить"
             android:id="@+id/btnSaveCar"
-            android:background="@drawable/button_shape_yellow"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 

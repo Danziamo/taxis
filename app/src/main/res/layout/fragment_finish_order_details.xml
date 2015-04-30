@@ -32,11 +32,7 @@
                 android:layout_centerHorizontal="true" />
 
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:background="@drawable/textbox_background"
-                android:textColor="@color/blacktext2"
+                style="@style/mediumEditText"
                 android:id="@+id/editTextStartAddress"
                 android:layout_below="@+id/textViewStartAddress"
                 android:layout_centerHorizontal="true"
@@ -227,28 +223,15 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="8"
-                    android:background="@drawable/textbox_background"
+                    style="@style/FixedEditText"
                     android:text="Фиксированная плата:"
-                    android:padding="5dp"
-                    android:gravity="center|left"
-                    android:textColor="@color/red"
                     android:id="@+id/textViewFixedPriceLabel" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="40dp"
-                    android:gravity="center|right"
-                    android:padding="5dp"
-                    android:background="@drawable/textbox_background"
-                    android:id="@+id/textViewFixedPrice"
-                    android:textColor="@color/red" />
+                    style="@style/SmallFixedEditText"
+                    android:id="@+id/textViewFixedPrice" />
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -358,8 +341,7 @@
         android:layout_centerHorizontal="true">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Green"
             android:background="@drawable/button_shape_green"
             android:text="Доставил"
             android:layout_weight="1"
@@ -367,8 +349,7 @@
             android:layout_marginRight="10dp"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            style="@style/mediumButton.Green"
             android:background="@drawable/button_shape_green"
             android:text="На карте"
             android:id="@+id/buttonMap"

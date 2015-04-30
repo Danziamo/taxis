@@ -31,10 +31,7 @@
                 android:layout_centerHorizontal="true" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:background="@drawable/textbox_background"
+                style="@style/mediumEditText"
                 android:text="Адрес откуда надо забрать"
                 android:textColor="@color/blacktext2"
                 android:id="@+id/textViewStartAddress"
@@ -55,13 +52,10 @@
                 android:layout_centerHorizontal="true" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@drawable/textbox_background"
-                android:text="Телефон"
+                style="@style/mediumEditText"
+                android:hint="Телефон"
                 android:gravity="center"
                 android:id="@+id/textViewClientPhone"
-                android:textColor="@color/blacktext1"
                 android:layout_below="@+id/textViewClientPhoneLabel"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="10dp" />
@@ -89,13 +83,8 @@
                 android:textSize="@dimen/text_size_medium" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                style="@style/mediumEditText"
                 android:hint="Адрес куда надо доставить"
-                android:textColorHint="@color/blacktext1"
-                android:textColor="@color/blacktext2"
-                android:gravity="center"
-                android:background="@drawable/textbox_background"
                 android:id="@+id/textViewStopAddress"
                 android:layout_below="@+id/textViewStopAddressLabel"
                 android:layout_alignParentRight="false"
@@ -113,14 +102,9 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="7"
-                    android:background="@drawable/textbox_background"
+                    style="@style/FixedEditText"
                     android:text="Фиксированная плата"
                     android:textColor="@color/red"
-                    android:gravity="left|center"
-                    android:paddingLeft="5dp"
                     android:id="@+id/textViewFixedPriceLabel" />
 
                 <View
@@ -130,14 +114,8 @@
                     android:background="@color/blacktext2"/>
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:paddingRight="5dp"
-                    android:background="@drawable/textbox_background"
-                    android:textColor="@color/red"
-                    android:gravity="right|center"
-                    android:id="@+id/textViewFixedPrice"
-                    android:layout_height="match_parent" />
+                    style="@style/SmallFixedEditText"
+                    android:id="@+id/textViewFixedPrice" />
 
 
             </LinearLayout>

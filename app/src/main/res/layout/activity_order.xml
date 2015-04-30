@@ -25,6 +25,7 @@
         android:layout_above="@+id/linearLayoutButtonGroupOrder"
         android:scrollbarStyle="outsideInset"
         android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:dividerHeight="2.0sp">
     </ListView>
@@ -40,12 +41,9 @@
         android:layout_marginTop="5dp">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_yellow"
+            style="@style/mediumButton.Yellow"
             android:text="Карта"
             android:textColor="@color/blacktext2"
-            android:layout_weight="5"
             android:id="@+id/buttonMap"
             android:layout_marginTop="10dp" />
 
@@ -59,12 +57,8 @@
             android:layout_marginLeft="20dp" />
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="5"
+            style="@style/mediumButton.Yellow"
             android:text="Ещё заказы"
-            android:background="@drawable/button_shape_yellow"
-            android:textColor="@color/blacktext2"
             android:id="@+id/buttonMoreOrder"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp" />
