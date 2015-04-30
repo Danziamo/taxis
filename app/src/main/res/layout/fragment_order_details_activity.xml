@@ -179,23 +179,14 @@
         android:layout_margin="10dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="5"
+            style="@style/mediumButton"
             android:layout_marginRight="15dp"
             android:visibility="invisible" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_green"
-
+            style="@style/mediumButton.Green"
             android:text="На карте"
-            android:layout_weight="5"
             android:id="@+id/buttonMapInfo"
-            android:layout_above="@+id/linearLayoutOkCancelGroup"
-            android:layout_alignRight="@+id/linearLayoutOkCancelGroup"
-            android:layout_alignEnd="@+id/linearLayoutOkCancelGroup"
             android:layout_marginLeft="15dp" />
     </LinearLayout>
 
@@ -210,19 +201,13 @@
         android:layout_margin="10dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_green"
+            style="@style/mediumButton.Green"
             android:text="На месте"
-            android:layout_weight="5"
             android:id="@+id/buttonActionOk"
             android:layout_marginRight="15dp" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="5"
-            android:background="@drawable/button_shape_red"
+            style="@style/mediumButton.Red"
             android:text="Отказ"
             android:id="@+id/buttonActionCancel"
             android:layout_marginLeft="15dp" />

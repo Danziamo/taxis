@@ -26,5 +26,19 @@
     <style name="progressbar" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateDrawable">@drawable/progressbar</item>
     </style>
+    
+    <!--Buttons-->
+    <style name="mediumButton" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_weight">5</item>
+    </style>
 
+    <style name="mediumButton.Green" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_green</item>
+    </style>
+
+    <style name="mediumButton.Red" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_red</item>
+    </style>
 </resources>
