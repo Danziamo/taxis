@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_background"
+    tools:context="taxi.city.citytaxidriver.AccountActivity.AccountFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:id="@+id/textViewAccountTitle"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Ваш личный кабинет" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/linearLayoutAccountInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textViewAccountTitle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Лицевой счёт:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text=""
+            android:textSize="25sp"
+            android:textColor="@color/lime"
+            android:id="@+id/textViewAccountNumber" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Баланс:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/textViewAccountBalance"
+            android:textColor="@color/lime"
+            android:textSize="25sp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <Button
+        style="@style/mediumButton.Yellow"
+        android:layout_marginTop="50dp"
+        android:layout_width="200dp"
+        android:text="Назад"
+        android:id="@+id/buttonBack"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/linearLayoutAccountInfo"/>
+</RelativeLayout>

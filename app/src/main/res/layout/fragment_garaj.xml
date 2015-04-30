@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayoutBottomButtons"
         android:orientation="vertical"
         android:weightSum="3">
 
@@ -17,7 +18,6 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_weight="1"
-
             android:layout_height="match_parent">
 
             <TextView
@@ -29,10 +29,10 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/image_garage"
+                android:background="@drawable/image_garaj"
                 android:id="@+id/imageViewGaraj"
                 android:contentDescription="Настройки"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.7" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -51,17 +51,16 @@
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/image_info_driver"
+                android:background="@drawable/image_user_details"
                 android:id="@+id/imageButtonDriverInfo"
                 android:layout_below="@+id/imageViewGaraj"
-
                 android:contentDescription="Информация о водителе"
                 android:layout_weight="1"/>
 
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/image_info_auto"
+                android:background="@drawable/image_car_details"
                 android:id="@+id/imageButtonCarInfo"
                 android:layout_alignBottom="@+id/imageButtonDriverInfo"
                 android:layout_alignParentRight="true"
@@ -80,7 +79,7 @@
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/checkout"
+                android:background="@drawable/image_account"
                 android:id="@+id/imageButtonAccountNumber"
                 android:layout_below="@+id/imageButtonDriverInfo"
                 android:layout_alignParentLeft="true"
@@ -100,34 +99,31 @@
                 android:layout_weight="1"/>
 
         </LinearLayout>
+    </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
+    <LinearLayout
+        android:id="@+id/linearLayoutBottomButtons"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true">
 
-            <Button
+        <Button
+            style="@style/mediumButton.Yellow"
+            android:text="Главная"
+            android:textColor="@color/blacktext2"
+            android:id="@+id/buttonMain"
+            android:layout_margin="10dp" />
 
-                style="@style/mediumButton.Yellow"
-                android:text="Главная"
-                android:textColor="@color/blacktext2"
-                android:layout_weight="2.5"
-                android:id="@+id/buttonMain"
-                android:layout_marginBottom="20dp"
-                android:layout_margin="10dp" />
-
-            <Button
-                style="@style/mediumButton.Red"
-                android:background="@drawable/button_shape_red"
-                android:text="Выход"
-                android:layout_weight="2.5"
-                android:id="@+id/buttonCancel"
-                android:layout_alignTop="@+id/buttonMain"
-                android:layout_margin="10dp" />
-
-        </LinearLayout>
+        <Button
+            style="@style/mediumButton.Red"
+            android:background="@drawable/button_shape_red"
+            android:text="Выход"
+            android:id="@+id/buttonCancel"
+            android:layout_alignTop="@+id/buttonMain"
+            android:layout_margin="10dp" />
 
     </LinearLayout>
 

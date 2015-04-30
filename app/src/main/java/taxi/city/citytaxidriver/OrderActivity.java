@@ -82,7 +82,10 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         btnRefresh.setOnClickListener(this);
         btnMoreOrders.setOnClickListener(this);
 
-        if (!isNew) fetchData();
+        if (!isNew) {
+            btnMap.setText("Назад");
+            fetchData();
+        }
     }
 
     @Override

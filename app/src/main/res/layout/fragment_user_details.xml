@@ -74,21 +74,31 @@
                 android:textColor="@color/blacktext2"/>
         </LinearLayout>
 
-        <EditText
-            style="@style/mediumEditText"
-            android:hint="Пароль"
-            android:id="@+id/editTextPassword"
-            android:inputType="textPassword"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/relativeLayoutPassword"
+            android:layout_height="wrap_content">
 
-        <Button
-            style="@style/mediumButton.Yellow"
-            android:text="Сохранить"
-            android:textColor="@color/blacktext2"
-            android:id="@+id/buttonSave"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp" />
+            <EditText
+                style="@style/mediumEditText"
+                android:hint="Пароль"
+                android:id="@+id/editTextPassword"
+                android:inputType="textPassword"
+                android:layout_weight="1"
+                 />
+
+            <ImageButton
+                android:id="@+id/imageButtonShowPassword"
+                android:layout_marginTop="23dp"
+                android:layout_marginRight="5dp"
+                android:layout_width="30dp"
+                android:layout_height="15dp"
+                android:layout_alignRight="@+id/editTextPassword"
+                android:layout_alignEnd="@+id/editTextPassword"
+                android:background="@drawable/password_eye"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -104,16 +114,15 @@
         <Button
             style="@style/mediumButton.Yellow"
             android:text="Назад"
-            android:textColor="@color/blacktext2"
             android:id="@+id/buttonBack"
             android:layout_margin="10dp" />
 
         <Button
-            style="@style/mediumButton.Red"
-            android:text="Выход"
-            android:background="@drawable/button_shape_red"
-            android:id="@+id/buttonExit"
+            style="@style/mediumButton.Yellow"
+            android:text="Сохранить"
+            android:id="@+id/buttonSave"
             android:layout_margin="10dp" />
+
     </LinearLayout>
 
 </RelativeLayout>

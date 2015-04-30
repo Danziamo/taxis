@@ -21,25 +21,34 @@
                 android:id="@+id/mainLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#80ffffff"
                 android:padding="5dp"
-                android:textColor="#000000"
-                android:textSize="15dp"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Начислено:"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/blacktext2"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayoutMapWaitTime"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:weightSum="10">
-*
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:text="Ожидание:"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                     <TextView
@@ -48,7 +57,7 @@
                         android:gravity="right"
                         android:text="00:00"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:layout_weight="3.5"
                         android:id="@+id/textViewWaitTime"
                         android:layout_marginLeft="20dp" />
@@ -59,7 +68,7 @@
                         android:layout_weight="1.5"
                         android:text="мин"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
@@ -115,7 +124,7 @@
                         android:layout_weight="5"
                         android:text="Расстояние:"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                     <TextView
@@ -125,7 +134,7 @@
                         android:gravity="right"
                         android:text="00000"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:id="@+id/textViewDistance"
                         android:layout_marginLeft="20dp" />
 
@@ -135,7 +144,7 @@
                         android:layout_weight="1.5"
                         android:text="км"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
@@ -191,7 +200,7 @@
                         android:layout_weight="5"
                         android:text="Время проезда:"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                     <TextView
@@ -201,7 +210,7 @@
                         android:gravity="right"
                         android:text="000000"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:id="@+id/textViewOrderTime"
                         android:layout_marginLeft="20dp" />
 
@@ -211,7 +220,7 @@
                         android:layout_weight="1.5"
                         android:text="мин"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
@@ -267,7 +276,7 @@
                         android:layout_weight="5"
                         android:text="Итоговая сумма:"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                     <TextView
@@ -277,7 +286,7 @@
                         android:gravity="right"
                         android:text="000000"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:id="@+id/textViewOrderTotalSum"
                         android:layout_marginLeft="20dp" />
 
@@ -287,7 +296,7 @@
                         android:layout_weight="1.5"
                         android:text="сом"
                         android:textColor="@color/blacktext2"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_size"
                         android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
@@ -304,7 +313,7 @@
 
                 <Button
                     android:id="@+id/buttonWaitTrip"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_shape_green"
                     android:layout_weight="1"
@@ -312,7 +321,7 @@
 
                 <Button
                     android:id="@+id/buttonAdditionalInfo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_shape_green"
                     android:layout_weight="1"

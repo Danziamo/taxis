@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="mediumButton" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_weight">5</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">HelveticaNeueCyr-Bold.otf</item>
+    </style>
+
+    <style name="mediumButton.Green" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_green</item>
+    </style>
+
+    <style name="mediumButton.Yellow" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_yellow</item>
+    </style>
+
+    <style name="mediumButton.Black" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_black</item>
+    </style>
+
+    <style name="mediumButton.Red" parent="@style/mediumButton">
+        <item name="android:background">@drawable/button_shape_red</item>
+    </style>
+
+</resources>

@@ -24,7 +24,7 @@
                 android:textColor="@color/white"
                 android:id="@+id/textViewClientAddressLabel"
                 android:layout_marginTop="10dp"
-                android:textSize="@dimen/text_size_large"
+                android:textSize="@dimen/text_size_medium"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_alignParentTop="true"
@@ -46,7 +46,7 @@
                 android:textColor="@color/white"
                 android:id="@+id/textViewClientPhoneLabel"
                 android:layout_marginTop="10dp"
-                android:textSize="@dimen/text_size_large"
+                android:textSize="@dimen/text_size_medium"
                 android:layout_below="@+id/textViewStartAddress"
                 android:layout_centerHorizontal="true" />
 
@@ -67,8 +67,8 @@
                 android:src="@drawable/image_tube"
                 android:id="@+id/imageButtonCallClient"
                 android:layout_alignTop="@+id/textViewClientPhone"
-                android:layout_toRightOf="@+id/textViewClientPhoneLabel"
-                android:layout_toEndOf="@+id/textViewClientPhoneLabel" />
+                android:layout_alignRight="@+id/textViewStopAddress"
+                android:layout_alignEnd="@+id/textViewStopAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                 android:layout_below="@+id/textViewClientPhone"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:textSize="@dimen/text_size_large" />
+                android:textSize="@dimen/text_size_medium" />
 
             <TextView
                 style="@style/mediumEditText"

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<familyset>
+    <!-- Font with only regular and bold defined -->
+    <family>
+        <nameset>
+            <name>helvetica</name>
+        </nameset>
+        <fileset>
+            <file>HelveticaNeueCyr-Medium.otf</file>
+            <file>HelveticaNeueCyr-Bold.otf</file>
+        </fileset>
+    </family>
+
+</familyset>

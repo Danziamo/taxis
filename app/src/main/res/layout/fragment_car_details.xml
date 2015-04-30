@@ -179,16 +179,6 @@
                     android:textSize="15dp" />
             </LinearLayout>
 
-            <Button
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:background="@drawable/button_shape_yellow"
-                android:textColor="@color/blacktext2"
-                android:text="Сохранить"
-                android:id="@+id/buttonSave"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
         </LinearLayout>
 
     </ScrollView>
@@ -208,24 +198,17 @@
         android:layout_marginBottom="5dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_yellow"
-            android:textColor="@color/blacktext2"
+            style="@style/mediumButton.Yellow"
             android:text="Назад"
-            android:layout_marginRight="10dp"
             android:id="@+id/buttonBack"
-            android:layout_weight="5"
-            android:layout_gravity="center|left" />
+            android:layout_margin="10dp"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_red"
-            android:text="Выход"
-            android:id="@+id/buttonExit"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp" />
+            style="@style/mediumButton.Yellow"
+            android:text="Сохранить"
+            android:id="@+id/buttonSave"
+            android:layout_margin="10dp" />
+
     </LinearLayout>
 
 </RelativeLayout>

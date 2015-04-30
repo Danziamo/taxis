@@ -6,7 +6,6 @@
     android:id="@+id/relativeLayoutFragment"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/fon22"
 
     tools:context=".MapsActivity">
 
@@ -91,7 +90,7 @@
         android:paddingBottom="15dp"
         android:paddingTop="15dp"
         android:layout_marginTop="20dp"
-        android:gravity="center">>
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -5,17 +5,21 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
@@ -51,7 +55,6 @@ public class UserDetailsActivity extends ActionBarActivity {
 
         Button btnSave;
         Button btnBack;
-        Button btnExit;
         LinearLayout llBackExit;
 
         private User user;
@@ -78,6 +81,26 @@ public class UserDetailsActivity extends ActionBarActivity {
             tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
             llBackExit = (LinearLayout) rootView.findViewById(R.id.linearLayoutBackExitGroup);
 
+            ImageButton btnShowPassword = (ImageButton)rootView.findViewById(R.id.imageButtonShowPassword);
+
+            btnShowPassword.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN){
+                        etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        etPassword.setSelection(etPassword.length());
+                        return true;
+                    }
+                    if(event.getAction() == MotionEvent.ACTION_UP){
+                        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        etPassword.setSelection(etPassword.length());
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
             if (!isNew) {
                 etLastName.setText(user.lastName);
                 etFirstName.setText(user.firstName);
@@ -91,11 +114,9 @@ public class UserDetailsActivity extends ActionBarActivity {
 
             btnSave = (Button)rootView.findViewById(R.id.buttonSave);
             btnBack = (Button)rootView.findViewById(R.id.buttonBack);
-            btnExit = (Button)rootView.findViewById(R.id.buttonExit);
 
             btnSave.setOnClickListener(this);
             btnBack.setOnClickListener(this);
-            btnExit.setOnClickListener(this);
             updateView();
 
             return rootView;

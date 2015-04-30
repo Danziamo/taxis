@@ -69,7 +69,6 @@ public class CarDetailsActivity extends ActionBarActivity {
 
         Button btnBack;
         Button btnSave;
-        Button btnExit;
 
         int userCarId = 0;
 
@@ -100,10 +99,8 @@ public class CarDetailsActivity extends ActionBarActivity {
 
             btnSave = (Button)rootView.findViewById(R.id.buttonSave);
             btnBack = (Button)rootView.findViewById(R.id.buttonBack);
-            btnExit = (Button)rootView.findViewById(R.id.buttonExit);
 
             btnBack.setOnClickListener(this);
-            btnExit.setOnClickListener(this);
             btnSave.setOnClickListener(this);
 
             String driverLicenseExtra = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
@@ -128,10 +125,10 @@ public class CarDetailsActivity extends ActionBarActivity {
 
         private void updateViews() {
             if (isNew) {
-                llBackExitGroup.setVisibility(View.GONE);
+                btnBack.setVisibility(View.GONE);
                 tvTitle.setText("Регистрация Авто");
             } else {
-                llBackExitGroup.setVisibility(View.VISIBLE);
+                btnBack.setVisibility(View.VISIBLE);
                 tvTitle.setText("Настройки Авто");
             }
         }

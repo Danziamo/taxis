@@ -107,7 +107,9 @@ public class GarajActivity extends ActionBarActivity {
         }
 
         private void openAccountNumber() {
-            final AlertDialog.Builder builder =
+            Intent intent = new Intent(getActivity(), AccountActivity.class);
+            startActivity(intent);
+            /*final AlertDialog.Builder builder =
                     new AlertDialog.Builder(getActivity(), R.style.DialogBoxTheme);
             final String title = "Ваш лицевой счёт и баланс";
             final TextView tvAccountNumber = new TextView(getActivity());
@@ -131,7 +133,7 @@ public class GarajActivity extends ActionBarActivity {
                                 }
                             })
                     .create()
-                    .show();
+                    .show();*/
         }
 
         private void openCarInfo() {

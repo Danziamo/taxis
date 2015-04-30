@@ -98,6 +98,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
             btnOk.setOnClickListener(this);
             btnCancel.setOnClickListener(this);
             btnMap.setOnClickListener(this);
+            imgBtnCallClient.setOnClickListener(this);
 
             updateViews();
 
