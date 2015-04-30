@@ -1,28 +1,19 @@
 package taxi.city.citytaxidriver;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,14 +24,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.HttpStatus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
@@ -50,7 +39,7 @@ import taxi.city.citytaxidriver.Utils.Helper;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LoginActivity extends Activity{
 
     private static final String PREFS_NAME = "MyPrefsFile";
     private UserLoginTask mAuthTask = null;
@@ -62,11 +51,13 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
     private static final String TAG = "LoginActivity";
 
     // UI references.
-    private AutoCompleteTextView mPhoneView;
+    private EditText mPhoneView;
     private EditText mPasswordView;
-    private View mProgressView;
+    //private View mProgressView;
     private Button mPhoneSignInButton;
-    private View mLoginFormView;
+    //private View mLoginFormView;
+
+    SweetAlertDialog pDialog;
     private User user = User.getInstance();
     private int statusCode;
 
@@ -84,8 +75,7 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         setContentView(R.layout.login);
 
         // Set up the login form.
-        mPhoneView = (AutoCompleteTextView) findViewById(R.id.login_phone);
-        populateAutoComplete();
+        mPhoneView = (EditText) findViewById(R.id.login_phone);
 
         mPasswordView = (EditText) findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -127,8 +117,8 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        /*mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);*/
     }
 
     private void signUp() {
@@ -167,16 +157,6 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         editor.apply();
     }
 
-    private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     public void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -241,88 +221,16 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        if (show) {
+            pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper()
+                    .setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Авторизация");
+            pDialog.setCancelable(true);
+            pDialog.show();
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            pDialog.dismissWithAnimation();
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mPhoneView.setAdapter(adapter);
     }
 
     private void driverHasOrder(JSONObject object) {
@@ -400,7 +308,6 @@ public class LoginActivity extends Activity implements LoaderManager.LoaderCallb
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
             if (success && statusCode == 200) {
                 NextActivity(hasCar);
             } else  if (statusCode == 403) {

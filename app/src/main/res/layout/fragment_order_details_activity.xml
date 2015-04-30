@@ -24,7 +24,7 @@
                 android:textColor="@color/white"
                 android:id="@+id/textViewClientAddressLabel"
                 android:layout_marginTop="10dp"
-                android:textSize="25dp"
+                android:textSize="@dimen/text_size_large"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_alignParentTop="true"
@@ -32,7 +32,6 @@
 
             <TextView
                 style="@style/mediumEditText"
-                android:text="Адрес откуда надо забрать"
                 android:textColor="@color/blacktext2"
                 android:id="@+id/textViewStartAddress"
                 android:layout_marginTop="10dp"
@@ -47,29 +46,29 @@
                 android:textColor="@color/white"
                 android:id="@+id/textViewClientPhoneLabel"
                 android:layout_marginTop="10dp"
-                android:textSize="25sp"
+                android:textSize="@dimen/text_size_large"
                 android:layout_below="@+id/textViewStartAddress"
                 android:layout_centerHorizontal="true" />
 
             <TextView
                 style="@style/mediumEditText"
-                android:hint="Телефон"
                 android:gravity="center"
                 android:id="@+id/textViewClientPhone"
                 android:layout_below="@+id/textViewClientPhoneLabel"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignRight="@+id/textViewDescriptionLabel"
+                android:layout_alignEnd="@+id/textViewDescriptionLabel" />
 
             <ImageButton
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/image_tube"
-
+                android:id="@+id/imageButtonCallClient"
                 android:layout_alignTop="@+id/textViewClientPhone"
-                android:layout_alignRight="@+id/textViewClientPhone"
-                android:layout_alignEnd="@+id/textViewClientPhone"
-                android:layout_alignBottom="@+id/textViewClientPhone"
-                android:id="@+id/imageButtonCallClient" />
+                android:layout_toRightOf="@+id/textViewClientPhoneLabel"
+                android:layout_toEndOf="@+id/textViewClientPhoneLabel" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -80,11 +79,12 @@
                 android:layout_below="@+id/textViewClientPhone"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:textSize="@dimen/text_size_medium" />
+                android:textSize="@dimen/text_size_large" />
 
             <TextView
                 style="@style/mediumEditText"
                 android:hint="Адрес куда надо доставить"
+                android:gravity="center"
                 android:id="@+id/textViewStopAddress"
                 android:layout_below="@+id/textViewStopAddressLabel"
                 android:layout_alignParentRight="false"

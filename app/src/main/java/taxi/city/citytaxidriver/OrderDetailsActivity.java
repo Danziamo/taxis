@@ -47,6 +47,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
      */
     public static class OrderDetailsFragment extends Fragment implements View.OnClickListener{
         private Client mClient;
+        private boolean isActive;
         private ApiService api = ApiService.getInstance();
         private Order order = Order.getInstance();
         private User user = User.getInstance();
@@ -71,6 +72,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_order_details_activity, container, false);
             mClient = (Client)getActivity().getIntent().getSerializableExtra("DATA");
+            isActive = getActivity().getIntent().getBooleanExtra("ACTIVE", false);
 
             TextView tvAddressStart = (TextView) rootView.findViewById(R.id.textViewStartAddress);
             tvClientPhone = (TextView) rootView.findViewById(R.id.textViewClientPhone);
@@ -148,12 +150,14 @@ public class OrderDetailsActivity extends ActionBarActivity {
                     break;
                 case R.id.buttonActionCancel:
                     if (!mClient.status.equals(OStatus.NEW.toString())) cancelOrder();
-                    getActivity().finish();
                     break;
                 case R.id.imageButtonCallClient:
                     callClient();
                     break;
                 default:
+                    Intent intent = new Intent();
+                    intent.putExtra("returnCode", true);
+                    getActivity().setResult(isActive ? 3 : 1, intent);
                     getActivity().finish();
             }
         }
@@ -248,15 +252,20 @@ public class OrderDetailsActivity extends ActionBarActivity {
                             Helper.setOrder(result);
                         } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                             order.clear();
+                            Intent intent = new Intent();
+                            intent.putExtra("returnCode", false);
+                            getActivity().setResult(isActive ? 3 : 1, intent);
                             getActivity().finish();
                         }
                         updateViews();
-                    } else {
-
                     }
                     if (order.status == OStatus.ONTHEWAY) {
                         Intent intent = new Intent();
-                        getActivity().setResult(3, intent);
+                        intent.putExtra("returnCode", true);
+                        if (!isActive)
+                            getActivity().setResult(1, intent);
+                        else
+                            getActivity().setResult(3, intent);
                         getActivity().finish();
                     }
                 } catch (JSONException e) {

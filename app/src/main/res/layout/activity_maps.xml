@@ -34,7 +34,7 @@
                     android:weightSum="10">
 *
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:text="Ожидание:"
@@ -43,20 +43,20 @@
                         android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="00:00"
                         android:textColor="@color/blacktext2"
                         android:textSize="20sp"
-                        android:layout_weight="3"
+                        android:layout_weight="3.5"
                         android:id="@+id/textViewWaitTime"
                         android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="1.5"
                         android:text="мин"
                         android:textColor="@color/blacktext2"
                         android:textSize="20sp"
@@ -64,7 +64,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/linearLayoutMapWaitSum"
                     android:orientation="horizontal"
                     android:weightSum="10"
@@ -100,7 +100,7 @@
                         android:textSize="20sp"
                         android:layout_marginLeft="20dp" />
 
-                </LinearLayout>
+                </LinearLayout>-->
 
                 <LinearLayout
                     android:id="@+id/linearLayoutMapDistance"
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:text="Расстояние:"
@@ -119,9 +119,9 @@
                         android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="3.5"
                         android:gravity="right"
                         android:text="00000"
                         android:textColor="@color/blacktext2"
@@ -130,9 +130,9 @@
                         android:layout_marginLeft="20dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
+                        android:layout_weight="1.5"
                         android:text="км"
                         android:textColor="@color/blacktext2"
                         android:textSize="20sp"
@@ -140,7 +140,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/linearLayoutMapSum"
                     android:orientation="horizontal"
                     android:weightSum="10"
@@ -176,7 +176,122 @@
                         android:textSize="20sp"
                         android:layout_marginLeft="20dp" />
 
+                </LinearLayout>-->
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutOrderTime"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Время проезда:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3.5"
+                        android:gravity="right"
+                        android:text="000000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:id="@+id/textViewOrderTime"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:text="мин"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
                 </LinearLayout>
+
+                <!--<LinearLayout
+                    android:id="@+id/linearLayoutSpeed"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Скорость:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="right"
+                        android:text="000000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:id="@+id/textViewSpeed"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="км/ч"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                </LinearLayout>-->
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutTotalSum"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Итоговая сумма:"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3.5"
+                        android:gravity="right"
+                        android:text="000000"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:id="@+id/textViewOrderTotalSum"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:text="сом"
+                        android:textColor="@color/blacktext2"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 

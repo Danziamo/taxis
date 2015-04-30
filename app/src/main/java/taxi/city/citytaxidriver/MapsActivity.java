@@ -1,6 +1,5 @@
 package taxi.city.citytaxidriver;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,11 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -34,7 +29,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -76,12 +70,12 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     LinearLayout llMain;
     TextView tvDistance;
-    TextView tvPrice;
+    //TextView tvPrice;
     //TextView tvSpeed;
-    //TextView tvTime;
+    TextView tvTime;
     TextView tvFeeTime;
-    TextView tvFeePrice;
-    //TextView tvTotalSum;
+    //TextView tvFeePrice;
+    TextView tvTotalSum;
 
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
@@ -166,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         }
         order.waitTime = pauseTotalTime + pauseSessionTime;
         order.waitSum = waitSum;
-        tvFeePrice.setText(df.format(order.getWaitSum()));
+        //tvFeePrice.setText(df.format(order.getWaitSum()));
         tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
 
         pauseHandler.postDelayed(this, 1000);
@@ -174,10 +168,12 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     };
 
     private void updateLabels() {
-        //tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
-        //tvTotalSum.setText("Общая сумма: " + df.format(order.getTotalSum()) + " сом");
+        tvTime.setText(Helper.getTimeFromLong(order.time));
+        tvTotalSum.setText(df.format(order.getTotalSum()));
         tvDistance.setText(df.format(distance / 1000));
-        tvPrice.setText(df.format(order.getTravelSum()));
+        //tvPrice.setText(df.format(order.getTravelSum()));
+        //tvFeePrice.setText(df.format(order.getWaitSum()));
+        tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
     }
 
     @Override
@@ -292,13 +288,10 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             pauseSessionTime = 0;
 
             timerHandler.postDelayed(timerRunnable, 0);
-            //tvSpeed.setText("Скорость: 0 км/ч");
-            //tvTime.setText("Время: " + Helper.getTimeFromLong(order.time));
-            tvPrice.setText(df.format(order.getTravelSum()));
-            tvDistance.setText(df.format(distance / 1000));
-            tvFeePrice.setText(df.format(order.getWaitSum()));
-            tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
-            //tvTotalSum.setText("Общая сумма: " + df.format(order.getTotalSum()) + " сом");
+            //tvSpeed.setText("0");
+            tvTime.setText(Helper.getTimeFromLong(order.time));
+            tvTotalSum.setText(df.format(order.getTotalSum()));
+            updateLabels();
         }
     }
 
@@ -358,13 +351,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     private void Initialize() {
         prev = null;
         tvDistance = (TextView) findViewById(R.id.textViewDistance);
-        tvPrice = (TextView) findViewById(R.id.textViewSum);
+        //tvPrice = (TextView) findViewById(R.id.textViewSum);
         llMain = (LinearLayout) findViewById(R.id.mainLayout);
         //tvSpeed = (TextView) findViewById(R.id.textViewSpeed);
-        //tvTime = (TextView) findViewById(R.id.textViewTime);
-        tvFeePrice = (TextView) findViewById(R.id.textViewWaitSum);
+        tvTime = (TextView) findViewById(R.id.textViewOrderTime);
+        //tvFeePrice = (TextView) findViewById(R.id.textViewWaitSum);
         tvFeeTime = (TextView) findViewById(R.id.textViewWaitTime);
-        //tvTotalSum = (TextView) findViewById(R.id.textViewMapsTotalSum);
+        tvTotalSum = (TextView) findViewById(R.id.textViewOrderTotalSum);
 
         btnInfo = (Button) findViewById(R.id.buttonAdditionalInfo);
         btnOkAction = (Button) findViewById(R.id.buttonStartAction);
@@ -413,7 +406,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             } else if (order.status == OStatus.PENDING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
                 btnOkAction.setTextColor(Color.BLACK);
-                btnOkAction.setText("На месте");
+                btnOkAction.setText("Доставил");
                 btnInfo.setText("Доп. инфо");
                 btnWait.setText("Продолжить");
                 btnSettingsCancel.setText("Настройки");
@@ -423,7 +416,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 btnWait.setText("Ожидание");
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
                 btnOkAction.setTextColor(Color.BLACK);
-                btnOkAction.setText("На месте");
+                btnOkAction.setText("Доставил");
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_black);
             } else {
@@ -448,13 +441,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         order.waitTime = 0;
         resetTimer();
 
-        //tvSpeed.setText("Скорость: 0 км/ч");
-        tvDistance.setText(df.format(distance / 1000));
-        tvPrice.setText(df.format(price));
-        //tvTime.setText("Время: " + "00:00:00");
-        tvFeePrice.setText(null);
-        tvFeeTime.setText(null);
-        //tvTotalSum.setText("Общая цена: " + df.format(price + waitSum) + " сом");
+        //tvSpeed.setText("0");
+        tvTime.setText("00:00:00");
+        tvTotalSum.setText("0");
+        updateLabels();
+
     }
 
     private void resetTimer() {
@@ -481,13 +472,15 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         this.location = location;
+
         if (location != null) {
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
             gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        }
-
-        if (location != null) {
-            gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }
@@ -514,7 +507,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             order.distance = distance/1000;
             order.sum = price;
             order.endPoint = latLng;
-            //tvSpeed.setText("Скорость: " + df.format(speed * 3.6) + " км/ч");
+            //tvSpeed.setText(df.format(speed * 3.6));
 
             if (prev != null) {
                 Polyline line = mMap.addPolyline(new PolylineOptions()
@@ -747,6 +740,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        checkUserSession();
         if (requestCode == FINISH_ORDER_ID) {
             if (data != null) {
                 if (data.getBooleanExtra("returnCode", false)) {
@@ -763,18 +757,15 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 pauseHandler.removeCallbacks(pauseRunnable);
                 mMap.clear();
             }
-            updateViews();
         }
         if (requestCode == MAKE_ORDER_ID) {
             if (data != null && data.getBooleanExtra("returnCode", false)) {
-                timerHandler.postDelayed(timerRunnable, 0);
+                if (order.status == OStatus.ONTHEWAY) {
+                    timerHandler.postDelayed(timerRunnable, 0);
+                }
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 setClientLocation();
-            } else if (data != null) {
-
             }
-            checkUserSession();
-            updateViews();
         }
         if (requestCode == ORDER_DETAILS_ID) {
             if (order.status == OStatus.ONTHEWAY) {
@@ -782,6 +773,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 timerHandler.postDelayed(timerRunnable, 0);
             }
         }
+        updateViews();
     }
 
     private void ClearMapFromLines() {

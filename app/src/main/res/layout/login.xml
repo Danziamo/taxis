@@ -10,17 +10,6 @@
 
     <!-- Login progress -->
 
-    <ProgressBar
-        android:indeterminateDrawable="@drawable/progressbar"
-        android:id="@+id/login_progress"
-        android:indeterminateOnly="true"
-        android:animationResolution="33"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:visibility="gone"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
