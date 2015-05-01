@@ -54,6 +54,7 @@ public class UserDetailsActivity extends ActionBarActivity {
         private EditText etFirstName;
         private EditText etPhone;
         private EditText etPhoneExtra;
+        private EditText etDoB;
         private TextView tvTitle;
         private EditText etPassword;
         private EditText etEmail;
@@ -84,6 +85,7 @@ public class UserDetailsActivity extends ActionBarActivity {
             etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
             etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
             tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
+            etDoB = (EditText) rootView.findViewById(R.id.editTextDoB);
 
             ImageButton btnShowPassword = (ImageButton)rootView.findViewById(R.id.imageButtonShowPassword);
 

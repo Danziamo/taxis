@@ -55,6 +55,16 @@
             android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal" />
 
+        <EditText
+            style="@style/mediumEditText"
+            android:layout_height="35dp"
+            android:textSize="18sp"
+            android:hint="Дата рождения"
+            android:id="@+id/editTextDoB"
+            android:inputType="date"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_horizontal" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
