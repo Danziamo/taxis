@@ -72,8 +72,6 @@ public class CarDetailsActivity extends ActionBarActivity {
 
         int userCarId = 0;
 
-        LinearLayout llBackExitGroup;
-
         public CarDetailsFragment() {
         }
 
@@ -94,7 +92,6 @@ public class CarDetailsActivity extends ActionBarActivity {
             etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
             etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
             etPassportSeries = (EditText)rootView.findViewById(R.id.editTextPassportSeries);
-            llBackExitGroup = (LinearLayout)rootView.findViewById(R.id.linearLayoutBackExitGroup);
             tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
 
             btnSave = (Button)rootView.findViewById(R.id.buttonSave);

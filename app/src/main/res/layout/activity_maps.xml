@@ -309,22 +309,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayoutWaitInfo"
                 android:layout_above="@+id/linearLayoutStartCancelMap"
-                android:weightSum="2">
+                android:weightSum="10">
 
                 <Button
                     android:id="@+id/buttonWaitTrip"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/button_shape_green"
-                    android:layout_weight="1"
+                    style="@style/mediumButton.Green"
                     android:layout_margin="10dp"/>
 
                 <Button
                     android:id="@+id/buttonAdditionalInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/button_shape_green"
-                    android:layout_weight="1"
+                    style="@style/mediumButton.Green"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>
@@ -335,23 +329,16 @@
                 android:id="@+id/linearLayoutStartCancelMap"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:weightSum="2">
+                android:weightSum="10">
 
                 <Button
                     android:id="@+id/buttonStartAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_shape_green"
+                    style="@style/mediumButton.Green"
                     android:layout_margin="10dp"/>
 
                 <Button
                     android:id="@+id/buttonDeclineSettings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:background="@drawable/button_shape_red"
+                    style="@style/mediumButton.Red"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>

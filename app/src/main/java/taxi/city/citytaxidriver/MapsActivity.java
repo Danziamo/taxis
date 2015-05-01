@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -15,8 +16,12 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +49,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.GlobalParameters;
 import taxi.city.citytaxidriver.Core.Order;
@@ -287,7 +293,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             pauseStartTime = System.currentTimeMillis() - order.waitTime;
             pauseSessionTime = 0;
 
-            timerHandler.postDelayed(timerRunnable, 0);
+            if (order.status == OStatus.PENDING || order.status == OStatus.ONTHEWAY) {
+                timerHandler.postDelayed(timerRunnable, 0);
+            }
             //tvSpeed.setText("0");
             tvTime.setText(Helper.getTimeFromLong(order.time));
             tvTotalSum.setText(df.format(order.getTotalSum()));
@@ -379,16 +387,15 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             mMap.clear();
             llButtonTop.setVisibility(View.GONE);
             btnOkAction.setText("Заказы");
-            btnOkAction.setBackgroundResource(R.drawable.button_shape_black);
+            btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
             btnOkAction.setTextColor(Color.WHITE);
             btnSettingsCancel.setText("Настройки");
-            btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_black);
+            btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             btnSettingsCancel.setTextColor(Color.WHITE);
             llMain.setVisibility(View.GONE);
         } else {
             if (order.status == OStatus.ACCEPTED) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
-                btnOkAction.setTextColor(Color.BLACK);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("На месте");
                 btnInfo.setText("Доп. инфо");
                 btnSettingsCancel.setText("Отказ");
@@ -396,37 +403,32 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 btnWait.setVisibility(View.INVISIBLE);
                 llButtonTop.setVisibility(View.VISIBLE);
             } else if (order.status == OStatus.WAITING) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
-                btnOkAction.setTextColor(Color.BLACK);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("На борту");
                 btnInfo.setText("Доп. инфо");
                 btnSettingsCancel.setText("Отказ");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
                 btnWait.setVisibility(View.INVISIBLE);
             } else if (order.status == OStatus.PENDING) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
-                btnOkAction.setTextColor(Color.BLACK);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
                 btnInfo.setText("Доп. инфо");
                 btnWait.setText("Продолжить");
                 btnSettingsCancel.setText("Настройки");
-                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_black);
+                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             } else if (order.status == OStatus.ONTHEWAY) {
                 btnWait.setVisibility(View.VISIBLE);
                 btnWait.setText("Ожидание");
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_green);
-                btnOkAction.setTextColor(Color.BLACK);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
                 btnSettingsCancel.setText("Настройки");
-                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_black);
+                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             } else {
                 mMap.clear();
                 btnOkAction.setText("Заказы");
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_black);
-                btnOkAction.setTextColor(Color.WHITE);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnSettingsCancel.setText("Настройки");
-                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_black);
-                btnSettingsCancel.setTextColor(Color.WHITE);
+                btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 llButtonTop.setVisibility(View.GONE);
             }
         }
@@ -476,11 +478,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if (location != null) {
             order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
             gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }
@@ -522,7 +519,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         order.endPoint = latLng;
         if (prev == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         }
         prev = location;
 
@@ -617,7 +614,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
             if (mMap != null) {
                 if (order.startPoint != null) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
                 }
                 mMap.setMyLocationEnabled(true);
             }
@@ -637,6 +634,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                     SetDefaultValues();
                     llMain.setVisibility(View.VISIBLE);
                     order.status = OStatus.ONTHEWAY;
+                    timerHandler.postDelayed(timerRunnable, 0);
                     SendPostRequest(OStatus.ONTHEWAY, order.id);
                 } else if (order.status == OStatus.ONTHEWAY || order.status == OStatus.PENDING) {
                     EndTrip();
@@ -659,10 +657,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 break;
             case R.id.buttonDeclineSettings:
                 if (order.status == OStatus.WAITING || order.status == OStatus.ACCEPTED) {
-                    order.status = OStatus.NEW;
-                    timerHandler.removeCallbacks(timerRunnable);
-                    pauseHandler.removeCallbacks(pauseRunnable);
-                    SendPostRequest(order.status, order.id);
+                    cancelOrder();
                 } else {
                     goToSettings();
                 }
@@ -676,6 +671,42 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 break;
         }
         updateViews();
+    }
+
+    private void cancelOrder() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.alertdialog_decline_order);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
+        Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
+        Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
+        // if button is clicked, close the custom dialog
+        btnOkDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order.status = OStatus.NEW;
+                timerHandler.removeCallbacks(timerRunnable);
+                SendPostRequest(order.status, order.id);
+                updateViews();
+                dialog.dismiss();
+            }
+        });
+
+        btnCancelDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void goToSettings() {
@@ -703,36 +734,35 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     }
 
     private void setClientLocation() {
+        if (order == null || order.id == 0 || order.startPoint == null) return;
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                final AlertDialog.Builder builder =
-                        new AlertDialog.Builder(MapsActivity.this, R.style.DialogBoxTheme);
-                //final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-                final String message = "Вы уверены что хотите позвонить?";
-                final String title = order.clientPhone;
 
-                builder.setMessage(message)
-                        .setTitle(title)
-                        .setPositiveButton("Позвонить",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface d, int id) {
-                                        Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                        callIntent.setData(Uri.parse("tel:"+order.clientPhone));
-                                        startActivity(callIntent);
-                                        d.dismiss();
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface d, int id) {
-                                        d.cancel();
-                                    }
-                                });
-                builder.create().show();
+                SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
+                pDialog .setTitleText("Вы хотите позвонить?")
+                        .setContentText(order.clientPhone)
+                        .setConfirmText("Позвонить")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                callIntent.setData(Uri.parse("tel:" + order.clientPhone));
+                                startActivity(callIntent);
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .setCancelText("Отмена")
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
         });
     }

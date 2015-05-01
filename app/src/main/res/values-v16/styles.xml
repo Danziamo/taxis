@@ -6,18 +6,20 @@
         <item name="android:layout_weight">5</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">HelveticaNeueCyr-Bold.otf</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="mediumButton.Green" parent="@style/mediumButton">
-        <item name="android:background">@drawable/button_shape_green</item>
+        <item name="android:background">@drawable/button_shape_azure</item>
     </style>
 
     <style name="mediumButton.Yellow" parent="@style/mediumButton">
         <item name="android:background">@drawable/button_shape_yellow</item>
+        <item name="android:textColor">@color/blacktext2</item>
     </style>
 
     <style name="mediumButton.Black" parent="@style/mediumButton">
-        <item name="android:background">@drawable/button_shape_black</item>
+        <item name="android:background">@drawable/button_shape_dark_blue</item>
     </style>
 
     <style name="mediumButton.Red" parent="@style/mediumButton">

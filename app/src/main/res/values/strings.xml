@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Easy Taxi</string>
+    <string name="app_name">Easy Taxi Driver</string>
     <string name="login_full_name">ФИО водителя</string>
     <string name="login_phone_number">Номер телефона</string>
     <string name="login_car_type">Марка автомобиля</string>

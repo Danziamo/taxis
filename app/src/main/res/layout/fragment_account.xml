@@ -69,5 +69,6 @@
         android:text="Назад"
         android:id="@+id/buttonBack"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/linearLayoutAccountInfo"/>
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package taxi.city.citytaxidriver;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,9 +41,13 @@ public class UserDetailsActivity extends ActionBarActivity {
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+    /*@Override
+    protected void onPause() {
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(noteTv.getWindowToken(), 0);
+        super.onPause();
+    }*/
+
     public static class UserDetailsFragment extends Fragment implements View.OnClickListener {
 
         private EditText etLastName;
@@ -55,7 +61,6 @@ public class UserDetailsActivity extends ActionBarActivity {
 
         Button btnSave;
         Button btnBack;
-        LinearLayout llBackExit;
 
         private User user;
         private UserUpdateTask mTask = null;
@@ -79,7 +84,6 @@ public class UserDetailsActivity extends ActionBarActivity {
             etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
             etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
             tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
-            llBackExit = (LinearLayout) rootView.findViewById(R.id.linearLayoutBackExitGroup);
 
             ImageButton btnShowPassword = (ImageButton)rootView.findViewById(R.id.imageButtonShowPassword);
 
@@ -136,14 +140,12 @@ public class UserDetailsActivity extends ActionBarActivity {
 
         private void updateView() {
             if (isNew) {
-                llBackExit.setVisibility(View.GONE);
                 btnSave.setText("Подтвердить");
                 tvTitle.setText("Регистрация");
                 etPhone.setEnabled(true);
                 etPhoneExtra.setEnabled(true);
             } else {
                 tvTitle.setText("Настройки Водителя");
-                llBackExit.setVisibility(View.VISIBLE);
                 btnSave.setText("Сохранить");
                 etPhone.setEnabled(false);
                 etPhoneExtra.setEnabled(false);
@@ -196,6 +198,7 @@ public class UserDetailsActivity extends ActionBarActivity {
                 json.put("email", email);
                 json.put("password", password);
                 if (isNew) {
+                    //json.put("role", "driver");
                     json.put("phone", phone);
                     json.put("activation_code", "11111");
                 }

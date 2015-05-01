@@ -34,6 +34,8 @@
             android:hint="@string/prompt_phone_number"
             android:textColorHint="@color/blacktext1"
             android:background="@drawable/textbox_background"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:inputType="phone"
             android:singleLine="true"
             android:textColor="@color/blacktext2"
@@ -51,6 +53,8 @@
             android:background="@drawable/textbox_background"
             android:textColor="@color/blacktext2"
             android:layout_above="@+id/btnSignIn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="15dp"
             android:layout_centerHorizontal="true"/>
 

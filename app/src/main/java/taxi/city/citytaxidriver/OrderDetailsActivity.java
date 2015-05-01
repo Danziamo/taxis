@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,10 +9,14 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.GlobalParameters;
 import taxi.city.citytaxidriver.Core.Order;
@@ -114,6 +120,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 tvClientPhoneLabel.setVisibility(View.GONE);
                 imgBtnCallClient.setVisibility(View.GONE);
                 btnCancel.setBackgroundResource(R.drawable.button_shape_yellow);
+                btnCancel.setTextColor(getResources().getColor(R.color.blacktext2));
             } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
                 llBtnMap.setVisibility(View.VISIBLE);
                 btnOk.setText("На месте");
@@ -122,6 +129,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 tvClientPhoneLabel.setVisibility(View.VISIBLE);
                 imgBtnCallClient.setVisibility(View.VISIBLE);
                 btnCancel.setBackgroundResource(R.drawable.button_shape_red);
+                btnCancel.setTextColor(getResources().getColor(R.color.white));
             } else {
                 llBtnMap.setVisibility(View.VISIBLE);
                 tvClientPhone.setVisibility(View.VISIBLE);
@@ -130,6 +138,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 btnOk.setText("На борту");
                 btnCancel.setText("Отказ");
                 btnCancel.setBackgroundResource(R.drawable.button_shape_red);
+                btnCancel.setTextColor(getResources().getColor(R.color.white));
             }
         }
 
@@ -151,6 +160,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                     break;
                 case R.id.buttonActionCancel:
                     if (!mClient.status.equals(OStatus.NEW.toString())) cancelOrder();
+                    else getActivity().finish();
                     break;
                 case R.id.imageButtonCallClient:
                     callClient();
@@ -164,34 +174,58 @@ public class OrderDetailsActivity extends ActionBarActivity {
         }
 
         private void callClient() {
-            final AlertDialog.Builder builder =
-                    new AlertDialog.Builder(getActivity());
-            //final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-            final String message = "Вы уверены что хотите позвонить?";
-            final String title = order.clientPhone;
-
-            builder.setMessage(message)
-                    .setTitle(title)
-                    .setPositiveButton("Позвонить",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int id) {
-                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                    callIntent.setData(Uri.parse("tel:" + mClient.phone));
-                                    startActivity(callIntent);
-                                    d.dismiss();
-                                }
-                            })
-                    .setNegativeButton("Отмена",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int id) {
-                                    d.cancel();
-                                }
-                            });
-            builder.create().show();
+            SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+            pDialog .setTitleText("Вы хотите позвонить?")
+                    .setContentText(mClient.phone)
+                    .setConfirmText("Позвонить")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                            callIntent.setData(Uri.parse("tel:"+mClient.phone));
+                            startActivity(callIntent);
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .setCancelText("Отмена")
+                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
         }
 
         private void cancelOrder() {
-            SendPostRequest(OStatus.NEW);
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.alertdialog_decline_order);
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+
+            wlp.gravity = Gravity.BOTTOM;
+            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(wlp);
+            // set the custom dialog components - text, image and button
+            EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
+            Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
+            Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
+            // if button is clicked, close the custom dialog
+            btnOkDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SendPostRequest(OStatus.NEW);
+                }
+            });
+
+            btnCancelDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
         }
 
         private void SendPostRequest(OStatus status) {
@@ -228,8 +262,9 @@ public class OrderDetailsActivity extends ActionBarActivity {
                     if (mClient.status.equals(OStatus.NEW.toString())) {
                         JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
                         if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
-                            Toast.makeText(getActivity(), "Заказ невозможно взять", Toast.LENGTH_LONG).show();
-                            return null;
+                            JSONObject returnObject = new JSONObject();
+                            returnObject.put("status", "reserved");
+                            return returnObject;
                         }
                     }
 
@@ -259,6 +294,9 @@ public class OrderDetailsActivity extends ActionBarActivity {
                             getActivity().finish();
                         }
                         updateViews();
+                    } else if (result != null && result.getString("status").equals("reserved")) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Заказ невозможно взять", Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
                     }
                     if (order.status == OStatus.ONTHEWAY) {
                         Intent intent = new Intent();

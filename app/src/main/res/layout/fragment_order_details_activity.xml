@@ -33,8 +33,10 @@
             <TextView
                 style="@style/mediumEditText"
                 android:textColor="@color/blacktext2"
+                android:textSize="@dimen/text_size"
                 android:id="@+id/textViewStartAddress"
                 android:layout_marginTop="10dp"
+                android:gravity="center"
                 android:layout_below="@+id/textViewClientAddressLabel"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="10dp" />
@@ -53,22 +55,23 @@
             <TextView
                 style="@style/mediumEditText"
                 android:gravity="center"
+                android:textSize="@dimen/text_size"
                 android:id="@+id/textViewClientPhone"
                 android:layout_below="@+id/textViewClientPhoneLabel"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_alignRight="@+id/textViewDescriptionLabel"
-                android:layout_alignEnd="@+id/textViewDescriptionLabel" />
+                android:layout_marginBottom="10dp" />
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/image_tube"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/image_tube"
                 android:id="@+id/imageButtonCallClient"
                 android:layout_alignTop="@+id/textViewClientPhone"
                 android:layout_alignRight="@+id/textViewStopAddress"
-                android:layout_alignEnd="@+id/textViewStopAddress" />
+                android:layout_alignEnd="@+id/textViewStopAddress"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +86,7 @@
 
             <TextView
                 style="@style/mediumEditText"
-                android:hint="Адрес куда надо доставить"
+                android:textSize="@dimen/text_size"
                 android:gravity="center"
                 android:id="@+id/textViewStopAddress"
                 android:layout_below="@+id/textViewStopAddressLabel"
@@ -137,6 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textbox_background"
+                android:textSize="@dimen/text_size"
                 android:id="@+id/textViewDescription"
                 android:layout_below="@+id/textViewDescriptionLabel"
                 android:layout_centerHorizontal="true"

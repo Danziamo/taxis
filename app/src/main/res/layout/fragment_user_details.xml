@@ -28,6 +28,8 @@
 
         <EditText
             style="@style/mediumEditText"
+            android:layout_height="35dp"
+            android:textSize="18sp"
             android:hint="Фамилия"
             android:id="@+id/editTextLastName"
             android:inputType="text"
@@ -35,18 +37,22 @@
 
         <EditText
             style="@style/mediumEditText"
+            android:layout_height="35dp"
+            android:textSize="18sp"
             android:hint="Имя"
             android:id="@+id/editTextFirstName"
             android:inputType="text"
-            android:layout_margin="10dp"
+            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal" />
 
         <EditText
             style="@style/mediumEditText"
+            android:layout_height="35dp"
+            android:textSize="18sp"
             android:hint="e-mail"
             android:id="@+id/editTextEmail"
             android:inputType="textEmailAddress"
-            android:layout_margin="10dp"
+            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal" />
 
         <LinearLayout
@@ -54,10 +60,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp">
 
             <EditText
                 style="@style/SmallEditText"
+                android:layout_height="35dp"
+                android:textSize="18sp"
                 android:hint="+996"
                 android:text="+996"
                 android:gravity="center"
@@ -66,6 +76,8 @@
 
             <EditText
                 style="@style/ShortEditText"
+                android:layout_height="35dp"
+                android:textSize="18sp"
                 android:hint="Телефон"
                 android:id="@+id/textViewPhone"
                 android:layout_gravity="center_horizontal"
@@ -78,10 +90,13 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:id="@+id/relativeLayoutPassword"
+            android:textSize="18sp"
+            android:layout_marginTop="5dp"
             android:layout_height="wrap_content">
 
             <EditText
                 style="@style/mediumEditText"
+                android:layout_height="35dp"
                 android:hint="Пароль"
                 android:id="@+id/editTextPassword"
                 android:inputType="textPassword"
@@ -90,10 +105,18 @@
 
             <ImageButton
                 android:id="@+id/imageButtonShowPassword"
-                android:layout_marginTop="23dp"
-                android:layout_marginRight="5dp"
-                android:layout_width="30dp"
-                android:layout_height="15dp"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_alignRight="@+id/editTextPassword"
+                android:layout_alignEnd="@+id/editTextPassword"
+                android:background="#00ffffff"/>
+
+            <ImageButton
+                android:id="@+id/imageButtonShowPasswordIcon"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="20dp"
+                android:layout_height="10dp"
                 android:layout_alignRight="@+id/editTextPassword"
                 android:layout_alignEnd="@+id/editTextPassword"
                 android:background="@drawable/password_eye"/>
