@@ -199,6 +199,7 @@ public class Helper {
     public static boolean isOrderActive(Order order) {
         if (order == null || order.id == 0) return false;
         OStatus status = order.status;
+        if (status == null) return false;
         if (status == OStatus.NEW) return false;
         if (status == OStatus.FINISHED) return false;
         if (status == OStatus.CANCELED) return false;

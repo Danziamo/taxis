@@ -232,6 +232,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         editor.putString("orderPhone", order.clientPhone);
         editor.putString("orderStartPoint", Helper.getFormattedLatLng(order.startPoint));
         editor.putString("orderStatus", order.status == null ? null : order.status.toString());
+        editor.putString("orderStartAddress", order.addressStart);
+        editor.putString("orderEndAddress", order.addressEnd);
+        editor.putString("orderDescription", order.description);
         editor.apply();
     }
 
@@ -270,6 +273,8 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             order.distance = (double)settings.getFloat("orderDistance", 0);
             order.waitTime = settings.getLong("orderWaitTime", 0);
             order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
+            order.addressStart = settings.getString("orderStartAddress", null);
+            order.addressEnd = settings.getString("orderEndAddress", null);
             if (mMap != null && order.startPoint != null && order.clientPhone != null) {
                 setClientLocation();
             }
@@ -409,6 +414,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 btnSettingsCancel.setText("Отказ");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
                 btnWait.setVisibility(View.INVISIBLE);
+                llButtonTop.setVisibility(View.VISIBLE);
             } else if (order.status == OStatus.PENDING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
@@ -416,13 +422,17 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 btnWait.setText("Продолжить");
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
+                llButtonTop.setVisibility(View.VISIBLE);
             } else if (order.status == OStatus.ONTHEWAY) {
+                llMain.setVisibility(View.VISIBLE);
                 btnWait.setVisibility(View.VISIBLE);
                 btnWait.setText("Ожидание");
+                btnInfo.setText("Доп. инфо");
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
+                llButtonTop.setVisibility(View.VISIBLE);
             } else {
                 mMap.clear();
                 btnOkAction.setText("Заказы");
@@ -447,7 +457,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         tvTime.setText("00:00:00");
         tvTotalSum.setText("0");
         updateLabels();
-
     }
 
     private void resetTimer() {
@@ -458,6 +467,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     @Override
     protected void onStart() {
         super.onStart();
+
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
@@ -632,7 +642,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                     SendPostRequest(OStatus.WAITING, order.id);
                 } else if (order.status == OStatus.WAITING) {
                     SetDefaultValues();
-                    llMain.setVisibility(View.VISIBLE);
                     order.status = OStatus.ONTHEWAY;
                     timerHandler.postDelayed(timerRunnable, 0);
                     SendPostRequest(OStatus.ONTHEWAY, order.id);
@@ -652,6 +661,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                     SendPostRequest(OStatus.ONTHEWAY, order.id);
                     pauseHandler.removeCallbacks(pauseRunnable);
                     pauseTotalTime += pauseSessionTime;
+                    pauseSessionTime = 0;
                 }
                 updateViews();
                 break;
@@ -723,13 +733,17 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private void goToFinishOrderDetails() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        intent.putExtra("DATA", new Client(order));
+        Client client = new Client(order);
+        client.distance = df.format(order.distance);
+        intent.putExtra("DATA", client);
         startActivity(intent);
     }
 
     private void EndTrip() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        intent.putExtra("DATA", new Client(order));
+        Client client = new Client(order);
+        client.distance = df.format(order.distance);
+        intent.putExtra("DATA", client);
         startActivityForResult(intent, FINISH_ORDER_ID);
     }
 
@@ -791,7 +805,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if (requestCode == MAKE_ORDER_ID) {
             if (data != null && data.getBooleanExtra("returnCode", false)) {
                 if (order.status == OStatus.ONTHEWAY) {
+                    SetDefaultValues();
                     timerHandler.postDelayed(timerRunnable, 0);
+                } else if (order == null || order.id == 0 || order.status == OStatus.NEW) {
+                    resetPreferences();
+                    clearPreferences();
                 }
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 setClientLocation();
@@ -800,6 +818,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if (requestCode == ORDER_DETAILS_ID) {
             if (order.status == OStatus.ONTHEWAY) {
                 setClientLocation();
+                SetDefaultValues();
                 timerHandler.postDelayed(timerRunnable, 0);
             }
         }

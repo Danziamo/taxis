@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -19,10 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
 import taxi.city.citytaxidriver.Utils.Helper;
@@ -59,6 +62,8 @@ public class UserDetailsActivity extends ActionBarActivity {
         private EditText etPassword;
         private EditText etEmail;
         private boolean isNew = false;
+
+        private SweetAlertDialog pDialog;
 
         Button btnSave;
         Button btnBack;
@@ -183,7 +188,7 @@ public class UserDetailsActivity extends ActionBarActivity {
 
             if (phone.length() != 13) {
                 etPhone.setError("Телефон должен состоять из 13 символов");
-                etLastName.requestFocus();
+                etPhone.requestFocus();
                 return;
             }
 
@@ -210,6 +215,7 @@ public class UserDetailsActivity extends ActionBarActivity {
 
             if (json.length() < 1) return;
 
+            showProgress(true);
             mTask = new UserUpdateTask(json);
             mTask.execute((Void) null);
         }
@@ -233,14 +239,15 @@ public class UserDetailsActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(final JSONObject result) {
                 mTask = null;
+                showProgress(false);
                 int statusCode = -1;
                 try {
-                    if(Helper.isSuccess(result)) {
+                    if(result != null && result.has("status_code")) {
                         statusCode = result.getInt("status_code");
                     }
                     if (Helper.isSuccess(statusCode)) {
                         confirmUpdate(result);
-                    } else if (statusCode == 400) {
+                    } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
                         if (result.has("phone")) {
                             etPhone.setError("Пользователь с таким номером уже существует");
                             etPhone.requestFocus();
@@ -260,8 +267,8 @@ public class UserDetailsActivity extends ActionBarActivity {
         }
 
         private void confirmUpdate(JSONObject object) {
-            user.phone = etPhone.getText().toString();
-            user.firstName = etPhone.getText().toString();
+            user.phone = etPhoneExtra.getText().toString() + etPhone.getText().toString();
+            user.firstName = etFirstName.getText().toString();
             user.lastName = etLastName.getText().toString();
             user.password = etPassword.getText().toString();
             user.email = etEmail.getText().toString();
@@ -274,6 +281,19 @@ public class UserDetailsActivity extends ActionBarActivity {
                 intent.putExtra("DATA", object.toString());
                 startActivity(intent);
                 getActivity().finish();
+            }
+        }
+
+        public void showProgress(final boolean show) {
+            if (show) {
+                pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper()
+                        .setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Сохранение");
+                pDialog.setCancelable(true);
+                pDialog.show();
+            } else {
+                pDialog.dismissWithAnimation();
             }
         }
     }

@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import org.w3c.dom.Text;
 
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.Order;
 import taxi.city.citytaxidriver.Enums.OStatus;
@@ -49,6 +51,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
         private Client mClient;
         private Order order;
         private FinishOrderTask finishTask = null;
+        private SweetAlertDialog pDialog;
 
         private Button btnMap;
         private Button btnWait;
@@ -176,6 +179,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
                 return;
             }
 
+            showProgress(true);
             finishTask = new FinishOrderTask();
             finishTask.execute((Void) null);
         }
@@ -204,6 +208,7 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(JSONObject result) {
                 finishTask = null;
+                showProgress(false);
                 try {
                     if (Helper.isSuccess(result)) {
                         Intent intent = new Intent();
@@ -223,6 +228,19 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
             @Override
             protected void onCancelled() {
                 finishTask = null;
+            }
+        }
+
+        public void showProgress(final boolean show) {
+            if (show) {
+                pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper()
+                        .setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Обновление");
+                pDialog.setCancelable(true);
+                pDialog.show();
+            } else {
+                pDialog.dismissWithAnimation();
             }
         }
     }

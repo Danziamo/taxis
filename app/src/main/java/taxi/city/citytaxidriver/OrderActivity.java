@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.Client;
 import taxi.city.citytaxidriver.Core.ClientAdapter;
 import taxi.city.citytaxidriver.Core.Order;
@@ -34,6 +36,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     private ApiService api = ApiService.getInstance();
     private User user;
     private FetchOrderTask mFetchTask = null;
+    private SweetAlertDialog pDialog;
 
     private Client client;
     ListView lvMain;
@@ -158,6 +161,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             return;
         }
 
+        showProgress(true);
         mFetchTask = new FetchOrderTask();
         mFetchTask.execute((Void) null);
 
@@ -180,8 +184,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
 
         @Override
         protected JSONArray doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
 
             JSONArray array = null;
             try {
@@ -220,6 +222,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         @Override
         protected void onPostExecute(JSONArray result) {
             mFetchTask = null;
+            showProgress(false);
             if (result != null) {
                 InitListView(result);
             } else {
@@ -230,6 +233,19 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         @Override
         protected void onCancelled() {
             mFetchTask = null;
+        }
+    }
+
+    public void showProgress(final boolean show) {
+        if (show) {
+            pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper()
+                    .setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Обновление");
+            pDialog.setCancelable(true);
+            pDialog.show();
+        } else {
+            if (pDialog != null) pDialog.dismissWithAnimation();
         }
     }
 }

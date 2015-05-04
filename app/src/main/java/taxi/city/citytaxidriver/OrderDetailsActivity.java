@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -42,6 +43,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details_activity);
 
+        if (User.getInstance() == null) {
+            finish();
+        }
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new OrderDetailsFragment())
@@ -59,6 +64,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
         private User user = User.getInstance();
         private GlobalParameters gp = GlobalParameters.getInstance();
         private SendPostRequestTask mTask = null;
+        SweetAlertDialog pDialog;
 
         TextView tvClientPhone;
         TextView tvClientPhoneLabel;
@@ -144,15 +150,23 @@ public class OrderDetailsActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v) {
+            if (order == null || order.id == 0 || order.status == null) {
+                if (mClient.status.equals(OStatus.ACCEPTED.toString())
+                        || mClient.status.equals(OStatus.WAITING.toString())) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Заказ уже выбран или отменён", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+            }
             switch (v.getId()) {
                 case R.id.buttonActionOk:
                     if (mClient.status.equals(OStatus.NEW.toString())) {
+                        showProgress(true);
                         SendPostRequest(OStatus.ACCEPTED);
                     } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
-                        mClient.status = OStatus.PENDING.toString();
-                        order.status = OStatus.PENDING;
-                        SendPostRequest(OStatus.PENDING);
-                    } else if (mClient.status.equals(OStatus.PENDING.toString())) {
+                        mClient.status = OStatus.WAITING.toString();
+                        order.status = OStatus.WAITING;
+                        SendPostRequest(OStatus.WAITING);
+                    } else if (mClient.status.equals(OStatus.WAITING.toString())) {
                         mClient.status = OStatus.ONTHEWAY.toString();
                         order.status = OStatus.ONTHEWAY;
                         SendPostRequest(OStatus.ONTHEWAY);
@@ -228,6 +242,19 @@ public class OrderDetailsActivity extends ActionBarActivity {
             dialog.show();
         }
 
+        public void showProgress(final boolean show) {
+            if (show) {
+                pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper()
+                        .setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Обновление");
+                pDialog.setCancelable(true);
+                pDialog.show();
+            } else {
+                pDialog.dismissWithAnimation();
+            }
+        }
+
         private void SendPostRequest(OStatus status) {
             if (mTask != null) {
                 return;
@@ -284,7 +311,9 @@ public class OrderDetailsActivity extends ActionBarActivity {
                         Toast.makeText(getActivity(), "Заказ обновлён", Toast.LENGTH_LONG).show();
                         if (result.getString("status").equals(OStatus.CANCELED.toString())) order.clear();
                         else if (result.getString("status").equals(OStatus.ACCEPTED.toString())) {
+                            showProgress(false);
                             mClient.status = OStatus.ACCEPTED.toString();
+                            order.status = OStatus.ACCEPTED;
                             Helper.setOrder(result);
                         } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                             order.clear();

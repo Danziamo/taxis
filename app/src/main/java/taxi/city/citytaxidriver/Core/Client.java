@@ -59,6 +59,7 @@ public class Client implements Serializable{
         this.addressEnd = order.addressEnd;
         this.fixedPrice = String.valueOf((int)order.fixedPrice);
         this.description = order.description;
+        this.distance = String.valueOf(Math.round(100*order.distance)/100);
         this.status = order.status.toString();
         this.waitSum = String.valueOf((int)order.getWaitSum());
         this.waitTime = Helper.getTimeFromLong(order.waitTime);

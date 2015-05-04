@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.Core.CarEntity;
 import taxi.city.citytaxidriver.Core.User;
 import taxi.city.citytaxidriver.Service.ApiService;
@@ -66,6 +68,8 @@ public class CarDetailsActivity extends ActionBarActivity {
         EditText etDriverLicenseSeries;
         EditText etPassportSeries;
         TextView tvTitle;
+
+        SweetAlertDialog pDialog;
 
         Button btnBack;
         Button btnSave;
@@ -137,7 +141,6 @@ public class CarDetailsActivity extends ActionBarActivity {
             JSONObject carJSON = new JSONObject();
             JSONObject userJSON = new JSONObject();
             if (update) {
-
                 CarEntity carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
                 CarEntity carBrandModel = (CarEntity)carModelSpinner.getSelectedItem();
 
@@ -225,6 +228,7 @@ public class CarDetailsActivity extends ActionBarActivity {
                 }
             }
 
+            showProgress(true);
             mUpdateTask = new CarUpdateTask(update, carJSON, userJSON);
             mUpdateTask.execute((Void) null);
         }
@@ -272,6 +276,7 @@ public class CarDetailsActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(final JSONObject result) {
+                showProgress(false);
                 mUpdateTask = null;
                 int statusCode = -1;
                 try {
@@ -419,20 +424,18 @@ public class CarDetailsActivity extends ActionBarActivity {
             int position = adapter.getPosition(tempEntity);
 
             carModelSpinner.setAdapter(adapter);
-            if (mBrandModelId <= array.length()) {
-                carModelSpinner.setSelection(position);
-                carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            carModelSpinner.setSelection(position);
+            carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                    }
+                }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-                    }
-                });
-            }
+                }
+            });
         }
 
         private void FillBrandSpinnerArray(JSONArray array) {
@@ -466,6 +469,17 @@ public class CarDetailsActivity extends ActionBarActivity {
             });
         }
 
-
+        public void showProgress(final boolean show) {
+            if (show) {
+                pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper()
+                        .setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Сохранение");
+                pDialog.setCancelable(true);
+                pDialog.show();
+            } else {
+                if (pDialog != null) pDialog.dismissWithAnimation();
+            }
+        }
     }
 }
