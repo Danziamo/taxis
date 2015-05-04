@@ -85,7 +85,10 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         btnRefresh.setOnClickListener(this);
         btnMoreOrders.setOnClickListener(this);
 
+        TextView tvTitle = (TextView) findViewById(R.id.textViewOrderTitle);
+
         if (!isNew) {
+            tvTitle.setText("История заказов:");
             btnMap.setText("Назад");
             fetchData();
         }
