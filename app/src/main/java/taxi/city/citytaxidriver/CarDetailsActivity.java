@@ -226,9 +226,9 @@ public class CarDetailsActivity extends ActionBarActivity {
                     e.printStackTrace();
                     return;
                 }
+                showProgress(true);
             }
 
-            showProgress(true);
             mUpdateTask = new CarUpdateTask(update, carJSON, userJSON);
             mUpdateTask.execute((Void) null);
         }

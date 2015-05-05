@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,7 +29,6 @@ import taxi.city.citytaxidriver.Service.ApiService;
 
 public class OrderActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private String TAG = "OrderActivity";
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
@@ -44,12 +42,14 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     Button btnRefresh;
     Button btnMoreOrders;
     private boolean isNew;
+    private int limit = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         user = User.getInstance();
+        limit = 10;
 
         Intent intent = getIntent();
         isNew = intent.getExtras().getBoolean("NEW", false);
@@ -72,7 +72,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     goOrderDetails(client);
                 }
                 catch (Exception e) {
-                    Log.d(TAG, "Oops something has happened when clicked on order in list view");
                 }
             }
         });
@@ -107,7 +106,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     private void InitListView(JSONArray array) {
         list.clear();
         try {
-            Log.d(TAG, "Start to fill up list view");
             for (int i=0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
@@ -119,13 +117,9 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             }
             ClientAdapter adapter = new ClientAdapter(OrderActivity.this, list);
             lvMain.setAdapter(adapter);
-
-            Log.d(TAG, "Finished filling up listview");
         } catch (JSONException e) {
-            Log.e(TAG, "Oops something happened while initializing listview");
             e.printStackTrace();
         } catch (Exception e) {
-            Log.e(TAG, "Cannot open order. Please re-login");
             e.printStackTrace();
         }
 
@@ -159,7 +153,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void fetchData() {
-        Log.d(TAG, "Starting fetching data");
         if (mFetchTask != null) {
             return;
         }
@@ -175,6 +168,10 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.buttonMap:
                 finish();
+                break;
+            case R.id.buttonMoreOrder:
+                limit += 10;
+                fetchData();
                 break;
             default:
                 fetchData();
@@ -204,7 +201,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     }
                     if (order.id != 0) array.put(order.getOrderAsJson());
                 } else {
-                    result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=10");
+                    result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
                         for (int i = 0; i < tempArray.length() && i < 10; ++i) {
@@ -229,7 +226,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             if (result != null) {
                 InitListView(result);
             } else {
-                Toast.makeText(getApplicationContext(), "Не удалось получить данные с сервера", Toast.LENGTH_LONG).show();
+                Toast.makeText(OrderActivity.this, "Не удалось получить данные с сервера", Toast.LENGTH_LONG).show();
             }
         }
 

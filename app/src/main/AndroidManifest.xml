@@ -4,9 +4,6 @@
     package="taxi.city.citytaxidriver" >
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -60,23 +57,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".CreateCarActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
-        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
+        <!--<meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key" />-->
+
+        <!--debug-->
+        <!--<meta-data
+            android:name="com.google.android.gms.version"
+            android:value="AIzaSyDhj3l22EInXsQ-x3HsTlNMvACtDdDcxIQ"/>-->
+
+        <!--release-->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="AIzaSyA_UXaqTvPbJ6QLL8RACKk3qIFyPW9tA3s"/>
 
         <activity
             android:name=".MapsActivity"
-            android:logo="@mipmap/ic_launcher"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme" >
         </activity>

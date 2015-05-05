@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -387,7 +386,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     }
 
     private void updateViews() {
-        if (order.id == 0 || order.status == OStatus.NEW) {
+        if (order == null || order.id == 0 || order.status == OStatus.NEW) {
             order.clear();
             mMap.clear();
             llButtonTop.setVisibility(View.GONE);
@@ -549,7 +548,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         // The connection has been interrupted.
         // Disable any UI components that depend on Google APIs
         // until onConnected() is called.
-        Log.i(TAG, "Location services suspended. Please reconnect.");
     }
 
     @Override
@@ -565,8 +563,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
             }
-        } else {
-            Log.i(TAG, "Location services connection failed with code " + result.getErrorCode());
         }
     }
 

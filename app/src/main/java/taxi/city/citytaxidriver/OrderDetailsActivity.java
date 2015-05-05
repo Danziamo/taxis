@@ -1,15 +1,13 @@
 package taxi.city.citytaxidriver;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -215,13 +213,14 @@ public class OrderDetailsActivity extends ActionBarActivity {
             final Dialog dialog = new Dialog(getActivity());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.alertdialog_decline_order);
+
             Window window = dialog.getWindow();
             WindowManager.LayoutParams wlp = window.getAttributes();
 
             wlp.gravity = Gravity.BOTTOM;
             wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             window.setAttributes(wlp);
-            // set the custom dialog components - text, image and button
+
             EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
             Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
             Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
@@ -229,7 +228,10 @@ public class OrderDetailsActivity extends ActionBarActivity {
             btnOkDialog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    order.status = OStatus.NEW;
                     SendPostRequest(OStatus.NEW);
+                    showProgress(true);
+                    dialog.dismiss();
                 }
             });
 
@@ -286,16 +288,29 @@ public class OrderDetailsActivity extends ActionBarActivity {
                     data.put("driver", mDriver == null ? JSONObject.NULL : mDriver);
                     if (mCurrPosition != null) data.put("address_stop", mCurrPosition);
 
+                    JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
                     if (mClient.status.equals(OStatus.NEW.toString())) {
-                        JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
                         if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
-                            JSONObject returnObject = new JSONObject();
-                            returnObject.put("status", "reserved");
-                            return returnObject;
+                            res = new JSONObject();
+                            res.put("status", "reserved");
                         }
+                        else {
+                            res = api.patchRequest(data, "orders/" + mId + "/");
+                        }
+                    } else if ((mClient.status.equals(OStatus.ACCEPTED.toString())
+                            || mClient.status.equals(OStatus.WAITING.toString())
+                            || mClient.status.equals(OStatus.ONTHEWAY.toString()))
+                            && !mStatus.equals(OStatus.NEW.toString())){
+                        if (Helper.isSuccess(object)) {
+                            if (object.getString("status").equals(OStatus.CANCELED.toString())
+                                    || object.getInt("driver") != mClient.driver){
+                                res = new JSONObject();
+                                res.put("status", "reserved");
+                            }
+                        }
+                    } else {
+                        res = api.patchRequest(data, "orders/" + mId + "/");
                     }
-
-                    res = api.patchRequest(data, "orders/" + mId + "/");
                 } catch (JSONException e) {
                     e.printStackTrace();
                     res = null;
@@ -306,13 +321,14 @@ public class OrderDetailsActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(JSONObject result) {
                 mTask = null;
+                showProgress(false);
                 try {
                     if (Helper.isSuccess(result)) {
                         Toast.makeText(getActivity(), "Заказ обновлён", Toast.LENGTH_LONG).show();
                         if (result.getString("status").equals(OStatus.CANCELED.toString())) order.clear();
                         else if (result.getString("status").equals(OStatus.ACCEPTED.toString())) {
-                            showProgress(false);
                             mClient.status = OStatus.ACCEPTED.toString();
+                            mClient.driver = user.id;
                             order.status = OStatus.ACCEPTED;
                             Helper.setOrder(result);
                         } else if (result.getString("status").equals(OStatus.NEW.toString())) {
@@ -324,7 +340,8 @@ public class OrderDetailsActivity extends ActionBarActivity {
                         }
                         updateViews();
                     } else if (result != null && result.getString("status").equals("reserved")) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Заказ невозможно взять", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
+                        order.clear();
                         getActivity().finish();
                     }
                     if (order.status == OStatus.ONTHEWAY) {

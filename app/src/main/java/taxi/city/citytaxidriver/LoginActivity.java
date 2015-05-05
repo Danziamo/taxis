@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -114,8 +113,6 @@ public class LoginActivity extends Activity{
             if (mRegId == null || mRegId.length() < 10 || mRegId.isEmpty()) {
                 registerInBackground();
             }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
         }
         /*mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);*/
@@ -347,7 +344,6 @@ public class LoginActivity extends Activity{
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Log.i(TAG, "This device is not supported.");
                 finish();
             }
             return false;

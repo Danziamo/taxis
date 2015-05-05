@@ -1,26 +1,14 @@
 package taxi.city.citytaxidriver;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
-import taxi.city.citytaxidriver.Core.User;
 
 
 public class GarajActivity extends ActionBarActivity {
@@ -109,31 +97,6 @@ public class GarajActivity extends ActionBarActivity {
         private void openAccountNumber() {
             Intent intent = new Intent(getActivity(), AccountActivity.class);
             startActivity(intent);
-            /*final AlertDialog.Builder builder =
-                    new AlertDialog.Builder(getActivity(), R.style.DialogBoxTheme);
-            final String title = "Ваш лицевой счёт и баланс";
-            final TextView tvAccountNumber = new TextView(getActivity());
-            tvAccountNumber.setText("Лицевой счёт: " + User.getInstance().phone);
-            tvAccountNumber.setPadding(5, 0,0, 0);
-            final TextView tvBalance = new TextView(getActivity());
-            tvBalance.setText("Баланс: " + String.valueOf(User.getInstance().balance));
-            tvBalance.setPadding(5, 0, 0, 0);
-            final LinearLayout ll = new LinearLayout(getActivity());
-            ll.setOrientation(LinearLayout.VERTICAL);
-            ll.setGravity(Gravity.CENTER);
-            ll.addView(tvAccountNumber);
-            ll.addView(tvBalance);
-
-            builder.setTitle(title)
-                    .setView(ll)
-                    .setNeutralButton("ЗАКРЫТЬ",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int id) {
-                                    d.dismiss();
-                                }
-                            })
-                    .create()
-                    .show();*/
         }
 
         private void openCarInfo() {

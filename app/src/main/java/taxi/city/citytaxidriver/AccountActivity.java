@@ -52,6 +52,9 @@ public class AccountActivity extends ActionBarActivity {
             tvAccountNumber = (TextView)rootView.findViewById(R.id.textViewAccountNumber);
             tvAccountBalance = (TextView) rootView.findViewById(R.id.textViewAccountBalance);
 
+            tvAccountNumber.setText(User.getInstance().phone);
+            tvAccountBalance.setText(String.valueOf((int)User.getInstance().balance) + "  сом");
+
             Button buttonBack = (Button)rootView.findViewById(R.id.buttonBack);
             buttonBack.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,7 +111,6 @@ public class AccountActivity extends ActionBarActivity {
             String balance = object.getString("balance");
             double b = balance == null ? 0 : Double.valueOf(balance);
             tvAccountBalance.setText(String.valueOf((int)b) + "  сом");
-            tvAccountNumber.setText(User.getInstance().phone);
             User.getInstance().balance = b;
         }
     }
