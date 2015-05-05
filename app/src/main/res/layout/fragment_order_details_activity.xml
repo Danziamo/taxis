@@ -14,7 +14,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny">
 
             <TextView
                 android:text="Адрес клиента:"
@@ -32,14 +33,8 @@
 
             <TextView
                 style="@style/mediumEditText"
-                android:textColor="@color/blacktext2"
-                android:textSize="@dimen/text_size"
                 android:id="@+id/textViewStartAddress"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:layout_below="@+id/textViewClientAddressLabel"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp" />
+                android:layout_below="@+id/textViewClientAddressLabel" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,13 +49,8 @@
 
             <TextView
                 style="@style/mediumEditText"
-                android:gravity="center"
-                android:textSize="@dimen/text_size"
                 android:id="@+id/textViewClientPhone"
-                android:layout_below="@+id/textViewClientPhoneLabel"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_below="@+id/textViewClientPhoneLabel" />
 
             <ImageButton
                 android:layout_width="35dp"
@@ -69,9 +59,7 @@
                 android:id="@+id/imageButtonCallClient"
                 android:layout_alignTop="@+id/textViewClientPhone"
                 android:layout_alignRight="@+id/textViewStopAddress"
-                android:layout_alignEnd="@+id/textViewStopAddress"
-                android:layout_marginTop="3dp"
-                android:layout_marginRight="10dp"/>
+                android:layout_alignEnd="@+id/textViewStopAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,23 +74,18 @@
 
             <TextView
                 style="@style/mediumEditText"
-                android:textSize="@dimen/text_size"
-                android:gravity="center"
                 android:id="@+id/textViewStopAddress"
-                android:layout_below="@+id/textViewStopAddressLabel"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="10dp" />
+                android:layout_below="@+id/textViewStopAddressLabel" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:id="@+id/linearLayoutFixedPrice"
                 android:layout_below="@+id/textViewStopAddress"
-                android:layout_marginTop="15dp"
+
                 android:weightSum="10"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="10dp">
+>
 
                 <TextView
                     style="@style/FixedEditText"

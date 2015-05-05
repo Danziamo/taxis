@@ -10,34 +10,25 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingRight="@dimen/spacing_large"
         android:layout_above="@+id/linearLayoutTopButtons"
         android:id="@+id/scrollViewOrderInfo">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center">
 
-            <TextView android:text="Адрес клиента:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:id="@+id/textViewStartAddress"
-                android:layout_marginTop="10dp"
-                android:textSize="25dp"
-                android:textAlignment="center"
-                android:layout_gravity="center_horizontal"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+            <TextView
+                style="@style/TextTitle"
+                android:text="Адрес клиента:"
+                android:id="@+id/textViewStartAddress" />
 
             <EditText
                 style="@style/mediumEditText"
                 android:id="@+id/editTextStartAddress"
                 android:gravity="center"
-                android:layout_below="@+id/textViewStartAddress"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp" />
+                android:layout_below="@+id/textViewStartAddress"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -223,12 +214,18 @@
                 android:layout_below="@+id/linearLayoutSum"
                 android:weightSum="10"
                 android:id="@+id/linearLayoutFixedPrice"
-                android:layout_margin="10dp">
+                android:layout_marginTop="@dimen/spacing_tiny">
 
                 <TextView
                     style="@style/FixedEditText"
                     android:text="Фиксированная плата:"
                     android:id="@+id/textViewFixedPriceLabel" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent" >
+
+                </View>
 
                 <TextView
                     style="@style/SmallFixedEditText"
@@ -272,37 +269,21 @@
                     android:padding="2dp"
                     android:layout_weight="3.5"
                     android:textSize="25sp"
-                    android:textColor="@color/white"
-                     />
+                    android:textColor="@color/white"/>
             </LinearLayout>
 
             <TextView
+                style="@style/TextTitle"
                 android:text="Адрес назначения:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/white"
                 android:id="@+id/textViewStopAddress"
-                android:layout_marginTop="10dp"
-                android:textSize="25dp"
-                android:textAlignment="center"
-                android:layout_below="@+id/linearLayoutTotal"
-                android:layout_gravity="center_horizontal"
-                android:layout_centerHorizontal="true" />
+                android:layout_below="@+id/linearLayoutTotal" />
 
 
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:background="@drawable/textbox_background"
+                style="@style/mediumEditText"
                 android:text="Адрес куда надо доставить:"
-                android:textColor="@color/blacktext2"
                 android:id="@+id/editTextStopAddress"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/textViewStopAddress"
-                android:layout_marginTop="5dp"
-                android:layout_margin="10dp" />
+                android:layout_below="@+id/textViewStopAddress" />
 
         </RelativeLayout>
 
