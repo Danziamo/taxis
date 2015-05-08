@@ -286,6 +286,7 @@ public class OrderDetailsActivity extends ActionBarActivity {
                 try {
                     data.put("status", mStatus);
                     data.put("driver", mDriver == null ? JSONObject.NULL : mDriver);
+                    data.put("address_stop", mDriver == null ? JSONObject.NULL : gp.getPosition())
                     if (mCurrPosition != null) data.put("address_stop", mCurrPosition);
 
                     JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
