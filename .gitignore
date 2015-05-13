@@ -5,6 +5,7 @@
 .idea/libraries
 
 *.iml
+app/app.iml
 
 /*/local.properties
 /*/out
