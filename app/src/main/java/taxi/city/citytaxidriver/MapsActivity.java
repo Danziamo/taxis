@@ -49,13 +49,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import taxi.city.citytaxidriver.Core.Client;
-import taxi.city.citytaxidriver.Core.GlobalParameters;
-import taxi.city.citytaxidriver.Core.Order;
-import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OStatus;
-import taxi.city.citytaxidriver.Service.ApiService;
-import taxi.city.citytaxidriver.Utils.Helper;
+import taxi.city.citytaxidriver.core.Client;
+import taxi.city.citytaxidriver.core.GlobalParameters;
+import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
@@ -688,6 +688,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         WindowManager.LayoutParams wlp = window.getAttributes();
 
         wlp.gravity = Gravity.BOTTOM;
+        wlp.dimAmount = 0.7f;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
 
@@ -723,13 +724,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private void goToOrderDetails() {
         Intent intent = new Intent(this, OrderDetailsActivity.class);
-        intent.putExtra("DATA", new Client(order));
+        intent.putExtra("DATA", new Client(order, user.id));
         startActivityForResult(intent, ORDER_DETAILS_ID);
     }
 
     private void goToFinishOrderDetails() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        Client client = new Client(order);
+        Client client = new Client(order, user.id);
         client.distance = df.format(order.distance);
         intent.putExtra("DATA", client);
         startActivity(intent);
@@ -737,7 +738,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private void EndTrip() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        Client client = new Client(order);
+        Client client = new Client(order, user.id);
         client.distance = df.format(order.distance);
         intent.putExtra("DATA", client);
         startActivityForResult(intent, FINISH_ORDER_ID);

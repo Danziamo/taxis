@@ -1,11 +1,11 @@
-package taxi.city.citytaxidriver.Core;
+package taxi.city.citytaxidriver.core;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import taxi.city.citytaxidriver.Enums.OStatus;
+import taxi.city.citytaxidriver.enums.OStatus;
 
 /**
  * Created by Daniyar on 3/27/2015.

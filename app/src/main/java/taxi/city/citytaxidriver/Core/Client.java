@@ -1,11 +1,11 @@
-package taxi.city.citytaxidriver.Core;
+package taxi.city.citytaxidriver.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 
-import taxi.city.citytaxidriver.Utils.Helper;
+import taxi.city.citytaxidriver.utils.Helper;
 
 /**
  * Created by Daniyar on 3/18/2015.
@@ -52,9 +52,10 @@ public class Client implements Serializable{
         this.fixedPrice = row.getString("fixed_price");
     }
 
-    public Client(Order order) {
+    public Client(Order order, int driverId) {
         this.id = order.id;
         this.phone = order.clientPhone;
+        this.driver = driverId;
         this.addressStart = order.addressStart;
         this.addressEnd = order.addressEnd;
         this.fixedPrice = String.valueOf((int)order.fixedPrice);
@@ -69,6 +70,7 @@ public class Client implements Serializable{
 
     public JSONObject getClientAsJSON() throws JSONException {
         JSONObject object = new JSONObject();
+        object.put("driver", this.driver);
         object.put("wait_sum", this.waitSum);
         object.put("wait_time", this.waitTime);
         object.put("order_travel_time", this.time);

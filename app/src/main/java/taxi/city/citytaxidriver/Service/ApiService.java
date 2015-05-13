@@ -1,10 +1,8 @@
-package taxi.city.citytaxidriver.Service;
+package taxi.city.citytaxidriver.service;
 
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.apache.http.HttpConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -13,7 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import taxi.city.citytaxidriver.RequestMethods.HttpPatch;
+import taxi.city.citytaxidriver.requestMethods.HttpPatch;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;

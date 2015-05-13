@@ -20,12 +20,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import taxi.city.citytaxidriver.Core.Client;
-import taxi.city.citytaxidriver.Core.ClientAdapter;
-import taxi.city.citytaxidriver.Core.Order;
-import taxi.city.citytaxidriver.Core.User;
-import taxi.city.citytaxidriver.Enums.OStatus;
-import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.core.Client;
+import taxi.city.citytaxidriver.core.ClientAdapter;
+import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.service.ApiService;
 
 public class OrderActivity extends ActionBarActivity implements View.OnClickListener {
 

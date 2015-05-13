@@ -17,7 +17,7 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import taxi.city.citytaxidriver.Service.ApiService;
+import taxi.city.citytaxidriver.service.ApiService;
 
 
 public class ConfirmSignUpActivity extends Activity {

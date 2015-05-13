@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.RequestMethods;
+package taxi.city.citytaxidriver.requestMethods;
 /*
  * ====================================================================
  * Licensed to the Apache Software Foundation (ASF) under one

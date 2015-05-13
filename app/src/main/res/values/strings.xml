@@ -18,7 +18,7 @@
     <string name="title_activity_finish_order">FinishOrder</string>
     <string name="title_activity_confirm_sing_up">ConfirmSingUpActivity</string>
     <string name="title_activity_order_details">OrderDetailsActivity</string>
-    <string name="title_activity_garaj">GarajActivity</string>
+    <string name="title_activity_garaj">Настройки</string>
     <string name="title_activity_car_details">CarDetailsActivity</string>
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="title_activity_finish_order_details">FinishOrderDetailsActivity</string>

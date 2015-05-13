@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.Core;
+package taxi.city.citytaxidriver.core;
 
 import android.content.Context;
 import android.graphics.Color;

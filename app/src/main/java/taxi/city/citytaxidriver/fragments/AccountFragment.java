@@ -13,10 +13,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.Service.ApiService;
-import taxi.city.citytaxidriver.Utils.Helper;
+import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class AccountFragment extends Fragment {
 

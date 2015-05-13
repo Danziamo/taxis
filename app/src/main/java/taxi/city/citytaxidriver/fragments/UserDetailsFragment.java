@@ -22,10 +22,10 @@ import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.ConfirmSignUpActivity;
-import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.Service.ApiService;
-import taxi.city.citytaxidriver.Utils.Helper;
+import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class UserDetailsFragment extends Fragment implements View.OnClickListener {
 

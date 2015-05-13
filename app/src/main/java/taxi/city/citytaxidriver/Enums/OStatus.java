@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.Enums;
+package taxi.city.citytaxidriver.enums;
 
 /**
  * Created by Daniyar on 4/16/2015.

@@ -1,8 +1,5 @@
-package taxi.city.citytaxidriver.Core;
+package taxi.city.citytaxidriver.core;
 
-/**
- * Created by Daniyar on 4/24/2015.
- */
 public class CarEntity {
     public int id;
     public String name;

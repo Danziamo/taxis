@@ -24,16 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import taxi.city.citytaxidriver.Core.CarEntity;
-import taxi.city.citytaxidriver.Core.User;
+import taxi.city.citytaxidriver.core.CarEntity;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.LoginActivity;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.Service.ApiService;
-import taxi.city.citytaxidriver.Utils.Helper;
+import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
-/**
- * Created by taxi on 12/05/15.
- */
 public class CarDetailsFragment extends Fragment implements View.OnClickListener{
     private CarUpdateTask mUpdateTask = null;
     private FetchCarBrandTask mFetchTask = null;
