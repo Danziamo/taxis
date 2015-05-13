@@ -10,13 +10,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingRight="@dimen/spacing_large"
         android:layout_above="@+id/linearLayoutTopButtons"
         android:id="@+id/scrollViewOrderInfo">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingRight="@dimen/spacing_large"
             android:gravity="center">
 
             <TextView

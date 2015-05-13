@@ -51,6 +51,7 @@ public class LoginActivity extends Activity{
 
     // UI references.
     private EditText mPhoneView;
+    private TextView mPhoneExtraView;
     private EditText mPasswordView;
     //private View mProgressView;
     private Button mPhoneSignInButton;
@@ -75,7 +76,7 @@ public class LoginActivity extends Activity{
 
         // Set up the login form.
         mPhoneView = (EditText) findViewById(R.id.login_phone);
-
+        mPhoneExtraView = (TextView) findViewById(R.id.textViewPhoneExtra);
         mPasswordView = (EditText) findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -114,8 +115,6 @@ public class LoginActivity extends Activity{
                 registerInBackground();
             }
         }
-        /*mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);*/
     }
 
     private void signUp() {
@@ -136,9 +135,12 @@ public class LoginActivity extends Activity{
     private void setPreferences() {
         settings = getSharedPreferences(PREFS_NAME, 0);
         if (settings.contains("phoneKey")) {
-            mPhoneView.setText(settings.getString("phoneKey", null));
-            if (settings.contains("passwordKey")) {
-                mPasswordView.setText(settings.getString("passwordKey", null));
+            String phone = settings.getString("phoneKey", null);
+            if (phone != null && phone.length() > 5) {
+                mPhoneView.setText(phone.substring(4, phone.length()));
+                if (settings.contains("passwordKey")) {
+                    mPasswordView.setText(settings.getString("passwordKey", null));
+                }
             }
         }
         if (settings.contains("deviceTokenKey")) mRegId = settings.getString("deviceTokenKey", null);
@@ -146,6 +148,7 @@ public class LoginActivity extends Activity{
 
     private void savePreferences(User user) {
         SharedPreferences.Editor editor = settings.edit();
+        editor.putString("phoneKey", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
         editor.putString("phoneKey", mPhoneView.getText().toString());
         editor.putString("passwordKey", mPasswordView.getText().toString());
         editor.putString("tokenKey", user.getToken());
@@ -164,7 +167,7 @@ public class LoginActivity extends Activity{
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mPhoneView.getText().toString();
+        String phone = mPhoneExtraView.getText().toString() + mPhoneView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
