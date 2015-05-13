@@ -893,7 +893,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 if (status == OStatus.NEW) {
                     data.put("status", status);
                     data.put("driver", JSONObject.NULL);
-                    data.put("address_stop", JSONObject.NULL)
+                    data.put("address_stop", JSONObject.NULL);
                 } else {
                     String travelTime = Helper.getTimeFromLong(order.time, order.status);
                     data.put("status", status);

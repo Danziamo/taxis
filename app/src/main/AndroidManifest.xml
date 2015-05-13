@@ -67,12 +67,12 @@
 
         <!--debug-->
         <!--<meta-data
-            android:name="com.google.android.gms.version"
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDhj3l22EInXsQ-x3HsTlNMvACtDdDcxIQ"/>-->
 
         <!--release-->
         <meta-data
-            android:name="com.google.android.gms.version"
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA_UXaqTvPbJ6QLL8RACKk3qIFyPW9tA3s"/>
 
         <activity
@@ -95,7 +95,7 @@
         <activity
             android:name=".GarajActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
+            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged" >
         </activity>
         <activity

@@ -1,27 +1,107 @@
 package taxi.city.citytaxidriver;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
-public class GarajActivity extends ActionBarActivity {
+public class GarajActivity extends ActionBarActivity implements ActionBar.TabListener {
+    TabsPagerAdapter mPageAdapter;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_garaj);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new GarajFragment())
-                    .commit();
+
+        mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                getSupportActionBar().setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mViewPager.setAdapter(mPageAdapter);
+
+        setUpTabs();
+
+    }
+
+    private void setUpTabs() {
+        ActionBar ab = getSupportActionBar();
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        ab.setDisplayShowTitleEnabled(true);
+
+        ab.addTab(ab.newTab().setText("Счет").setIcon(R.drawable.ic_action_account).setTabListener(this));
+        ab.addTab(ab.newTab().setText("Кабинет").setIcon(R.drawable.ic_action_personal).setTabListener(this));
+        ab.addTab(ab.newTab().setText("История").setIcon(R.drawable.ic_action_history).setTabListener(this));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_quit:
+                signOut();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void signOut() {
+        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pDialog .setTitleText("Вы хотите выйти?")
+                .setConfirmText("Выйти")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        Intent intent = new Intent(GarajActivity.this, LoginActivity.class);
+                        intent.putExtra("finish", true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                        startActivity(intent);
+                        finish();
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .setCancelText("Отмена")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -29,86 +109,26 @@ public class GarajActivity extends ActionBarActivity {
 
     }
 
-    public static class GarajFragment extends Fragment implements View.OnClickListener {
-
-        public GarajFragment() {
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+        mViewPager.setCurrentItem(tab.getPosition());
+        switch (tab.getPosition()) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
         }
+    }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_garaj, container, false);
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
-            ImageButton ibPersonalInfo = (ImageButton)rootView.findViewById(R.id.imageButtonDriverInfo);
-            ImageButton ibCarInfo = (ImageButton)rootView.findViewById(R.id.imageButtonCarInfo);
-            ImageButton ibAccountInfo = (ImageButton)rootView.findViewById(R.id.imageButtonAccountNumber);
-            ImageButton ibOrderList = (ImageButton)rootView.findViewById(R.id.imageButtonHistory);
+    }
 
-            Button btnMain = (Button)rootView.findViewById(R.id.buttonMain);
-            Button btnCancel = (Button)rootView.findViewById(R.id.buttonCancel);
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
-            ibPersonalInfo.setOnClickListener(this);
-            ibCarInfo.setOnClickListener(this);
-            ibAccountInfo.setOnClickListener(this);
-            ibOrderList.setOnClickListener(this);
-
-            btnMain.setOnClickListener(this);
-            btnCancel.setOnClickListener(this);
-
-            return rootView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.imageButtonDriverInfo:
-                    openDriverInfo();
-                    break;
-                case R.id.imageButtonCarInfo:
-                    openCarInfo();
-                    break;
-                case R.id.imageButtonAccountNumber:
-                    openAccountNumber();
-                    break;
-                case R.id.imageButtonHistory:
-                    openOrderHistory();
-                    break;
-                case R.id.buttonMain:
-                    goToMain();
-                    break;
-                case R.id.buttonCancel:
-                    goToMain();
-                    break;
-            }
-        }
-
-        private void goToMain() {
-            Intent intent = new Intent();
-            getActivity().setResult(5, intent);
-            getActivity().finish();
-        }
-
-        private void openOrderHistory() {
-            Intent intent = new Intent(getActivity(), OrderActivity.class);
-            intent.putExtra("NEW", false);
-            startActivityForResult(intent, 5);
-        }
-
-        private void openAccountNumber() {
-            Intent intent = new Intent(getActivity(), AccountActivity.class);
-            startActivity(intent);
-        }
-
-        private void openCarInfo() {
-            Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
-            intent.putExtra("NEW", false);
-            startActivityForResult(intent, 5);
-        }
-
-        private void openDriverInfo() {
-            Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
-            intent.putExtra("NEW", false);
-            startActivity(intent);
-        }
     }
 }

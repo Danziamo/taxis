@@ -14,6 +14,12 @@
         <item name="android:textColor">@color/blacktext2</item>
     </style>
 
+    <style name="MyActionBarTabs">
+        <!-- tab indicator -->
+        <item name="android:backgroundStacked">#a0999999</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="DialogBoxTheme" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
         <item name="android:windowBackground">@color/white</item>
         <item name="android:imeOptions">actionDone</item>
