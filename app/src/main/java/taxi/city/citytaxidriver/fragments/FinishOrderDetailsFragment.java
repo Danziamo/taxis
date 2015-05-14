@@ -162,6 +162,8 @@ public class FinishOrderDetailsFragment extends Fragment implements View.OnClick
         finishTask.execute((Void) null);
     }
 
+
+
     public class FinishOrderTask extends AsyncTask<Void, Void, JSONObject> {
 
         FinishOrderTask() {}

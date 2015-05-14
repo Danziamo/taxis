@@ -54,6 +54,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
 
         ab.addTab(ab.newTab().setText("Счет").setIcon(R.drawable.ic_action_account).setTabListener(this));
         ab.addTab(ab.newTab().setText("Кабинет").setIcon(R.drawable.ic_action_personal).setTabListener(this));
+        ab.addTab(ab.newTab().setText("Транспорт").setIcon(R.drawable.ic_action_transport).setTabListener(this));
         ab.addTab(ab.newTab().setText("История").setIcon(R.drawable.ic_action_history).setTabListener(this));
     }
 
@@ -118,6 +119,8 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
             case 1:
                 break;
             case 2:
+                break;
+            case 3:
                 break;
         }
     }
