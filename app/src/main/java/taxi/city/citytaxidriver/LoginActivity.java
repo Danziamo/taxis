@@ -149,7 +149,6 @@ public class LoginActivity extends Activity{
     private void savePreferences(User user) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("phoneKey", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
-        editor.putString("phoneKey", mPhoneView.getText().toString());
         editor.putString("passwordKey", mPasswordView.getText().toString());
         editor.putString("tokenKey", user.getToken());
         editor.putString("deviceTokenKey", user.deviceToken);
