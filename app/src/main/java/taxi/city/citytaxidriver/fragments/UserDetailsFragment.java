@@ -69,7 +69,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         etPhone = (EditText) rootView.findViewById(R.id.textViewPhone);
         etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
         etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
-        tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
+        //tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
         etDoB = (EditText) rootView.findViewById(R.id.editTextDoB);
 
         ImageButton btnShowPassword = (ImageButton)rootView.findViewById(R.id.imageButtonShowPassword);
@@ -108,7 +108,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         btnSave.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-        updateView();
+//        updateView();
 
         return rootView;
     }
@@ -132,7 +132,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPhone.setEnabled(true);
             etPhoneExtra.setEnabled(true);
         } else {
-            tvTitle.setText("Настройки Водителя");
+//            tvTitle.setText("Настройки Водителя");
             btnSave.setText("Сохранить");
             etPhone.setEnabled(false);
             etPhoneExtra.setEnabled(false);

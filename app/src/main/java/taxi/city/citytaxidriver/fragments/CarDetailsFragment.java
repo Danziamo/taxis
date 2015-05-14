@@ -83,7 +83,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
         etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
         etPassportSeries = (EditText)rootView.findViewById(R.id.editTextPassportSeries);
-        tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
+        //tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
@@ -105,7 +105,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         etPassportSeries.setText(passportExtra);
         etPassportNumber.setText(passport);
 
-        updateViews();
+//        updateViews();
         updateTask(false);
 
         return rootView;
@@ -117,7 +117,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             tvTitle.setText("Регистрация Авто");
         } else {
             btnBack.setVisibility(View.VISIBLE);
-            tvTitle.setText("Настройки Авто");
+//            tvTitle.setText("Настройки Авто");
         }
     }
 

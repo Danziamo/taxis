@@ -7,7 +7,7 @@
     android:background="@drawable/main_background"
     tools:context="taxi.city.citytaxidriver.AccountActivity.AccountFragment">
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
@@ -15,7 +15,7 @@
         android:textSize="25sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Ваш личный кабинет" />
+        android:text="Ваш личный кабинет" />-->
 
     <LinearLayout
         android:orientation="vertical"
@@ -23,8 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/textViewAccountTitle">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"

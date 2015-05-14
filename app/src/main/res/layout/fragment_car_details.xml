@@ -9,18 +9,20 @@
     android:background="@drawable/main_background"
     tools:context="taxi.city.citytaxidriver.CarDetailsActivity.CarDetailsFragment">
 
-    <TextView
+    <!--<TextView
         style="@style/TextTitle"
         android:text="Настройки авто"
-        android:id="@+id/textViewCarSettingsTitle" />
+        android:id="@+id/textViewCarSettingsTitle" />-->
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewCarSettingsTitle"
-        android:layout_above="@+id/linearLayoutBackExitGroup"
-        android:layout_marginTop="@dimen/spacing_tiny"
-        android:id="@+id/scrollView">
+
+        android:layout_marginTop="10dp"
+        android:id="@+id/scrollView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <LinearLayout
             android:orientation="vertical"
