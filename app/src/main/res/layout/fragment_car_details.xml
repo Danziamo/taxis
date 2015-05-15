@@ -93,6 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_tiny"
+                android:id="@+id/linearLayoutSeriesdata"
                 android:layout_gravity="center_horizontal">
 
                 <EditText
@@ -119,10 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="10"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayoutBackExitGroup"
-        android:layout_marginBottom="10dp">
+        android:id="@+id/linearLayoutBackExitGroup">
 
         <Button
             style="@style/mediumButton.Yellow"
