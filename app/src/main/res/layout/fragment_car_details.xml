@@ -17,7 +17,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_above="@+id/linearLayoutBackExitGroup"
         android:layout_marginTop="10dp"
         android:id="@+id/scrollView"
         android:layout_alignParentTop="true"
@@ -93,7 +93,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_tiny"
-                android:layout_above="@+id/linearLayoutBackExitGroup"
                 android:id="@+id/linearLayoutSeriesdata"
                 android:layout_gravity="center_horizontal">
 
