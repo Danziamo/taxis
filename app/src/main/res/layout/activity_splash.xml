@@ -9,6 +9,6 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/splash_screen" />
+        android:src="@drawable/splash_screen_xhdpi" />
 
 </RelativeLayout>
