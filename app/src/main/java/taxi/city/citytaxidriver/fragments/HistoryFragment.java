@@ -82,7 +82,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
                 JSONObject row = array.getJSONObject(i);
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
-                Client details = new Client(row, user.id);
+                Client details = new Client(row, user.id, false);
                 list.add(details);
 
             }

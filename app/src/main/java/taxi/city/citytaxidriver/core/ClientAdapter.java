@@ -2,15 +2,20 @@ package taxi.city.citytaxidriver.core;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.utils.Helper;
 
 /**
  * Created by Daniyar on 3/18/2015.
@@ -20,8 +25,8 @@ public class ClientAdapter extends ArrayAdapter<Client> {
     private static class ViewHolder {
         TextView id;
         TextView address;
+        TextView distance;
         TextView fixedPrice;
-        View separator;
     }
 
     public ClientAdapter(Context context, ArrayList<Client> clients) {
@@ -40,9 +45,8 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             convertView = inflater.inflate(R.layout.activity_order_list_item, parent, false);
             viewHolder.id = (TextView) convertView.findViewById(R.id.orderId);
             viewHolder.address = (TextView) convertView.findViewById(R.id.orderAddress);
+            viewHolder.distance = (TextView) convertView.findViewById(R.id.textViewOrderDistanceTo);
             viewHolder.fixedPrice = (TextView) convertView.findViewById(R.id.orderFixedPrice);
-            viewHolder.separator = (View)convertView.findViewById(R.id.viewSeparator);
-
 
             switch (client.status) {
                 case "finished":
@@ -68,14 +72,37 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             mFixedPrice = 0;
         }
 
+        float weightSum = 6;
         viewHolder.id.setText(String.valueOf(client.id));
-        viewHolder.address.setText(client.addressStart);
+        viewHolder.address.setText("#" + String.valueOf(client.id) + " " + client.addressStart);
 
-        if (mFixedPrice >= 50) {
-            viewHolder.separator.setVisibility(View.VISIBLE);
-            viewHolder.fixedPrice.setText(String.valueOf((int)mFixedPrice) + "сом");
+        double distance = 0;
+        LatLng driverPosition = GlobalParameters.getInstance().currPosition;
+        LatLng clientPosition = Helper.getLatLng(client.startPoint);
+        if (driverPosition != null && clientPosition != null && client.active) {
+            Location driverLocation = new Location("");
+            driverLocation.setLatitude(driverPosition.latitude);
+            driverLocation.setLongitude(driverPosition.longitude);
+
+            Location clientLocation = new Location("");
+            clientLocation.setLatitude(clientPosition.latitude);
+            clientLocation.setLongitude(clientPosition.longitude);
+            viewHolder.distance.setText(Helper.getFormattedDistance(driverLocation.distanceTo(clientLocation)/1000) + "км");
+        } else {
+            viewHolder.distance.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0f));
+            viewHolder.distance.setVisibility(View.GONE);
+            weightSum += 2;
+            viewHolder.address.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, weightSum));
+        }
+
+        if (mFixedPrice >= 50 && client.active) {
+            viewHolder.fixedPrice.setText(String.valueOf((int) mFixedPrice) + "сом");
             viewHolder.fixedPrice.setTextColor(this.getContext().getResources().getColor(R.color.red));
-
+        } else {
+            viewHolder.fixedPrice.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0f));
+            viewHolder.fixedPrice.setVisibility(View.GONE);
+            weightSum += 2;
+            viewHolder.address.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, weightSum));
         }
         return convertView;
     }

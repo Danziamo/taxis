@@ -29,10 +29,12 @@ public class Client implements Serializable{
     public String waitSum;
     public String fixedPrice;
     public String totalSum;
+    public boolean active;
 
     public Client() {}
 
-    public Client(JSONObject row, int userId) throws JSONException {
+    public Client(JSONObject row, int userId, boolean isActive) throws JSONException {
+        this.active = isActive;
         this.phone = row.getString("client_phone");
         this.startPoint = row.getString("address_start");
         this.endPoint = row.getString("address_stop");
@@ -53,6 +55,7 @@ public class Client implements Serializable{
     }
 
     public Client(Order order, int driverId) {
+        this.active = false;
         this.id = order.id;
         this.phone = order.clientPhone;
         this.driver = driverId;

@@ -87,6 +87,38 @@ public class ApiService {
         return res;
     }
 
+    public JSONObject logoutRequest(JSONObject data, String apiUrl) {
+        HttpClient httpclient = new DefaultHttpClient();
+        JSONObject res;
+
+        try {
+            HttpPost request = new HttpPost(url + apiUrl);
+            // Add your data
+            request.addHeader("content-type", "application/json");
+            request.addHeader("Authorization", "Token " + this.token);
+
+            StringEntity params = new StringEntity(data.toString());
+            request.setEntity(params);
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(request);
+
+            res = parseData(response);
+
+        } catch (ClientProtocolException e) {
+            res = null;
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            res = null;
+            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
+            res = null;
+        }
+        return res;
+    }
+
     public JSONArray hasCar(JSONObject params, String apiUrl) {
         HttpClient httpclient = new DefaultHttpClient();
         JSONArray json = new JSONArray();

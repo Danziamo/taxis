@@ -2,9 +2,12 @@ package taxi.city.citytaxidriver;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -156,8 +159,20 @@ public class LoginActivity extends Activity{
         editor.apply();
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public void attemptLogin() {
         if (mAuthTask != null) {
+            return;
+        }
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "Нету подключения к интернету", Toast.LENGTH_SHORT).show();
             return;
         }
 

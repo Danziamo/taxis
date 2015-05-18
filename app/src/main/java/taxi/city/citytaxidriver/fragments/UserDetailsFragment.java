@@ -1,5 +1,6 @@
 package taxi.city.citytaxidriver.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -10,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,6 +22,10 @@ import android.widget.Toast;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.ConfirmSignUpActivity;
@@ -40,6 +47,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
     private boolean isNew = false;
 
     private SweetAlertDialog pDialog;
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat dateFormatter;
 
     Button btnSave;
     Button btnBack;
@@ -71,6 +80,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
         //tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
         etDoB = (EditText) rootView.findViewById(R.id.editTextDoB);
+        etDoB.setInputType(InputType.TYPE_NULL);
+        etDoB.setOnClickListener(this);
 
         ImageButton btnShowPassword = (ImageButton)rootView.findViewById(R.id.imageButtonShowPassword);
 
@@ -97,6 +108,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etFirstName.setText(user.firstName);
             etPassword.setText(user.password);
             etEmail.setText(user.email);
+            etDoB.setText(user.dob.equals("null") ? null : user.dob);
             String extra = user.phone.substring(0, 4);
             String phone = user.phone.substring(4);
             etPhone.setText(phone);
@@ -110,14 +122,35 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         btnBack.setOnClickListener(this);
 //        updateView();
 
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        setDateTimePicker();
         return rootView;
     }
+
+    private void setDateTimePicker() {
+        etDoB.setOnClickListener(this);
+
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog ,new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                etDoB.setText(dateFormatter.format(newDate.getTime()));
+            }
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonSave:
                 updateTask();
+                break;
+            case R.id.editTextDoB:
+                datePickerDialog.show();
                 break;
             default:
                 getActivity().finish();
@@ -147,6 +180,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         String phone = etPhoneExtra.getText().toString() + etPhone.getText().toString();
         String password = etPassword.getText().toString();
         String email = etEmail.getText().toString();
+        String dob = etDoB.getText().toString();
 
         if (firstName == null || firstName.length() < 2) {
             etFirstName.setError("Имя неправильно задано");
@@ -183,6 +217,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             json.put("first_name", firstName);
             json.put("last_name", lastName);
             json.put("email", email);
+            json.put("date_of_birth", dob);
             json.put("password", password);
             if (isNew) {
                 //json.put("role", "driver");
@@ -252,6 +287,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         user.lastName = etLastName.getText().toString();
         user.password = etPassword.getText().toString();
         user.email = etEmail.getText().toString();
+        user.dob = etDoB.getText().toString();
         if (isNew) {
             try {
                 user.setUser(object);

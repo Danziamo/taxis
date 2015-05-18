@@ -110,7 +110,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                 JSONObject row = array.getJSONObject(i);
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
-                Client client = new Client(row, user.id);
+                Client client = new Client(row, user.id, true);
 
                 list.add(client);
 

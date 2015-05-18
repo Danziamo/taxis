@@ -45,7 +45,6 @@
 
         <EditText
             style="@style/mediumEditText"
-
             android:hint="Дата рождения"
             android:id="@+id/editTextDoB"
             android:inputType="date"

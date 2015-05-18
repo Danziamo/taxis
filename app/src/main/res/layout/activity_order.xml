@@ -26,11 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textViewOrderTitle"
         android:layout_above="@+id/linearLayoutButtonGroupOrder"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbarThumbVertical="@drawable/scrollbar"
-        android:paddingLeft="15dp"
-        android:paddingRight="5dp"
-        android:dividerHeight="2.0sp">
+        android:scrollbarStyle="outsideInset">
     </ListView>
 
     <LinearLayout
