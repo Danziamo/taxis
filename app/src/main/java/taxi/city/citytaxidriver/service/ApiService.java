@@ -1,8 +1,6 @@
 package taxi.city.citytaxidriver.service;
 
 import android.text.TextUtils;
-import android.util.Log;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -33,7 +31,6 @@ import java.util.Map;
  */
 public class ApiService {
     private static final String url = "http://81.88.192.37/api/v1/";
-    private static final String TAG = "ApiService";
     private String token;
 
     private static ApiService mInstance = null;
@@ -170,8 +167,6 @@ public class ApiService {
             HttpResponse response = httpclient.execute(request);
             json = parseData(response);
 
-            Log.d(TAG, json.toString());
-
         } catch (IOException e) {
             json = null;
             // TODO Auto-generated catch block
@@ -226,8 +221,6 @@ public class ApiService {
             HttpResponse response = httpClient.execute(request);
             json = parseData(response);
 
-            Log.d(TAG, json.toString());
-
         } catch (IOException e) {
             json = null;
             // TODO Auto-generated catch block
@@ -256,8 +249,6 @@ public class ApiService {
             // Execute HTTP Post Request
             HttpResponse response = httpClient.execute(request);
             json = parseData(response);
-
-            Log.d(TAG, json.toString());
 
         } catch (IOException e) {
             json = null;
@@ -340,16 +331,12 @@ public class ApiService {
             HttpResponse response = httpclient.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
 
-            if (statusCode != HttpStatus.SC_OK) {
-                Log.d(TAG, getResponseMessage(response));
-            }
             map = new AbstractMap.SimpleEntry<>(statusCode, null);
 
         } catch (ClientProtocolException e) {
             return null;
             // TODO Auto-generated catch block
         } catch (IOException e) {
-            Log.e("API", Arrays.toString(e.getStackTrace()));
             return null;
             // TODO Auto-generated catch block
         }
@@ -411,7 +398,6 @@ public class ApiService {
                 sb.append(line);
             }
 
-            Log.d("Response", sb.toString());
             result = new JSONArray(sb.toString());
         } catch (JSONException | IOException e) {
             e.printStackTrace();

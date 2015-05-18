@@ -71,8 +71,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
     }
 
     private void goOrderDetails(Client detail) {
-        Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+        Intent intent = new Intent(getActivity(), FinishOrderDetailsFragment.class);
         intent.putExtra("DATA", detail);
+        startActivity(intent);
     }
 
     private void InitListView(JSONArray array) {

@@ -41,6 +41,7 @@
             android:id="@+id/editTextEmail"
             android:inputType="textEmailAddress"
             android:layout_gravity="center_horizontal"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/spacing_tiny" />
 
         <EditText
@@ -71,10 +72,7 @@
                 style="@style/ShortEditText"
                 android:hint="Телефон"
                 android:id="@+id/textViewPhone"
-
-
-                android:inputType="number"
-/>
+                android:inputType="number"/>
         </LinearLayout>
 
         <RelativeLayout
@@ -115,7 +113,7 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayoutBackExitGroup"
         android:layout_alignParentBottom="true"

@@ -42,14 +42,6 @@ public class AccountFragment extends Fragment {
         tvAccountNumber.setText(User.getInstance().phone);
         tvAccountBalance.setText(String.valueOf((int)User.getInstance().balance) + "  сом");
 
-        Button buttonBack = (Button)rootView.findViewById(R.id.buttonBack);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
-
         fetchTask();
         return rootView;
     }

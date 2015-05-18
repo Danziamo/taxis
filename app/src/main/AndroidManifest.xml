@@ -33,7 +33,7 @@
         android:logo="@mipmap/ic_launcher"
         android:screenOrientation="portrait"
         android:theme="@style/MainTheme"
-        android:windowSoftInputMode="stateUnchanged"
+        android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan"
         tools:replace="android:icon,android:theme" >
 
         <meta-data
@@ -80,13 +80,13 @@
             android:name=".OrderActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".ConfirmSignUpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".GarajActivity"
@@ -103,25 +103,25 @@
             android:name=".CarDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".UserDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".FinishOrderDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".OrderDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
 
         </activity>
         <activity

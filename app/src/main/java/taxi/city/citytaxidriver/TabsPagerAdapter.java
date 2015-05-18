@@ -32,7 +32,7 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return UserDetailsFragment.newInstance();
             case 2:
-                return CarDetailsFragment.newInstance();
+                return CarDetailsFragment.getInstance();
             case 3:
                 return HistoryFragment.newInstance();
             default:

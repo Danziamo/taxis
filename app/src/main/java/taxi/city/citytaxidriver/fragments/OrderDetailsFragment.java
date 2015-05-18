@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -140,10 +141,12 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     showProgress(true);
                     SendPostRequest(OStatus.ACCEPTED);
                 } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                    showProgress(true);
                     mClient.status = OStatus.WAITING.toString();
                     order.status = OStatus.WAITING;
                     SendPostRequest(OStatus.WAITING);
                 } else if (mClient.status.equals(OStatus.WAITING.toString())) {
+                    showProgress(true);
                     mClient.status = OStatus.ONTHEWAY.toString();
                     order.status = OStatus.ONTHEWAY;
                     SendPostRequest(OStatus.ONTHEWAY);
@@ -207,9 +210,9 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         btnOkDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress(true);
                 order.status = OStatus.NEW;
                 SendPostRequest(OStatus.NEW);
-                showProgress(true);
                 dialog.dismiss();
             }
         });
@@ -253,7 +256,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
 
         SendPostRequestTask(OStatus type, int orderId) {
             mStatus = type.toString();
-            mDriver = type == OStatus.NEW ? null : String.valueOf(user.id);
+            mDriver = String.valueOf(user.id);
             mCurrPosition = gp.getPosition();
             mId = orderId == 0 ? null : String.valueOf(orderId);
         }
@@ -264,11 +267,12 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             JSONObject data = new JSONObject();
             try {
                 data.put("status", mStatus);
-                data.put("driver", mDriver == null ? JSONObject.NULL : mDriver);
-                data.put("address_stop", mDriver == null ? JSONObject.NULL : gp.getPosition());
-                if (mCurrPosition != null) data.put("address_stop", mCurrPosition);
+                data.put("driver", mDriver);
+                data.put("address_stop", mStatus == OStatus.NEW.toString() || mCurrPosition == null
+                        ? JSONObject.NULL : mCurrPosition);
 
-                JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
+                /*JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
+
                 if (mClient.status.equals(OStatus.NEW.toString())) {
                     if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
                         res = new JSONObject();
@@ -289,6 +293,14 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     }
                 } else {
                     res = api.patchRequest(data, "orders/" + mId + "/");
+                }*/
+
+                JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
+                if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.CANCELED.toString())) {
+                    res = api.patchRequest(data, "orders/" + mId + "/");
+                } else {
+                    res = new JSONObject();
+                    res.put("status_code", 400);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -313,14 +325,17 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         Helper.setOrder(result);
                     } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                         order.clear();
+                        Helper.resetPreferences(getActivity().getApplicationContext());
+                        Helper.clearPreferences(getActivity().getApplicationContext());
                         Intent intent = new Intent();
                         intent.putExtra("returnCode", false);
                         getActivity().setResult(isActive ? 3 : 1, intent);
                         getActivity().finish();
                     }
-                    updateViews();
-                } else if (result != null && result.getString("status").equals("reserved")) {
+                } else if (Helper.isBadRequest(result)) {
                     Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
+                    Helper.resetPreferences(getActivity().getApplicationContext());
+                    Helper.clearPreferences(getActivity().getApplicationContext());
                     order.clear();
                     getActivity().finish();
                 }
@@ -333,6 +348,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         getActivity().setResult(3, intent);
                     getActivity().finish();
                 }
+                updateViews();
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {

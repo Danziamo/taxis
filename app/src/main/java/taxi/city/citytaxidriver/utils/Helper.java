@@ -1,5 +1,8 @@
 package taxi.city.citytaxidriver.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpStatus;
@@ -23,6 +26,8 @@ import taxi.city.citytaxidriver.enums.OStatus;
 public class Helper {
     private static String regexPattern = "\\d+\\.?\\d*";
     private static DecimalFormat df = new DecimalFormat("#.##");
+    private final static String PREFS_NAME = "OrderPrefsFile";
+    private static SharedPreferences settings;
 
     /**
      * Returns string representation of given LatLng to save or send to remote server
@@ -177,6 +182,37 @@ public class Helper {
         if (!object.has("status_code")) return false;
         if (!isSuccess(object.getInt("status_code"))) return false;
         return true;
+    }
+
+    public static boolean isBadRequest(int status) {
+        if (status == HttpStatus.SC_FORBIDDEN) return true;
+        if (status == HttpStatus.SC_NOT_FOUND) return true;
+        if (status == HttpStatus.SC_NOT_ACCEPTABLE) return true;
+        if (status == HttpStatus.SC_METHOD_NOT_ALLOWED) return true;
+        if (status == HttpStatus.SC_UNAUTHORIZED) return true;
+        if (status == HttpStatus.SC_BAD_REQUEST) return true;
+        return false;
+    }
+
+    public static boolean isBadRequest(JSONObject object) throws  JSONException {
+        if (object == null) return false;
+        if (!object.has("status_code")) return false;
+        if (!isBadRequest(object.getInt("status_code"))) return false;
+        return true;
+    }
+
+    public static void clearPreferences(Context context) {
+        settings = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear().apply();
+    }
+
+    public static void resetPreferences(Context context) {
+        settings = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("orderId", 0);
+        editor.putString("status", null);
+        editor.apply();
     }
 
     public static double getDouble(String number) {

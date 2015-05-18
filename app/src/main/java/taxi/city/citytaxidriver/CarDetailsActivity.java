@@ -14,7 +14,7 @@ public class CarDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_car_details);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new CarDetailsFragment())
+                    .add(R.id.container, CarDetailsFragment.newInstance())
                     .commit();
         }
     }

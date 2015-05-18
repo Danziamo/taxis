@@ -22,8 +22,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.CarDetailsActivity;
+import taxi.city.citytaxidriver.MapsActivity;
 import taxi.city.citytaxidriver.core.CarEntity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.LoginActivity;
@@ -32,6 +35,8 @@ import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class CarDetailsFragment extends Fragment implements View.OnClickListener{
+
+    private static CarDetailsFragment mInstance = null;
     private CarUpdateTask mUpdateTask = null;
     private FetchCarBrandTask mFetchTask = null;
     private boolean isNew = true;
@@ -63,6 +68,13 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         return new CarDetailsFragment();
     }
 
+    public static CarDetailsFragment getInstance() {
+        if (mInstance == null) {
+            mInstance = new CarDetailsFragment();
+        }
+        return mInstance;
+    }
+
     public CarDetailsFragment() {
     }
 
@@ -89,6 +101,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
 
         btnBack.setOnClickListener(this);
+        btnBack.setVisibility(isNew ? View.VISIBLE : View.GONE);
         btnSave.setOnClickListener(this);
 
         String driverLicenseExtra = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
@@ -111,16 +124,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         return rootView;
     }
 
-    private void updateViews() {
-        if (isNew) {
-            btnBack.setVisibility(View.GONE);
-            tvTitle.setText("Регистрация Авто");
-        } else {
-            btnBack.setVisibility(View.VISIBLE);
-//            tvTitle.setText("Настройки Авто");
-        }
-    }
-
     private void updateTask(boolean update){
         if (mUpdateTask != null)
             return;
@@ -136,8 +139,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                 Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
                 return;
             }
-                /*if (carBrandModel == null || carBrandModel.id == 0)
-                    return;*/
 
             String passportNumberExtra = etPassportSeries.getText().toString();
             String passportNumber = passportNumberExtra + etPassportNumber.getText().toString();
@@ -148,49 +149,49 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             String color = etCarColor.getText().toString();
             String year = etCarYear.getText().toString();
 
-            if (passportNumberExtra == null || passportNumberExtra.length() != 2) {
+            if (passportNumberExtra.length() != 2) {
                 etPassportSeries.setError("Неверно задано. 2 символа");
                 etPassportSeries.requestFocus();
                 return;
             }
 
-            if (passportNumber == null || passportNumber.length() < 6) {
+            if (passportNumber.length() < 6) {
                 etPassportNumber.setError("Неверно задано");
                 etPassportNumber.requestFocus();
                 return;
             }
 
-            if (driverLicenseExtra == null || driverLicenseExtra.length() != 2) {
+            if (driverLicenseExtra.length() != 2) {
                 etDriverLicenseSeries.setError("Неверно задано. 2 символа");
                 etDriverLicenseSeries.requestFocus();
                 return;
             }
 
-            if (driverLicense == null || driverLicense.length() < 6) {
+            if (driverLicense.length() < 6) {
                 etDriverLicense.setError("Неверно задано");
                 etDriverLicense.requestFocus();
                 return;
             }
 
-            if (techPassport == null || techPassport.length() < 6) {
+            if (techPassport.length() < 6) {
                 etTechPassport.setError("Неверно задано");
                 etTechPassport.requestFocus();
                 return;
             }
 
-            if (carNumber == null || carNumber.length() < 6) {
+            if (carNumber.length() < 6) {
                 etCarNumber.setError("Неверно задано");
                 etCarNumber.requestFocus();
                 return;
             }
 
-            if (year == null || !Helper.isYearValid(year)) {
+            if (!Helper.isYearValid(year)) {
                 etCarYear.setError("Неверно задано");
                 etCarYear.requestFocus();
                 return;
             }
 
-            if (color == null || color.length() < 3) {
+            if (color.length() < 3) {
                 etCarColor.setError("Неверно задано");
                 etCarColor.requestFocus();
                 return;
@@ -300,7 +301,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         mUser.driverLicenseNumber = etDriverLicenseSeries.getText().toString() + etDriverLicense.getText().toString();
         mUser.passportNumber = etPassportSeries.getText().toString() + etPassportNumber.getText().toString();
         if (isNew) {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            Intent intent = new Intent(getActivity(), MapsActivity.class);
             startActivity(intent);
             getActivity().finish();
         }

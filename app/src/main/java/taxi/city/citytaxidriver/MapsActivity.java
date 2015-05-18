@@ -73,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private SendPostRequestTask sendTask;
 
+    private SweetAlertDialog pDialog;
     LinearLayout llMain;
     TextView tvDistance;
     //TextView tvPrice;
@@ -283,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             if (distance > freeMeters)
                 price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
             else
-                price = 60;
+                price = startPrice;
             order.sum = price;
             if (order.waitTime > 5 * 60) {
                 if (order.waitTime <= 5*60) {
@@ -700,6 +701,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             @Override
             public void onClick(View v) {
                 order.status = OStatus.NEW;
+                showProgress(true);
                 timerHandler.removeCallbacks(timerRunnable);
                 SendPostRequest(order.status, order.id);
                 updateViews();
@@ -891,22 +893,17 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             JSONObject data = new JSONObject();
             JSONObject result = null;
             try {
-                if (status == OStatus.NEW) {
-                    data.put("status", status);
-                    data.put("driver", user.id);
-                    data.put("address_stop", JSONObject.NULL);
-                } else {
-                    String travelTime = Helper.getTimeFromLong(order.time, order.status);
-                    data.put("status", status);
-                    data.put("driver", status == OStatus.NEW ? JSONObject.NULL : driver);
-                    data.put("order_sum", order.getTotalSum());
-                    data.put("wait_time_price", order.getWaitSum());
-                    data.put("address_stop", status == OStatus.NEW ? JSONObject.NULL : Helper.getFormattedLatLng(order.endPoint));
-                    data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
-                    data.put("order_distance", (double) Math.round(order.distance * 100) / 100);
-                    data.put("order_travel_time", travelTime);
-                }
+                String travelTime = Helper.getTimeFromLong(order.time, order.status);
+                data.put("status", status);
+                data.put("driver", driver);
+                data.put("order_sum", status == OStatus.NEW ? 0 : order.getTotalSum());
+                data.put("wait_time_price", status == OStatus.NEW ? 0 : order.getWaitSum());
+                data.put("address_stop", status == OStatus.NEW ? JSONObject.NULL : Helper.getFormattedLatLng(order.endPoint));
+                data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
+                data.put("order_distance", (double) Math.round(order.distance * 100) / 100);
+                data.put("order_travel_time", travelTime);
                 JSONObject checkObject = api.getOrderRequest(null, "orders/" + mOrderId + "/");
+
                 if (checkObject != null && checkObject.getInt("status_code") == HttpStatus.SC_OK) {
                     String checkStatus = checkObject.getString("status");
                     if (checkStatus == null || checkStatus.equals(OStatus.CANCELED.toString())) {
@@ -926,6 +923,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         @Override
         protected void onPostExecute(JSONObject result) {
             sendTask = null;
+            showProgress(false);
             try {
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
@@ -935,23 +933,46 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                         clearPreferences();
                     }
                 } else if (result != null && result.getInt("status_code") == 999) {
-                    Toast.makeText(getApplicationContext(), "Клиент отменил заказ: " + result.getString("description"), Toast.LENGTH_LONG).show();
+                    new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Клиент отменил заказ")
+                            .setContentText(result.getString("description"))
+                            .setConfirmText("Ок")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismissWithAnimation();
+                                }
+                            })
+                            .show();
                     order.clear();
                     resetPreferences();
                     clearPreferences();
                     updateViews();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this, "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Внутрення ошибка", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "Внутрення ошибка", Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         protected void onCancelled() {
             sendTask = null;
+        }
+    }
+
+    public void showProgress(final boolean show) {
+        if (show) {
+            pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper()
+                    .setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Обновление");
+            pDialog.setCancelable(true);
+            pDialog.show();
+        } else {
+            if (pDialog != null) pDialog.dismissWithAnimation();
         }
     }
 }

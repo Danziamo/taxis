@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.CarDetailsActivity;
 import taxi.city.citytaxidriver.ConfirmSignUpActivity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
@@ -117,6 +118,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
+        btnBack.setVisibility(isNew ? View.VISIBLE : View.GONE);
 
         btnSave.setOnClickListener(this);
         btnBack.setOnClickListener(this);
@@ -158,7 +160,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void updateView() {
+    /*private void updateView() {
         if (isNew) {
             btnSave.setText("Подтвердить");
             tvTitle.setText("Регистрация");
@@ -170,7 +172,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPhone.setEnabled(false);
             etPhoneExtra.setEnabled(false);
         }
-    }
+    }*/
 
     private void updateTask() {
         if (mTask != null) return;
@@ -194,8 +196,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             return;
         }
 
-        if (email != null && !Helper.isValidEmailAddress(email)) {
-            etEmail.setError("Email неправильно задано");
+        if (email != null && email.length() > 0 && !Helper.isValidEmailAddress(email)) {
+            etEmail.setError("Email неправильно задан");
             etEmail.requestFocus();
             return;
         }
@@ -293,8 +295,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 user.setUser(object);
                 if (object.has("token")) ApiService.getInstance().setToken(object.getString("token"));
             } catch (JSONException ignored) {}
-            Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
-            intent.putExtra("DATA", object.toString());
+            Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
+            intent.putExtra("NEW", true);
             startActivity(intent);
             getActivity().finish();
         }
