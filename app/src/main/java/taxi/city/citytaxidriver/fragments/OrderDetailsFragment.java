@@ -168,8 +168,8 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     }
 
     private void callClient() {
-        SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-        pDialog.setTitleText("Вы хотите позвонить?")
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Вы хотите позвонить?")
                 .setContentText(mClient.phone)
                 .setConfirmText("Позвонить")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -268,32 +268,8 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             try {
                 data.put("status", mStatus);
                 data.put("driver", mDriver);
-                data.put("address_stop", mStatus == OStatus.NEW.toString() || mCurrPosition == null
+                data.put("address_stop", mStatus.equals(OStatus.NEW.toString()) || mCurrPosition == null
                         ? JSONObject.NULL : mCurrPosition);
-
-                /*JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
-
-                if (mClient.status.equals(OStatus.NEW.toString())) {
-                    if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.NEW.toString())) {
-                        res = new JSONObject();
-                        res.put("status", "reserved");
-                    } else {
-                        res = api.patchRequest(data, "orders/" + mId + "/");
-                    }
-                } else if ((mClient.status.equals(OStatus.ACCEPTED.toString())
-                        || mClient.status.equals(OStatus.WAITING.toString())
-                        || mClient.status.equals(OStatus.ONTHEWAY.toString()))
-                        && !mStatus.equals(OStatus.NEW.toString())) {
-                    if (Helper.isSuccess(object)) {
-                        if (object.getString("status").equals(OStatus.CANCELED.toString())
-                                || object.getInt("driver") != mClient.driver) {
-                            res = new JSONObject();
-                            res.put("status", "reserved");
-                        }
-                    }
-                } else {
-                    res = api.patchRequest(data, "orders/" + mId + "/");
-                }*/
 
                 JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
                 if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.CANCELED.toString())) {
@@ -325,8 +301,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         Helper.setOrder(result);
                     } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                         order.clear();
-                        Helper.resetPreferences(getActivity().getApplicationContext());
-                        Helper.clearPreferences(getActivity().getApplicationContext());
+                        Helper.destroyPreferences(getActivity().getApplicationContext());
                         Intent intent = new Intent();
                         intent.putExtra("returnCode", false);
                         getActivity().setResult(isActive ? 3 : 1, intent);
@@ -334,8 +309,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     }
                 } else if (Helper.isBadRequest(result)) {
                     Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
-                    Helper.resetPreferences(getActivity().getApplicationContext());
-                    Helper.clearPreferences(getActivity().getApplicationContext());
+                    Helper.destroyPreferences(getActivity().getApplicationContext());
                     order.clear();
                     getActivity().finish();
                 }

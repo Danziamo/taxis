@@ -201,6 +201,11 @@ public class Helper {
         return true;
     }
 
+    public static void destroyPreferences(Context context) {
+        resetPreferences(context);
+        clearPreferences(context);
+    }
+
     public static void clearPreferences(Context context) {
         settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
