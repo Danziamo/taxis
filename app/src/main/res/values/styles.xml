@@ -167,5 +167,8 @@
         <item name="android:textSize">@dimen/font_huge</item>
         <item name="android:layout_marginTop">@dimen/spacing_huge</item>
     </style>
+    <style name="TextSubTitle" parent="@style/TextTitle">
+        <item name="android:textSize">@dimen/font_large</item>
+    </style>
 
 </resources>
