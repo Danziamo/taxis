@@ -35,11 +35,9 @@
         android:theme="@style/MainTheme"
         android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan"
         tools:replace="android:icon,android:theme" >
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
@@ -63,14 +61,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme" >
-
         </activity>
-
         <activity
             android:name=".MapsActivity"
             android:screenOrientation="portrait"
@@ -122,11 +117,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
-
         </activity>
         <activity
             android:name=".AccountActivity"
-            android:label="@string/title_activity_account">
+            android:label="@string/title_activity_account" >
+        </activity>
+        <activity
+            android:name=".SosActivity"
+            android:label="@string/title_activity_sos" >
         </activity>
     </application>
 

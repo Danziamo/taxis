@@ -35,9 +35,6 @@
 
     </style>
 
-    <style name="progressbar" parent="@android:style/Widget.ProgressBar">
-        <item name="android:indeterminateDrawable">@drawable/progressbar</item>
-    </style>
     
     <!--Buttons-->
     <style name="mediumButton" parent="@android:style/Widget.Button">
@@ -167,6 +164,17 @@
         <item name="android:textSize">@dimen/font_huge</item>
         <item name="android:layout_marginTop">@dimen/spacing_huge</item>
     </style>
+
+    <style name="TextTitleSOS" parent="@style/MainTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textSize">@dimen/font_sos</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/spacing_huge</item>
+    </style>
+
     <style name="TextSubTitle" parent="@style/TextTitle">
         <item name="android:textSize">@dimen/font_large</item>
     </style>

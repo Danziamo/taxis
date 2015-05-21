@@ -16,6 +16,8 @@
     <dimen name="spacing_tiny">4dp</dimen>
 
     <!-- font sizes -->
+    <dimen name="font_sos">60sp</dimen>
+    <dimen name="font_huge_sos">35sp</dimen>
     <dimen name="font_huge">25sp</dimen>
     <dimen name="font_large">18sp</dimen>
     <dimen name="font_normal">15sp</dimen>
