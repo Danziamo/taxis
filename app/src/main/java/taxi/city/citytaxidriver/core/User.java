@@ -22,6 +22,7 @@ public class User implements Serializable {
     public String dob;
     public String address;
     public String deviceToken;
+    public double rating;
 
     private User() {}
 
@@ -49,6 +50,10 @@ public class User implements Serializable {
         this.dob = json.getString("date_of_birth");
         this.address = json.getString("address");
         this.deviceToken = json.getString("android_token");
+        String ratingSumString = json.getJSONObject("rating").getString("votes__sum");
+        double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
+        int ratingCount = json.getJSONObject("rating").getInt("votes__count");
+        this.rating = ratingCount == 0 ? 0 : (int)Math.round(ratingSum/ratingCount);
     }
 
     public String getToken() {

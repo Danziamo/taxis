@@ -66,16 +66,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5"
-            android:stepSize="1"
+            android:stepSize="0.5"
+            android:isIndicator="true"
             android:rating="2.5"
             android:layout_gravity="center"/>
         <TextView
-            android:id="@+id/textrating"
+            android:id="@+id/textViewRating"
             android:layout_gravity="center"
             style="@style/TextSubTitle"
             android:textColor="@color/lime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3 звезды"/>
+            android:text=""/>
     </LinearLayout>
 </RelativeLayout>

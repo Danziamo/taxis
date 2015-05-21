@@ -294,6 +294,7 @@ public class LoginActivity extends Activity{
                     statusCode = object.getInt("status_code");
                     if (statusCode == HttpStatus.SC_OK) {
                         user.setUser(object);
+                        Helper.saveUserPreferences(LoginActivity.this, user);
                         id = object.getInt("id");
                         JSONObject cars = api.getArrayRequest(null, "usercars/?driver=" + user.id);
                         if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;

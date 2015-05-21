@@ -286,6 +286,7 @@ public class Helper {
         user.driverLicenseNumber = settings.getString("license_number", null);
         user.dob = settings.getString("dob", null);
         user.address = settings.getString("address", null);
+        user.rating = (double)settings.getFloat("rating", 0);
         ApiService.getInstance().setToken(user.getToken());
     }
 
@@ -305,6 +306,7 @@ public class Helper {
         editor.putString("license_number", user.driverLicenseNumber);
         editor.putString("dob", user.dob);
         editor.putString("address", user.address);
+        editor.putFloat("rating", (float)user.rating);
         editor.apply();
     }
 
