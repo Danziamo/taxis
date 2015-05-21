@@ -5,11 +5,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +31,7 @@ import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 
-public class HistoryFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class HistoryFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout swipeLayout;
 
@@ -44,7 +46,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
     private int limit = 10;
 
     public static HistoryFragment newInstance() {
-        return new HistoryFragment();
+        HistoryFragment fragment = new HistoryFragment();
+        return fragment;
     }
 
     public HistoryFragment() {
@@ -64,7 +67,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        lvMain = (ListView) rootView.findViewById(R.id.orderList);
+        lvMain = (ListView) rootView.findViewById(android.R.id.list);
         fetchData();
         return rootView;
     }
@@ -77,42 +80,44 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
 
     private void InitListView(JSONArray array) {
         list.clear();
+        ArrayList<String> alist = new ArrayList<>();
         try {
             for (int i=0; i < array.length(); ++i) {
                 JSONObject row = array.getJSONObject(i);
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
                 Client details = new Client(row, user.id, false);
+                alist.add("#" + String.valueOf(details.id) + " " +details.addressStart);
                 list.add(details);
 
             }
-            ClientAdapter adapter = new ClientAdapter(getActivity(), list);
-            lvMain.setAdapter(adapter);
-            lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*ClientAdapter adapter = new ClientAdapter(getActivity(), list);
+            lvMain.setAdapter(adapter);*/
+            //OrderDetailsAdapter adapter = new OrderDetailsAdapter(getActivity(), list);
+            ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.simple_list_item, alist);
+            setListAdapter(adapter);
 
-                    try {
-                        String text = ((TextView) view.findViewById(R.id.orderId)).getText().toString();
-                        int orderId = Integer.valueOf(text);
-
-                        for (int i = list.size() - 1; i >= 0; i -= 1) {
-                            if (orderId == list.get(i).id) {
-                                orderDetail = list.get(i);
-                                break;
-                            }
-                        }
-                        goOrderDetails(orderDetail);
-                    } catch (Exception e) {
-                    }
-                }
-            });
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        String text = ((TextView) v).getText().toString();
+        String[] textArray = text.split(" ");
+        int orderId = Integer.valueOf(textArray[0].substring(1, textArray[0].length()));
+        for (int i = list.size() - 1; i >= 0; i -= 1) {
+            if (orderId == list.get(i).id) {
+                orderDetail = list.get(i);
+                break;
+            }
+        }
+        goOrderDetails(orderDetail);
     }
 
     private void fetchData() {
@@ -123,11 +128,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
         //showProgress(true);
         mFetchTask = new FetchOrderTask();
         mFetchTask.execute((Void) null);
-
-    }
-
-    @Override
-    public void onClick(View v) {
 
     }
 
