@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -57,7 +58,7 @@ import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
-public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
+public class MapsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
@@ -190,11 +191,8 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         user = User.getInstance();
 
         checkUserSession();
-
         setUpMapIfNeeded();
-
         CheckEnableGPS();
-
         SetGooglePlayServices();
 
         Initialize();
@@ -214,10 +212,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     private void checkUserSession() {
         if (user == null || user.id == 0)
         {
-            Toast.makeText(getApplicationContext(), "Сессия вышла, пожалуйста перезайдите", Toast.LENGTH_LONG).show();
+            Helper.getUserPreferences(MapsActivity.this);
+            /*Toast.makeText(getApplicationContext(), "Сессия вышла, пожалуйста перезайдите", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-            finish();
+            finish();*/
         }
     }
 
@@ -260,21 +259,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     private void getPreferences() {
         settings = getSharedPreferences(PREFS_NAME, 0);
         if (settings.contains("orderId")) {
-            String pStatus = settings.getString("orderStatus", "");
-            if (pStatus.equals(OStatus.ONTHEWAY.toString()))
-                order.status = OStatus.PENDING;
-            else
-                order.status = Helper.getStatus(pStatus);
 
-            order.id = settings.getInt("orderId", 0);
-            order.clientPhone = settings.getString("orderPhone", null);
-            order.time = settings.getLong("orderTime", 0);
-            order.fixedPrice = (double)settings.getFloat("orderFixedPrice", 0);
-            order.distance = (double)settings.getFloat("orderDistance", 0);
-            order.waitTime = settings.getLong("orderWaitTime", 0);
-            order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
-            order.addressStart = settings.getString("orderStartAddress", null);
-            order.addressEnd = settings.getString("orderEndAddress", null);
             if (mMap != null && order.startPoint != null && order.clientPhone != null) {
                 setClientLocation();
             }

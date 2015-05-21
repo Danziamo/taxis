@@ -2,7 +2,11 @@ package taxi.city.citytaxidriver.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpStatus;
@@ -18,7 +22,9 @@ import java.util.regex.Pattern;
 
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.service.ApiService;
 
 /**
  * Created by Daniyar on 4/16/2015.
@@ -26,7 +32,8 @@ import taxi.city.citytaxidriver.enums.OStatus;
 public class Helper {
     private static String regexPattern = "\\d+\\.?\\d*";
     private static DecimalFormat df = new DecimalFormat("#.##");
-    private final static String PREFS_NAME = "OrderPrefsFile";
+    private final static String ORDER_PREFS = "OrderPrefsFile";
+    private final static String USER_PREFS = "UserPrefsFile";
     private static SharedPreferences settings;
 
     /**
@@ -201,22 +208,79 @@ public class Helper {
         return true;
     }
 
-    public static void destroyPreferences(Context context) {
-        resetPreferences(context);
-        clearPreferences(context);
+    public static void destroyOrderPreferences(Context context) {
+        resetOrderPreferences(context);
+        clearOrderPreferences(context);
     }
 
-    public static void clearPreferences(Context context) {
-        settings = context.getSharedPreferences(PREFS_NAME, 0);
+    public static void clearOrderPreferences(Context context) {
+        settings = context.getSharedPreferences(ORDER_PREFS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.clear().apply();
     }
 
-    public static void resetPreferences(Context context) {
-        settings = context.getSharedPreferences(PREFS_NAME, 0);
+    public static void resetOrderPreferences(Context context) {
+        settings = context.getSharedPreferences(ORDER_PREFS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("orderId", 0);
         editor.putString("status", null);
+        editor.apply();
+    }
+
+    public static void getOrderPreferences(Context context) {
+        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+        Order order = Order.getInstance();
+        if (!settings.contains("orderId")) return;
+        String pStatus = settings.getString("orderStatus", "");
+        if (pStatus.equals(OStatus.ONTHEWAY.toString()))
+            order.status = OStatus.PENDING;
+        else
+            order.status = Helper.getStatus(pStatus);
+
+        order.id = settings.getInt("orderId", 0);
+        order.clientPhone = settings.getString("orderPhone", null);
+        order.time = settings.getLong("orderTime", 0);
+        order.fixedPrice = (double)settings.getFloat("orderFixedPrice", 0);
+        order.distance = (double)settings.getFloat("orderDistance", 0);
+        order.waitTime = settings.getLong("orderWaitTime", 0);
+        order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
+        order.addressStart = settings.getString("orderStartAddress", null);
+        order.addressEnd = settings.getString("orderEndAddress", null);
+    }
+
+    public static void getUserPreferences(Context context) {
+        settings = context.getSharedPreferences(USER_PREFS, 0);
+        User user = User.getInstance();
+        user.phone = settings.getString("phone", null);
+        user.password = settings.getString("password", null);
+        user.token = settings.getString("token", null);
+        user.deviceToken = settings.getString("deviceToken", null);
+        user.firstName = settings.getString("first_name", null);
+        user.lastName = settings.getString("last_name", null);
+        user.email = settings.getString("email", null);
+        user.balance = (double)settings.getInt("balance", 0);
+        user.passportNumber = settings.getString("passport_number", null);
+        user.driverLicenseNumber = settings.getString("license_number", null);
+        user.dob = settings.getString("dob", null);
+        user.address = settings.getString("address", null);
+        ApiService.getInstance().setToken(user.getToken());
+    }
+
+    public static void saveUserPreferences(Context context, User user) {
+        settings = context.getSharedPreferences(USER_PREFS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("phone", user.phone);
+        editor.putString("password", user.password);
+        editor.putString("token", user.getToken());
+        editor.putString("deviceToken", user.deviceToken);
+        editor.putString("first_name", user.firstName);
+        editor.putString("last_name", user.lastName);
+        editor.putString("email", user.email);
+        editor.putInt("balance", (int) user.balance);
+        editor.putString("passport_number", user.passportNumber);
+        editor.putString("license_number", user.driverLicenseNumber);
+        editor.putString("dob", user.dob);
+        editor.putString("address", user.address);
         editor.apply();
     }
 
@@ -262,5 +326,12 @@ public class Helper {
             return false;
         }
         return !(year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR));
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

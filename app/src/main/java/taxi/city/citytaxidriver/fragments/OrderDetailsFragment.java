@@ -2,7 +2,6 @@ package taxi.city.citytaxidriver.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -301,7 +300,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         Helper.setOrder(result);
                     } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                         order.clear();
-                        Helper.destroyPreferences(getActivity().getApplicationContext());
+                        Helper.destroyOrderPreferences(getActivity().getApplicationContext());
                         Intent intent = new Intent();
                         intent.putExtra("returnCode", false);
                         getActivity().setResult(isActive ? 3 : 1, intent);
@@ -309,7 +308,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     }
                 } else if (Helper.isBadRequest(result)) {
                     Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
-                    Helper.destroyPreferences(getActivity().getApplicationContext());
+                    Helper.destroyOrderPreferences(getActivity().getApplicationContext());
                     order.clear();
                     getActivity().finish();
                 }

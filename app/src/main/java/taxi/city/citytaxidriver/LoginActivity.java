@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -171,7 +172,7 @@ public class LoginActivity extends Activity{
             return;
         }
 
-        if (!isNetworkAvailable()) {
+        if (!Helper.isNetworkAvailable(LoginActivity.this)) {
             Toast.makeText(this, "Нету подключения к интернету", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -343,6 +344,7 @@ public class LoginActivity extends Activity{
 
     private void NextActivity(boolean hasCar) {
         savePreferences(user);
+        Helper.saveUserPreferences(LoginActivity.this, user);
         Intent intent;
         if (hasCar) {
             intent = new Intent(LoginActivity.this, MapsActivity.class);

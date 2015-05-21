@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
 
 public class GarajActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -31,6 +32,15 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_garaj);
+        Helper.getUserPreferences(this);
+
+        /*if (User.getInstance() == null || User.getInstance().id == 0) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+            startActivity(intent);
+            finish();
+        }*/
 
         mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);

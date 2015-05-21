@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -109,11 +110,11 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etFirstName.setText(user.firstName);
             etPassword.setText(user.password);
             etEmail.setText(user.email);
-            etDoB.setText(user.dob.equals("null") ? null : user.dob);
-            String extra = user.phone.substring(0, 4);
+            etDoB.setText(user.dob == null || user.dob.equals("null") ? null : user.dob);
+            /*String extra = user.phone.substring(0, 4);
             String phone = user.phone.substring(4);
             etPhone.setText(phone);
-            etPhoneExtra.setText(extra);
+            etPhoneExtra.setText(extra);*/
         }
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
@@ -133,7 +134,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         etDoB.setOnClickListener(this);
 
         Calendar newCalendar = Calendar.getInstance();
-        datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog ,new DatePickerDialog.OnDateSetListener() {
+        datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog_NoActionBar ,new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
@@ -159,20 +160,6 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 break;
         }
     }
-
-    /*private void updateView() {
-        if (isNew) {
-            btnSave.setText("Подтвердить");
-            tvTitle.setText("Регистрация");
-            etPhone.setEnabled(true);
-            etPhoneExtra.setEnabled(true);
-        } else {
-//            tvTitle.setText("Настройки Водителя");
-            btnSave.setText("Сохранить");
-            etPhone.setEnabled(false);
-            etPhoneExtra.setEnabled(false);
-        }
-    }*/
 
     private void updateTask() {
         if (mTask != null) return;
@@ -231,6 +218,11 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         }
 
         if (json.length() < 1) return;
+
+        if (!Helper.isNetworkAvailable(getActivity())) {
+            Toast.makeText(getActivity(), "Нету подключения к интернету", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         showProgress(true);
         mTask = new UserUpdateTask(json);

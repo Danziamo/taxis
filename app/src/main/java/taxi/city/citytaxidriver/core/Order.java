@@ -5,12 +5,14 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import taxi.city.citytaxidriver.enums.OStatus;
 
 /**
  * Created by Daniyar on 3/27/2015.
  */
-public class Order {
+public class Order implements Serializable {
 
 
     private static Order mInstance = null;
