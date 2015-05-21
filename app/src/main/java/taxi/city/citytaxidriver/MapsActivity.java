@@ -14,8 +14,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -77,11 +75,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private SweetAlertDialog pDialog;
     LinearLayout llMain;
     TextView tvDistance;
-    //TextView tvPrice;
-    //TextView tvSpeed;
     TextView tvTime;
     TextView tvFeeTime;
-    //TextView tvFeePrice;
     TextView tvTotalSum;
 
     Order order = Order.getInstance();
@@ -167,7 +162,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
         order.waitTime = pauseTotalTime + pauseSessionTime;
         order.waitSum = waitSum;
-        //tvFeePrice.setText(df.format(order.getWaitSum()));
         tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
 
         pauseHandler.postDelayed(this, 1000);
@@ -178,8 +172,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         tvTime.setText(Helper.getTimeFromLong(order.time));
         tvTotalSum.setText(df.format(order.getTotalSum()));
         tvDistance.setText(df.format(distance / 1000));
-        //tvPrice.setText(df.format(order.getTravelSum()));
-        //tvFeePrice.setText(df.format(order.getWaitSum()));
         tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
     }
 
@@ -213,10 +205,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         if (user == null || user.id == 0)
         {
             Helper.getUserPreferences(MapsActivity.this);
-            /*Toast.makeText(getApplicationContext(), "Сессия вышла, пожалуйста перезайдите", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();*/
+            Helper.getOrderPreferences(MapsActivity.this);
         }
     }
 
@@ -235,25 +224,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         editor.putString("orderEndAddress", order.addressEnd);
         editor.putString("orderDescription", order.description);
         editor.apply();
-    }
-
-    private void clearPreferences() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.clear().apply();
-    }
-
-    private void resetPreferences() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt("orderId", 0);
-        editor.putString("status", null);
-        editor.apply();
-    }
-
-    private boolean ifPreferenceActive() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        return settings.contains("orderId") && settings.contains("orderStatus") && !(settings.getInt("orderId", 0) == 0 || settings.getString("orderStatus", null) == null);
     }
 
     private void getPreferences() {
@@ -556,8 +526,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     protected void onResume() {
         super.onResume();
         if (order == null || order.id == 0) {
-            resetPreferences();
-            clearPreferences();
+            Helper.destroyOrderPreferences(MapsActivity.this);
         }
         updateViews();
         setUpMapIfNeeded();
@@ -773,8 +742,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (data != null) {
                 if (data.getBooleanExtra("returnCode", false)) {
                     Toast.makeText(getApplicationContext(), "Заказ завершен", Toast.LENGTH_SHORT).show();
-                    resetPreferences();
-                    clearPreferences();
+                    Helper.destroyOrderPreferences(MapsActivity.this);
                 } else {
                     saveToPreferences();
                     order.clear();
@@ -792,8 +760,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     SetDefaultValues();
                     timerHandler.postDelayed(timerRunnable, 0);
                 } else if (order == null || order.id == 0 || order.status == OStatus.NEW) {
-                    resetPreferences();
-                    clearPreferences();
+                    Helper.destroyOrderPreferences(MapsActivity.this);
                 }
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 setClientLocation();
@@ -826,7 +793,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void checkPreviousOrder() {
         if (order.id == 0 || order.status == OStatus.FINISHED) {
-            if (ifPreferenceActive()) {
+            if (Helper.isOrderPreferenceActive(MapsActivity.this)) {
                 getPreferences();
                 SendPostRequest(order.status, order.id);
             }
@@ -887,7 +854,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
                 data.put("order_distance", (double) Math.round(order.distance * 100) / 100);
                 data.put("order_travel_time", travelTime);
-                JSONObject checkObject = api.getOrderRequest(null, "orders/" + mOrderId + "/");
+                JSONObject checkObject = api.getRequest(null, "orders/" + mOrderId + "/");
 
                 if (checkObject != null && checkObject.getInt("status_code") == HttpStatus.SC_OK) {
                     String checkStatus = checkObject.getString("status");
@@ -914,8 +881,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
                     if (status == OStatus.FINISHED || status == OStatus.NEW) {
                         order.clear();
-                        resetPreferences();
-                        clearPreferences();
+                        Helper.destroyOrderPreferences(MapsActivity.this);
                     }
                 } else if (result != null && result.getInt("status_code") == 999) {
                     new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
@@ -930,8 +896,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                             })
                             .show();
                     order.clear();
-                    resetPreferences();
-                    clearPreferences();
+                    Helper.destroyOrderPreferences(MapsActivity.this);
                     updateViews();
                 } else {
                     Toast.makeText(MapsActivity.this, "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();

@@ -111,10 +111,10 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPassword.setText(user.password);
             etEmail.setText(user.email);
             etDoB.setText(user.dob == null || user.dob.equals("null") ? null : user.dob);
-            /*String extra = user.phone.substring(0, 4);
+            String extra = user.phone.substring(0, 4);
             String phone = user.phone.substring(4);
             etPhone.setText(phone);
-            etPhoneExtra.setText(extra);*/
+            etPhoneExtra.setText(extra);
         }
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);

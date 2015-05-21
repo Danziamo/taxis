@@ -270,7 +270,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                 data.put("address_stop", mStatus.equals(OStatus.NEW.toString()) || mCurrPosition == null
                         ? JSONObject.NULL : mCurrPosition);
 
-                JSONObject object = api.getOrderRequest(null, "orders/" + mId + "/");
+                JSONObject object = api.getRequest(null, "orders/" + mId + "/");
                 if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.CANCELED.toString())) {
                     res = api.patchRequest(data, "orders/" + mId + "/");
                 } else {

@@ -22,14 +22,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import taxi.city.citytaxidriver.CarDetailsActivity;
 import taxi.city.citytaxidriver.MapsActivity;
 import taxi.city.citytaxidriver.core.CarEntity;
 import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.LoginActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
@@ -258,7 +255,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                     return result;
                 }
             } else {
-                return ApiService.getInstance().getDataFromGetRequest(null, "usercars/?driver=" + mUser.id);
+                return ApiService.getInstance().getArrayRequest(null, "usercars/?driver=" + mUser.id);
             }
         }
 

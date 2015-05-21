@@ -208,6 +208,28 @@ public class Helper {
         return true;
     }
 
+    public static boolean isOrderPreferenceActive(Context context) {
+        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+        return settings.contains("orderId") && settings.contains("orderStatus") && !(settings.getInt("orderId", 0) == 0 || settings.getString("orderStatus", null) == null);
+    }
+
+    public static void saveOrderPreferences(Context context, Order order) {
+        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putFloat("orderDistance", (float)order.distance);
+        editor.putInt("orderId", order.id);
+        editor.putFloat("orderFixedPrice", (float)order.fixedPrice);
+        editor.putLong("orderTime", order.time);
+        editor.putLong("orderWaitTime", order.waitTime);
+        editor.putString("orderPhone", order.clientPhone);
+        editor.putString("orderStartPoint", Helper.getFormattedLatLng(order.startPoint));
+        editor.putString("orderStatus", order.status == null ? null : order.status.toString());
+        editor.putString("orderStartAddress", order.addressStart);
+        editor.putString("orderEndAddress", order.addressEnd);
+        editor.putString("orderDescription", order.description);
+        editor.apply();
+    }
+
     public static void destroyOrderPreferences(Context context) {
         resetOrderPreferences(context);
         clearOrderPreferences(context);
@@ -251,6 +273,7 @@ public class Helper {
     public static void getUserPreferences(Context context) {
         settings = context.getSharedPreferences(USER_PREFS, 0);
         User user = User.getInstance();
+        user.id = settings.getInt("id", 0);
         user.phone = settings.getString("phone", null);
         user.password = settings.getString("password", null);
         user.token = settings.getString("token", null);
@@ -269,6 +292,7 @@ public class Helper {
     public static void saveUserPreferences(Context context, User user) {
         settings = context.getSharedPreferences(USER_PREFS, 0);
         SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("id", user.id);
         editor.putString("phone", user.phone);
         editor.putString("password", user.password);
         editor.putString("token", user.getToken());

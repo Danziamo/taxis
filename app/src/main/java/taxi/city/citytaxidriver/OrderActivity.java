@@ -191,7 +191,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                 JSONObject result = new JSONObject();
                 if (isNew) {
                     if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
-                        result = api.getDataFromGetRequest(null, "orders/?status=new");
+                        result = api.getArrayRequest(null, "orders/?status=new");
                         if (result.getInt("status_code") == HttpStatus.SC_OK) {
                             JSONArray tempArray = result.getJSONArray("result");
                             for (int i = 0; i < tempArray.length(); ++i) {
@@ -201,7 +201,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     }
                     if (order.id != 0) array.put(order.getOrderAsJson());
                 } else {
-                    result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
+                    result = api.getArrayRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
                         for (int i = 0; i < tempArray.length() && i < 10; ++i) {

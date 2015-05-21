@@ -3,10 +3,10 @@ package taxi.city.citytaxidriver.fragments;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,11 +59,13 @@ public class AccountFragment extends Fragment {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return ApiService.getInstance().getOrderRequest(null, "users/" + User.getInstance().id + "/");
+            Log.d("Test", String.valueOf(User.getInstance().id));
+            return ApiService.getInstance().getRequest(null, "users/" + User.getInstance().id + "/");
         }
 
         @Override
         protected void onPostExecute(final JSONObject result) {
+            Log.d("Test", result.toString());
             mTask = null;
             int statusCode = -1;
             try {

@@ -17,15 +17,11 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*Helper.getUserPreferences(this);
-        ApiService.getInstance().setToken(User.getInstance().getToken());*/
-        /*if (User.getInstance() == null || User.getInstance().id == 0) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-            startActivity(intent);
-            finish();
-        }*/
+        if (User.getInstance() == null || User.getInstance().id == 0) {
+            Helper.getUserPreferences(this);
+            Helper.getOrderPreferences(this);
+            ApiService.getInstance().setToken(User.getInstance().getToken());
+        }
     }
 
     @Override
@@ -45,20 +41,17 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Helper.saveUserPreferences(this, User.getInstance());
+        //Helper.saveUserPreferences(this, User.getInstance());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        /*Helper.getUserPreferences(this);*/
         if (User.getInstance() == null || User.getInstance().id == 0) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-            startActivity(intent);
-            finish();
+            Helper.getUserPreferences(this);
+            Helper.getOrderPreferences(this);
+            ApiService.getInstance().setToken(User.getInstance().getToken());
         }
     }
 }

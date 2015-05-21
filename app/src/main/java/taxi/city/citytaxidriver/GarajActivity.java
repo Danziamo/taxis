@@ -32,15 +32,12 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_garaj);
-        Helper.getUserPreferences(this);
 
-        /*if (User.getInstance() == null || User.getInstance().id == 0) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-            startActivity(intent);
-            finish();
-        }*/
+        if (User.getInstance() == null || User.getInstance().id == 0) {
+            Helper.getUserPreferences(this);
+            Helper.getOrderPreferences(this);
+            ApiService.getInstance().setToken(User.getInstance().getToken());
+        }
 
         mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);

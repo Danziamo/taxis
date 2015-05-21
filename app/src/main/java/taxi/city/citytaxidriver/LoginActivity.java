@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -296,7 +295,7 @@ public class LoginActivity extends Activity{
                     if (statusCode == HttpStatus.SC_OK) {
                         user.setUser(object);
                         id = object.getInt("id");
-                        JSONObject cars = api.getDataFromGetRequest(null, "usercars/?driver=" + user.id);
+                        JSONObject cars = api.getArrayRequest(null, "usercars/?driver=" + user.id);
                         if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
                         if (mRegId != null) {
                             JSONObject regObject = new JSONObject();
@@ -304,11 +303,11 @@ public class LoginActivity extends Activity{
                             regObject.put("android_token", mRegId);
                             JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         }
-                        JSONObject resultObject = api.getDataFromGetRequest("?status=accepted&driver="+user.id, "orders/");
+                        JSONObject resultObject = api.getArrayRequest("?status=accepted&driver=" + user.id, "orders/");
                         driverHasOrder(resultObject);
-                        resultObject = api.getDataFromGetRequest("?status=pending&driver="+user.id, "orders/");
+                        resultObject = api.getArrayRequest("?status=pending&driver=" + user.id, "orders/");
                         driverHasOrder(resultObject);
-                        resultObject = api.getDataFromGetRequest("?status=ontheway&driver="+user.id, "orders/");
+                        resultObject = api.getArrayRequest("?status=ontheway&driver=" + user.id, "orders/");
                         driverHasOrder(resultObject);
                         res = true;
                     }

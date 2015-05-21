@@ -21,7 +21,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import taxi.city.citytaxidriver.OrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.ClientAdapter;
@@ -153,7 +152,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, S
             JSONArray array = null;
             try {
                 array = new JSONArray();
-                JSONObject result = api.getDataFromGetRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
+                JSONObject result = api.getArrayRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
                 if (result.getInt("status_code") == HttpStatus.SC_OK) {
                     JSONArray tempArray = result.getJSONArray("result");
                     for (int i = 0; i < tempArray.length() && i < 10; ++i) {
