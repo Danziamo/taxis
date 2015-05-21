@@ -1,5 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="taxi.city.citytaxidriver.AccountActivity.AccountFragment">
     <ImageView
@@ -7,16 +9,6 @@
         android:layout_height="match_parent"
         android:src="@drawable/main_background"
         android:scaleType="centerCrop"/>
-
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:id="@+id/textViewAccountTitle"
-        android:textSize="25sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Ваш личный кабинет" />-->
 
     <LinearLayout
         android:orientation="vertical"
@@ -77,5 +69,13 @@
             android:stepSize="1"
             android:rating="2.5"
             android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/textrating"
+            android:layout_gravity="center"
+            style="@style/TextSubTitle"
+            android:textColor="@color/lime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 звезды"/>
     </LinearLayout>
 </RelativeLayout>
