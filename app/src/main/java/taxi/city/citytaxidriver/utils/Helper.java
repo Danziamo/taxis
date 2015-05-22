@@ -302,6 +302,7 @@ public class Helper {
         car.modelName = settings.getString("carModelName", null);
         car.color = settings.getString("carColor", null);
         car.number = settings.getString("carNumber", null);
+        user.car = car;
 
         ApiService.getInstance().setToken(user.getToken());
     }
@@ -392,9 +393,12 @@ public class Helper {
     }
 
     public static double getWaitSumFromOrder(long a, long b, double ratio) {
+        double sum = 0;
         if (a > b) {
-            return Math.round(ratio*(a - b)/60);
+            double enumerator = ratio*(double)(a-b);
+            double denominator = 60.0;
+            sum = Math.round(enumerator/denominator);
         }
-        return 0;
+        return sum;
     }
 }

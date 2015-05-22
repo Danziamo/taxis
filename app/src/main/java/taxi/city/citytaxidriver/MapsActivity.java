@@ -86,7 +86,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     double distance;
     double price;
     double freeMeters = 2000;
-    double waitSum = 0;
     long time;
 
     Button btnOkAction;
@@ -150,7 +149,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             long tempTime = pauseTotalTime + pauseSessionTime;
             order.waitSum = Helper.getWaitSumFromOrder(tempTime, order.tariffInfo.waitTime, order.tariffInfo.waitRatio);
             order.waitTime = pauseTotalTime + pauseSessionTime;
-            order.waitSum = waitSum;
             tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
         }
 
@@ -210,6 +208,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         if (order.status == OStatus.PENDING || order.status == OStatus.ONTHEWAY) {
             timerHandler.postDelayed(timerRunnable, 0);
+            if (order.status == OStatus.PENDING) {
+                pauseHandler.postDelayed(pauseRunnable, 0);
+            }
         }
         tvTime.setText(Helper.getTimeFromLong(order.time));
         tvTotalSum.setText(df.format(order.getTotalSum()));
@@ -353,6 +354,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSOS.setVisibility(View.INVISIBLE);
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
+                llMain.setVisibility(View.GONE);
                 llButtonTop.setVisibility(View.GONE);
                 ivIcon.setVisibility(View.VISIBLE);
             }

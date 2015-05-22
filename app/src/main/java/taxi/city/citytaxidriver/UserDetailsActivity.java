@@ -14,10 +14,6 @@ public class UserDetailsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
-        if (User.getInstance() == null || User.getInstance().id == 0) {
-            finish();
-
-        }
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new UserDetailsFragment())
