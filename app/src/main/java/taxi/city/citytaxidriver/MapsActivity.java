@@ -738,7 +738,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void checkPreviousOrder() {
         if (order.id == 0 || order.status == OStatus.FINISHED) {
-            if (Helper.isOrderPreferenceActive(MapsActivity.this)) {
+            if (Helper.isOrderPreferenceActive(MapsActivity.this, user.id)) {
                 getPreferences();
                 SendPostRequest(order.status, order.id);
             }
@@ -749,6 +749,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void OpenOrder() {
+        checkPreviousOrder();
         Intent intent = new Intent(this, OrderActivity.class);
         intent.putExtra("NEW", true);
         startActivityForResult(intent, MAKE_ORDER_ID);

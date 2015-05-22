@@ -200,8 +200,8 @@ public class Helper {
         return true;
     }
 
-    public static boolean isOrderPreferenceActive(Context context) {
-        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+    public static boolean isOrderPreferenceActive(Context context, int id) {
+        settings = context.getSharedPreferences(ORDER_PREFS + id, 0);
         return settings.contains("orderId") && settings.contains("orderStatus") && !(settings.getInt("orderId", 0) == 0 || settings.getString("orderStatus", null) == null);
     }
 
