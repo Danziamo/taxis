@@ -49,6 +49,9 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         user = User.getInstance();
+        if (user == null || user.id == 0) {
+            finish();
+        }
         limit = 10;
 
         Intent intent = getIntent();

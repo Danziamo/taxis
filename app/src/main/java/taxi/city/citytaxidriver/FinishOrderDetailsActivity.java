@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.fragments.FinishOrderDetailsFragment;
 
 
@@ -12,6 +13,9 @@ public class FinishOrderDetailsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (User.getInstance() == null || User.getInstance().id == 0) {
+            finish();
+        }
         setContentView(R.layout.activity_finish_order_details);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

@@ -15,7 +15,8 @@ public class UserDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
         if (User.getInstance() == null || User.getInstance().id == 0) {
-            Helper.getUserPreferences(this);
+            finish();
+
         }
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()

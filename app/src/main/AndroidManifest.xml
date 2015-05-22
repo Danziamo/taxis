@@ -120,10 +120,6 @@
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
-            android:name=".AccountActivity"
-            android:label="@string/title_activity_account" >
-        </activity>
-        <activity
             android:name=".SosActivity"
             android:label="@string/title_activity_sos" >
         </activity>

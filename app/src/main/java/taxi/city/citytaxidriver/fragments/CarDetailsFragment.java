@@ -202,9 +202,20 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
 
         try {
+            JSONObject brandJson = new JSONObject();
+            brandJson.put("id", carBrand.id);
+            brandJson.put("brand_name", carBrand.name);
+
+            JSONObject modelJson = new JSONObject();
+            modelJson.put("id", carBrandModel.id);
+            modelJson.put("brand_model_name", carBrandModel.name);
+            //modelJson.put("car_brand", brandJson);
+
             carJSON.put("driver", mUser.id);
-            carJSON.put("brand", carBrand.id);
-            carJSON.put("brand_model", carBrandModel == null || carBrandModel.id == 0 ? 1 : carBrandModel.id);
+            /*carJSON.put("brand", carBrand.id);
+            carJSON.put("brand_model", carBrandModel.id);*/
+            carJSON.put("brand", brandJson);
+            carJSON.put("brand_model", modelJson);
             carJSON.put("car_number", carNumber);
             carJSON.put("year", year);
             carJSON.put("color", color);
@@ -337,7 +348,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     }
 
     private void fillCarBrands() {
-        if (mFetchTask != null) {
+        if (mFetchTask != null || User.getInstance() == null || User.getInstance().id == 0) {
             return;
         }
 
@@ -404,7 +415,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         int position = adapter.getPosition(tempEntity);
 
         carBrandSpinner.setAdapter(adapter);
-        carBrandSpinner.setSelection(position);
         carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -416,6 +426,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
             }
         });
+        carBrandSpinner.setSelection(position);
     }
 
     public void showProgress(final boolean show) {

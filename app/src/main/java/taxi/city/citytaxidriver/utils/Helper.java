@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.Tariff;
@@ -293,6 +294,15 @@ public class Helper {
         user.dob = settings.getString("dob", null);
         user.address = settings.getString("address", null);
         user.rating = (double)settings.getFloat("rating", 0);
+        Car car = new Car();
+        car.id = settings.getInt("carId", 0);
+        car.brandId = settings.getInt("carBrandId", 0);
+        car.brandName = settings.getString("carBrandName", null);
+        car.modelId = settings.getInt("carModelId", 0);
+        car.modelName = settings.getString("carModelName", null);
+        car.color = settings.getString("carColor", null);
+        car.number = settings.getString("carNumber", null);
+
         ApiService.getInstance().setToken(user.getToken());
     }
 
@@ -312,7 +322,17 @@ public class Helper {
         editor.putString("license_number", user.driverLicenseNumber);
         editor.putString("dob", user.dob);
         editor.putString("address", user.address);
-        editor.putFloat("rating", (float)user.rating);
+        editor.putFloat("rating", (float) user.rating);
+        editor.putInt("carId", user.car.id);
+        editor.putInt("carBrandId", user.car.brandId);
+        editor.putString("carBrandName", user.car.brandName);
+        editor.putInt("carModelId", user.car.modelId);
+        editor.putString("carModelName", user.car.modelName);
+        editor.putString("carColor", user.car.color);
+        editor.putString("carNumber", user.car.number);
+        editor.putString("carTechnicalCertificate", user.car.technicalCertificate);
+        editor.putString("year", user.car.year);
+
         editor.apply();
     }
 

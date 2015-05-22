@@ -34,9 +34,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
         setContentView(R.layout.activity_garaj);
 
         if (User.getInstance() == null || User.getInstance().id == 0) {
-            Helper.getUserPreferences(this);
-            Helper.getOrderPreferences(this, User.getInstance().id);
-            ApiService.getInstance().setToken(User.getInstance().getToken());
+            finish();
         }
 
         mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());

@@ -379,6 +379,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onStart() {
         super.onStart();
+        if (order != null && order.id != 0) order.sos = false;
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
@@ -472,6 +473,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onResume() {
         super.onResume();
+        if (order != null && order.id != 0) order.sos = false;
         updateViews();
         setUpMapIfNeeded();
         if (mMap != null && order != null && order.startPoint != null && order.clientPhone != null) {
@@ -569,6 +571,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void sendSos() {
         order.status = OStatus.SOS;
+        order.sos = true;
         SendPostRequest(OStatus.SOS, order.id);
         Intent intent = new Intent(MapsActivity.this, SosActivity.class);
         startActivity(intent);
@@ -590,7 +593,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
         Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
         Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
-        // if button is clicked, close the custom dialog
+
         btnOkDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -789,7 +792,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             JSONObject result = null;
             try {
                 String travelTime = Helper.getTimeFromLong(order.time, order.status);
-                data.put("status", status);
+                data.put("status", order.sos ? OStatus.SOS : status);
                 data.put("driver", driver);
                 data.put("order_sum", status == OStatus.NEW ? 0 : order.getTotalSum());
                 data.put("wait_time_price", status == OStatus.NEW ? 0 : order.getWaitSum());
