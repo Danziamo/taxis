@@ -21,7 +21,7 @@
     <string name="title_activity_garaj">Настройки</string>
     <string name="title_activity_car_details">CarDetailsActivity</string>
     <string name="title_activity_user_details">UserDetailsActivity</string>
-    <string name="title_activity_finish_order_details">FinishOrderDetailsActivity</string>
+    <string name="title_activity_finish_order_details">Детали заказа</string>
     <string name="title_activity_order_details_activity2">OrderDetailsActivity2</string>
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_sos">SosActivity</string>

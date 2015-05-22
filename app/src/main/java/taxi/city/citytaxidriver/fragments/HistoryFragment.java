@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.ClientAdapter;
@@ -73,7 +74,7 @@ public class HistoryFragment extends ListFragment implements SwipeRefreshLayout.
     }
 
     private void goOrderDetails(Client detail) {
-        Intent intent = new Intent(getActivity(), FinishOrderDetailsFragment.class);
+        Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
         intent.putExtra("DATA", detail);
         startActivity(intent);
     }

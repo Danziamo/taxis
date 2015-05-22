@@ -37,10 +37,6 @@ import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
-
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends Activity{
 
     private static final String PREFS_NAME = "MyPrefsFile";
@@ -52,13 +48,10 @@ public class LoginActivity extends Activity{
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "LoginActivity";
 
-    // UI references.
     private EditText mPhoneView;
     private TextView mPhoneExtraView;
     private EditText mPasswordView;
-    //private View mProgressView;
     private Button mPhoneSignInButton;
-    //private View mLoginFormView;
 
     SweetAlertDialog pDialog;
     private User user = User.getInstance();
@@ -247,25 +240,6 @@ public class LoginActivity extends Activity{
         }
     }
 
-    private void driverHasOrder(JSONObject object) {
-        try {
-            if (object == null)
-                return;
-            if (!object.has("status_code") || object.getInt("status_code") != HttpStatus.SC_OK)
-                return;
-            if (!object.has("result") || object.getJSONArray("result").length() < 1)
-                return;
-            JSONObject row = object.getJSONArray("result").getJSONObject(0);
-            Helper.setOrder(row);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mPhone;
@@ -304,12 +278,6 @@ public class LoginActivity extends Activity{
                             regObject.put("android_token", mRegId);
                             JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         }
-                        JSONObject resultObject = api.getArrayRequest("?status=accepted&driver=" + user.id, "orders/");
-                        driverHasOrder(resultObject);
-                        resultObject = api.getArrayRequest("?status=pending&driver=" + user.id, "orders/");
-                        driverHasOrder(resultObject);
-                        resultObject = api.getArrayRequest("?status=ontheway&driver=" + user.id, "orders/");
-                        driverHasOrder(resultObject);
                         res = true;
                     }
                 }

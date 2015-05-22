@@ -28,6 +28,7 @@ public class Order implements Serializable {
     public String addressStart;
     public String addressEnd;
     public String description;
+    public Tariff tariffInfo;
 
     public double distance;
     public double sum;
@@ -86,10 +87,6 @@ public class Order implements Serializable {
         return obj;
     }
 
-    public boolean isFixedPrice() {
-        return this.fixedPrice >= 50;
-    }
-
     public double getTotalSum() {
         if (this.fixedPrice >= 50) return this.fixedPrice;
         return this.sum + this.waitSum;
@@ -123,5 +120,6 @@ public class Order implements Serializable {
         this.description = null;
         this.waitSum = 0;
         this.fixedPrice = 0;
+        this.tariffInfo = null;
     }
 }

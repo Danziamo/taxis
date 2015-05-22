@@ -235,7 +235,7 @@
                 android:layout_width="50dp"
                 android:layout_height="20dp"
                 android:background="@drawable/sos"
-                android:id="@+id/buttonsos"
+                android:id="@+id/buttonSos"
                 android:layout_marginTop="22dp"
                 android:layout_marginLeft="30dp"
                 android:layout_alignParentTop="true"

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.service.ApiService;
@@ -126,7 +127,14 @@ public class FinishOrderDetailsFragment extends Fragment implements View.OnClick
     }
 
     private void finishOrder() {
-        sendPostRequest();
+        if (mClient.active) {
+            sendPostRequest();
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra("returnCode", false);
+            getActivity().setResult(2, intent);
+            getActivity().finish();
+        }
     }
 
     private void waitOrder() {
@@ -193,12 +201,14 @@ public class FinishOrderDetailsFragment extends Fragment implements View.OnClick
                 if (Helper.isSuccess(result)) {
                     Intent intent = new Intent();
                     intent.putExtra("returnCode", true);
+                    Helper.destroyOrderPreferences(getActivity(), User.getInstance().id);
                     order.clear();
                     getActivity().setResult(2, intent);
                     getActivity().finish();
                 } else {
                     Intent intent = new Intent();
                     intent.putExtra("returnCode", false);
+                    Helper.saveOrderPreferences(getActivity(), order);
                     getActivity().setResult(2, intent);
                     getActivity().finish();
                 }

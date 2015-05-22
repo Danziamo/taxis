@@ -19,7 +19,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         if (User.getInstance() == null || User.getInstance().id == 0) {
             Helper.getUserPreferences(this);
-            Helper.getOrderPreferences(this);
+            Helper.getOrderPreferences(this, User.getInstance().id);
             ApiService.getInstance().setToken(User.getInstance().getToken());
         }
     }
@@ -50,8 +50,10 @@ public abstract class BaseActivity extends ActionBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
         if (User.getInstance() == null || User.getInstance().id == 0) {
             Helper.getUserPreferences(this);
-            Helper.getOrderPreferences(this);
             ApiService.getInstance().setToken(User.getInstance().getToken());
+        }
+        if (Order.getInstance() == null || Order.getInstance().id == 0) {
+            Helper.getOrderPreferences(this, User.getInstance().id);
         }
     }
 }

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
@@ -62,13 +61,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-    private static final String PREFS_NAME = "OrderPrefsFile";
-    private SharedPreferences settings;
-
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
-    private static final String TAG = "MapsActivity";
 
     private SendPostRequestTask sendTask;
 
@@ -87,9 +82,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Location prev;
     double distance;
     double price;
-    double ratio = 12;
     double freeMeters = 2000;
-    double startPrice = 50;
     double waitSum = 0;
     long time;
 
@@ -97,6 +90,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Button btnSettingsCancel;
     Button btnInfo;
     Button btnWait;
+    Button btnSOS;
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
 
@@ -120,9 +114,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             double seconds = (double) (millis / 1000);
 
             if (Helper.isOrderActive(order)) {
-                saveToPreferences();
+                Helper.saveOrderPreferences(MapsActivity.this, order);
                 if (seconds % 30 < 1) SendPostRequest(order.status, order.id);
-
             }
             globalTimerHandler.postDelayed(this, 1000);
         }
@@ -148,21 +141,14 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         public void run() {
         long millis = System.currentTimeMillis() - pauseStartTime;
 
-        pauseSessionTime = (long) (millis/ 1000);
-        long tempTime = pauseTotalTime + pauseSessionTime;
-        if (tempTime > 5 * 60) {
-            if (tempTime <= 5*60) {
-                waitSum = 0;
-            } else if (tempTime <= 15*60) {
-                waitSum = Math.round((double)3*(tempTime-5*60)/60);
-            } else {
-                waitSum = Math.round(3*10 + (double)(tempTime - 15*60)/60);
-            }
-            //waitSum = tempTime <= 15*60 ? (double)(3*tempTime/60) : (double)(15*tempTime/60);
+        if (order != null && order.id != 0) {
+            pauseSessionTime = (long) (millis / 1000);
+            long tempTime = pauseTotalTime + pauseSessionTime;
+            order.waitSum = Helper.getWaitSumFromOrder(tempTime, order.tariffInfo.waitTime, order.tariffInfo.waitRatio);
+            order.waitTime = pauseTotalTime + pauseSessionTime;
+            order.waitSum = waitSum;
+            tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
         }
-        order.waitTime = pauseTotalTime + pauseSessionTime;
-        order.waitSum = waitSum;
-        tvFeeTime.setText(Helper.getTimeFromLong(pauseTotalTime + pauseSessionTime));
 
         pauseHandler.postDelayed(this, 1000);
         }
@@ -182,7 +168,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         user = User.getInstance();
 
-        checkUserSession();
+        if (User.getInstance() == null || User.getInstance().id == 0) {
+            Helper.getUserPreferences(this);
+            ApiService.getInstance().setToken(User.getInstance().getToken());
+        }
+        Helper.getOrderPreferences(this, user.id);
         setUpMapIfNeeded();
         CheckEnableGPS();
         SetGooglePlayServices();
@@ -194,80 +184,38 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         globalTimerHandler.postDelayed(globalTimerRunnable, 0);
         updateViews();
 
-        if (order.id == 0) {
-            SetDefaultValues();
-        }
-
         SetLocationRequest();
     }
 
-    private void checkUserSession() {
-        if (user == null || user.id == 0)
-        {
-            Helper.getUserPreferences(MapsActivity.this);
-            Helper.getOrderPreferences(MapsActivity.this);
-        }
-    }
-
-    private void saveToPreferences() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putFloat("orderDistance", (float)order.distance);
-        editor.putInt("orderId", order.id);
-        editor.putFloat("orderFixedPrice", (float)order.fixedPrice);
-        editor.putLong("orderTime", order.time);
-        editor.putLong("orderWaitTime", order.waitTime);
-        editor.putString("orderPhone", order.clientPhone);
-        editor.putString("orderStartPoint", Helper.getFormattedLatLng(order.startPoint));
-        editor.putString("orderStatus", order.status == null ? null : order.status.toString());
-        editor.putString("orderStartAddress", order.addressStart);
-        editor.putString("orderEndAddress", order.addressEnd);
-        editor.putString("orderDescription", order.description);
-        editor.apply();
-    }
-
     private void getPreferences() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        if (settings.contains("orderId")) {
-
-            if (mMap != null && order.startPoint != null && order.clientPhone != null) {
-                setClientLocation();
-            }
-            distance = 1000*order.distance;
-            startTime = System.currentTimeMillis() - order.time*1000;
-            pauseTotalTime = order.waitTime;
-            if (distance > freeMeters)
-                price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
-            else
-                price = startPrice;
-            order.sum = price;
-            if (order.waitTime > 5 * 60) {
-                if (order.waitTime <= 5*60) {
-                    order.waitSum = 0;
-                } else if (order.waitTime <= 15*60) {
-                    order.waitSum = Math.round((double)3*(order.waitTime-5*60)/60);
-                } else {
-                    order.waitSum = Math.round(3*10 + (double)(order.waitTime - 15*60)/60);
-                }
-            }
-            pauseStartTime = System.currentTimeMillis() - order.waitTime;
-            pauseSessionTime = 0;
-
-            if (order.status == OStatus.PENDING || order.status == OStatus.ONTHEWAY) {
-                timerHandler.postDelayed(timerRunnable, 0);
-            }
-            //tvSpeed.setText("0");
-            tvTime.setText(Helper.getTimeFromLong(order.time));
-            tvTotalSum.setText(df.format(order.getTotalSum()));
-            updateLabels();
+        if (order == null || order.id == 0) return;
+        if (mMap != null && order.startPoint != null && order.clientPhone != null) {
+            setClientLocation();
         }
+        distance = 1000*order.distance;
+        startTime = System.currentTimeMillis() - order.time*1000;
+        pauseTotalTime = order.waitTime;
+        if (distance > freeMeters)
+            price = Math.round(order.tariffInfo.startPrice +  order.tariffInfo.ratio*(distance-freeMeters)/1000);
+        else
+            price = order.tariffInfo.startPrice;
+        order.sum = price;
+        order.waitSum = Helper.getWaitSumFromOrder(order);
+        pauseStartTime = System.currentTimeMillis() - order.waitTime;
+        pauseSessionTime = 0;
+
+        if (order.status == OStatus.PENDING || order.status == OStatus.ONTHEWAY) {
+            timerHandler.postDelayed(timerRunnable, 0);
+        }
+        tvTime.setText(Helper.getTimeFromLong(order.time));
+        tvTotalSum.setText(df.format(order.getTotalSum()));
+        updateLabels();
     }
 
     private void CheckEnableGPS(){
         String provider = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         if(!provider.equals("")){
-            //GPS Enabled
             Toast.makeText(this, "GPS Enabled: " + provider,
                     Toast.LENGTH_LONG).show();
         }else{
@@ -277,7 +225,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     public void displayPromptForEnablingGPS()
     {
-
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(MapsActivity.this);
         final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
@@ -319,11 +266,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void Initialize() {
         prev = null;
         tvDistance = (TextView) findViewById(R.id.textViewDistance);
-        //tvPrice = (TextView) findViewById(R.id.textViewSum);
         llMain = (LinearLayout) findViewById(R.id.mainLayout);
-        //tvSpeed = (TextView) findViewById(R.id.textViewSpeed);
         tvTime = (TextView) findViewById(R.id.textViewOrderTime);
-        //tvFeePrice = (TextView) findViewById(R.id.textViewWaitSum);
         tvFeeTime = (TextView) findViewById(R.id.textViewWaitTime);
         tvTotalSum = (TextView) findViewById(R.id.textViewOrderTotalSum);
 
@@ -331,6 +275,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnOkAction = (Button) findViewById(R.id.buttonStartAction);
         btnSettingsCancel = (Button)findViewById(R.id.buttonDeclineSettings);
         btnWait = (Button)findViewById(R.id.buttonWaitTrip);
+        btnSOS = (Button)findViewById(R.id.buttonSos);
 
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
@@ -346,6 +291,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             order.clear();
             mMap.clear();
             llButtonTop.setVisibility(View.GONE);
+            btnSOS.setVisibility(View.INVISIBLE);
             btnOkAction.setText("Заказы");
             btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
             btnOkAction.setTextColor(Color.WHITE);
@@ -357,6 +303,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (order.status == OStatus.ACCEPTED) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("На месте");
+                btnSOS.setVisibility(View.INVISIBLE);
                 btnInfo.setText("Доп. инфо");
                 btnSettingsCancel.setText("Отказ");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
@@ -365,6 +312,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             } else if (order.status == OStatus.WAITING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("На борту");
+                btnSOS.setVisibility(View.INVISIBLE);
                 btnInfo.setText("Доп. инфо");
                 btnSettingsCancel.setText("Отказ");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
@@ -373,6 +321,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             } else if (order.status == OStatus.PENDING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
+                btnSOS.setVisibility(View.VISIBLE);
                 btnInfo.setText("Доп. инфо");
                 btnWait.setText("Продолжить");
                 btnSettingsCancel.setText("Настройки");
@@ -385,6 +334,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnInfo.setText("Доп. инфо");
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
+                btnSOS.setVisibility(View.VISIBLE);
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 llButtonTop.setVisibility(View.VISIBLE);
@@ -392,6 +342,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 mMap.clear();
                 btnOkAction.setText("Заказы");
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
+                btnSOS.setVisibility(View.INVISIBLE);
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 llButtonTop.setVisibility(View.GONE);
@@ -403,14 +354,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         pauseTotalTime = 0;
         pauseSessionTime = 0;
         distance = 0;
-        price = startPrice;
-        order.sum = startPrice;
+        price = order.tariffInfo.startPrice;
+        order.sum = order.tariffInfo.startPrice;
         order.waitTime = 0;
         resetTimer();
 
-        //tvSpeed.setText("0");
-        tvTime.setText("00:00:00");
-        tvTotalSum.setText("0");
         updateLabels();
     }
 
@@ -455,7 +403,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void handleNewLocation(Location location) {
         location.setAltitude(0);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        double speed = location.getSpeed();
         boolean ifSession = (order.id != 0 && order.status == OStatus.ONTHEWAY);
         int zoom = ifSession ? 17 : 15;
         int bearing = ifSession ? (int)location.getBearing() : 0;
@@ -464,12 +411,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         if (ifSession && prev != null){
             distance += prev.distanceTo(location);
             if (distance > freeMeters)
-                price = Math.round(startPrice +  ratio*(distance-freeMeters)/1000);
+                price = Math.round(order.tariffInfo.startPrice +  order.tariffInfo.ratio*(distance-freeMeters)/1000);
 
             order.distance = distance/1000;
             order.sum = price;
             order.endPoint = latLng;
-            //tvSpeed.setText(df.format(speed * 3.6));
 
             if (prev != null) {
                 Polyline line = mMap.addPolyline(new PolylineOptions()
@@ -500,18 +446,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection has been interrupted.
-        // Disable any UI components that depend on Google APIs
-        // until onConnected() is called.
-    }
+    public void onConnectionSuspended(int cause) { }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        // This callback is important for handling errors that
-        // may occur while attempting to connect with Google.
-        //
-        // More about this in the next section.
         if (result.hasResolution()) {
             try {
                 // Start an Activity that tries to resolve the error
@@ -525,15 +463,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onResume() {
         super.onResume();
-        if (order == null || order.id == 0) {
-            Helper.destroyOrderPreferences(MapsActivity.this);
-        }
         updateViews();
         setUpMapIfNeeded();
         if (mMap != null && order != null && order.startPoint != null && order.clientPhone != null) {
             if (order.status != OStatus.ONTHEWAY && order.status != OStatus.PENDING) setClientLocation();
         }
-        checkUserSession();
         mGoogleApiClient.connect();
     }
 
@@ -552,20 +486,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         handleNewLocation(this.location);
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -630,8 +550,19 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     goToFinishOrderDetails();
                 }
                 break;
+            case R.id.buttonSos:
+                sendSos();
+                break;
+
         }
         updateViews();
+    }
+
+    private void sendSos() {
+        order.status = OStatus.SOS;
+        SendPostRequest(OStatus.SOS, order.id);
+        Intent intent = new Intent(MapsActivity.this, SosActivity.class);
+        startActivity(intent);
     }
 
     private void cancelOrder() {
@@ -680,13 +611,13 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void goToOrderDetails() {
         Intent intent = new Intent(this, OrderDetailsActivity.class);
-        intent.putExtra("DATA", new Client(order, user.id));
+        intent.putExtra("DATA", new Client(order, user.id, true));
         startActivityForResult(intent, ORDER_DETAILS_ID);
     }
 
     private void goToFinishOrderDetails() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        Client client = new Client(order, user.id);
+        Client client = new Client(order, user.id, true);
         client.distance = df.format(order.distance);
         intent.putExtra("DATA", client);
         startActivity(intent);
@@ -694,7 +625,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void EndTrip() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-        Client client = new Client(order, user.id);
+        Client client = new Client(order, user.id, true);
         client.distance = df.format(order.distance);
         intent.putExtra("DATA", client);
         startActivityForResult(intent, FINISH_ORDER_ID);
@@ -737,14 +668,12 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        checkUserSession();
         if (requestCode == FINISH_ORDER_ID) {
             if (data != null) {
                 if (data.getBooleanExtra("returnCode", false)) {
                     Toast.makeText(getApplicationContext(), "Заказ завершен", Toast.LENGTH_SHORT).show();
-                    Helper.destroyOrderPreferences(MapsActivity.this);
                 } else {
-                    saveToPreferences();
+                    Helper.saveOrderPreferences(MapsActivity.this, order);
                     order.clear();
                     Toast.makeText(getApplicationContext(), "Заказ завершен. Ошибка при отправке данных на сервер", Toast.LENGTH_SHORT).show();
                 }
@@ -759,8 +688,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 if (order.status == OStatus.ONTHEWAY) {
                     SetDefaultValues();
                     timerHandler.postDelayed(timerRunnable, 0);
-                } else if (order == null || order.id == 0 || order.status == OStatus.NEW) {
-                    Helper.destroyOrderPreferences(MapsActivity.this);
                 }
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
                 setClientLocation();
@@ -880,8 +807,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
                     if (status == OStatus.FINISHED || status == OStatus.NEW) {
+                        Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                         order.clear();
-                        Helper.destroyOrderPreferences(MapsActivity.this);
                     }
                 } else if (result != null && result.getInt("status_code") == 999) {
                     new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
@@ -895,8 +822,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                                 }
                             })
                             .show();
+                    Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                     order.clear();
-                    Helper.destroyOrderPreferences(MapsActivity.this);
                     updateViews();
                 } else {
                     Toast.makeText(MapsActivity.this, "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();

@@ -23,7 +23,7 @@
             android:id="@+id/linearLayout">
 
             <TextView
-               style="@style/TextTitle"
+                style="@style/TextTitle"
                 android:gravity="center"
                 android:text="Вы использовали \nтревожную кнопку "
                 android:layout_gravity="center_horizontal" />
@@ -34,26 +34,20 @@
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <TextView
+            style="@style/TextTitle"
+            android:layout_marginTop="115dp"
             android:layout_below="@+id/linearLayout"
+            android:gravity="center"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="115dp">
-
-            <TextView
-                style="@style/TextTitle"
-                android:gravity="center"
-                android:text="Даже если отмените \nвы будете видны на карте \n у других водителей \nв течении 2 мин."
-                android:id="@+id/textView"
-                android:layout_gravity="center_horizontal" />
-        </LinearLayout>
+            android:text="Даже если отмените \nвы будете видны на карте \n у других водителей \nв течении 2 мин."
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal" />
 
         <Button
             style="@style/mediumButton.Red"
             android:text="Отмена"
-            android:id="@+id/buttonsos"
+            android:id="@+id/buttonSos"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>

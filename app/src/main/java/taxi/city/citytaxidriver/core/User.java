@@ -1,5 +1,6 @@
 package taxi.city.citytaxidriver.core;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +23,7 @@ public class User implements Serializable {
     public String dob;
     public String address;
     public String deviceToken;
+    public Car car;
     public double rating;
 
     private User() {}
@@ -54,6 +56,10 @@ public class User implements Serializable {
         double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
         int ratingCount = json.getJSONObject("rating").getInt("votes__count");
         this.rating = ratingCount == 0 ? 0 : (int)Math.round(ratingSum/ratingCount);
+        JSONArray car = json.getJSONArray("cars");
+        if (car.length() > 0) {
+            this.car = new Car(car.getJSONObject(0));
+        }
     }
 
     public String getToken() {

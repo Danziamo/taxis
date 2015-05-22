@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpStatus;
@@ -22,6 +20,7 @@ import java.util.regex.Pattern;
 
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
@@ -36,9 +35,6 @@ public class Helper {
     private final static String USER_PREFS = "UserPrefsFile";
     private static SharedPreferences settings;
 
-    /**
-     * Returns string representation of given LatLng to save or send to remote server
-     */
     public static String getFormattedLatLng(LatLng location) {
         if (location != null) {
             return "POINT (" + location.latitude + " " + location.longitude + ")";
@@ -46,9 +42,6 @@ public class Helper {
         return null;
     }
 
-    /**
-     * Returns LatLng representation from string
-     */
     public static LatLng getLatLng(String s) {
         if (s == null || s.equals("null"))
             return null;
@@ -79,9 +72,6 @@ public class Helper {
         return null;
     }
 
-    /**
-     * Returns formatted time value from long as string "hh:mm:ss"
-     */
     public static String getTimeFromLong(long seconds) {
         int hr = (int)seconds/3600;
         int rem = (int)seconds%3600;
@@ -120,6 +110,7 @@ public class Helper {
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
         order.fixedPrice = object.has("fixed_price") ? object.getDouble("fixed_price") : 0;
+        order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : null;
     }
 
     /**
@@ -214,11 +205,11 @@ public class Helper {
     }
 
     public static void saveOrderPreferences(Context context, Order order) {
-        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+        settings = context.getSharedPreferences(ORDER_PREFS + User.getInstance().id, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat("orderDistance", (float)order.distance);
         editor.putInt("orderId", order.id);
-        editor.putFloat("orderFixedPrice", (float)order.fixedPrice);
+        editor.putFloat("orderFixedPrice", (float) order.fixedPrice);
         editor.putLong("orderTime", order.time);
         editor.putLong("orderWaitTime", order.waitTime);
         editor.putString("orderPhone", order.clientPhone);
@@ -227,38 +218,45 @@ public class Helper {
         editor.putString("orderStartAddress", order.addressStart);
         editor.putString("orderEndAddress", order.addressEnd);
         editor.putString("orderDescription", order.description);
+        editor.putString("orderTariffName", order.tariffInfo.name);
+        editor.putFloat("orderTariffStartPrice", (float) order.tariffInfo.startPrice);
+        editor.putFloat("orderTariffRatio", (float) order.tariffInfo.ratio);
+        editor.putLong("orderTariffWaitTime", order.tariffInfo.waitTime);
+        editor.putFloat("orderTariffWaitRatio", (float)order.tariffInfo.waitRatio);
         editor.apply();
     }
 
-    public static void destroyOrderPreferences(Context context) {
-        resetOrderPreferences(context);
-        clearOrderPreferences(context);
+    public static void destroyOrderPreferences(Context context, int id) {
+        resetOrderPreferences(context, id);
+        clearOrderPreferences(context, id);
     }
 
-    public static void clearOrderPreferences(Context context) {
-        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+    public static void clearOrderPreferences(Context context, int id) {
+        if (id == 0) return;
+        String pref = ORDER_PREFS + (id == 0 ? "" : id);
+        settings = context.getSharedPreferences(pref, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.clear().apply();
     }
 
-    public static void resetOrderPreferences(Context context) {
-        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+    public static void resetOrderPreferences(Context context, int id) {
+        if (id == 0) return;
+        String pref = ORDER_PREFS + (id == 0 ? "" : id);
+        settings = context.getSharedPreferences(pref, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("orderId", 0);
         editor.putString("status", null);
         editor.apply();
     }
 
-    public static void getOrderPreferences(Context context) {
-        settings = context.getSharedPreferences(ORDER_PREFS, 0);
+    public static void getOrderPreferences(Context context, int id) {
+        if (id == 0) return;
+        settings = context.getSharedPreferences(ORDER_PREFS+String.valueOf(id), 0);
         Order order = Order.getInstance();
         if (!settings.contains("orderId")) return;
+        if (settings.getInt("orderId", 0) == 0) return;
         String pStatus = settings.getString("orderStatus", "");
-        if (pStatus.equals(OStatus.ONTHEWAY.toString()))
-            order.status = OStatus.PENDING;
-        else
-            order.status = Helper.getStatus(pStatus);
-
+        order.status = Helper.getStatus(pStatus);
         order.id = settings.getInt("orderId", 0);
         order.clientPhone = settings.getString("orderPhone", null);
         order.time = settings.getLong("orderTime", 0);
@@ -268,6 +266,14 @@ public class Helper {
         order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
         order.addressStart = settings.getString("orderStartAddress", null);
         order.addressEnd = settings.getString("orderEndAddress", null);
+
+        Tariff tariff = new Tariff();
+        tariff.name = settings.getString("orderTariffName", null);
+        tariff.ratio = (double)settings.getFloat("orderTariffRatio", 10);
+        tariff.startPrice = (double)settings.getFloat("orderTariffStartPrice", 40);
+        tariff.waitTime = settings.getLong("orderTariffWaitTime", 10*60);
+        tariff.waitRatio = (double)settings.getFloat("orderTariffWaitRatio", 10);
+        order.tariffInfo = tariff;
     }
 
     public static void getUserPreferences(Context context) {
@@ -359,5 +365,16 @@ public class Helper {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static double getWaitSumFromOrder(Order order) {
+        return getWaitSumFromOrder(order.waitTime, order.tariffInfo.waitTime, order.tariffInfo.waitRatio);
+    }
+
+    public static double getWaitSumFromOrder(long a, long b, double ratio) {
+        if (a > b) {
+            return Math.round(ratio*(a - b)/60);
+        }
+        return 0;
     }
 }

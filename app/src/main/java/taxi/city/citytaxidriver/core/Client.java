@@ -54,8 +54,8 @@ public class Client implements Serializable{
         this.fixedPrice = row.getString("fixed_price");
     }
 
-    public Client(Order order, int driverId) {
-        this.active = false;
+    public Client(Order order, int driverId, boolean isActive) {
+        this.active = isActive;
         this.id = order.id;
         this.phone = order.clientPhone;
         this.driver = driverId;

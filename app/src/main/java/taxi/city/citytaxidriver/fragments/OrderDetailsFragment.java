@@ -270,12 +270,20 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                 data.put("address_stop", mStatus.equals(OStatus.NEW.toString()) || mCurrPosition == null
                         ? JSONObject.NULL : mCurrPosition);
 
-                JSONObject object = api.getRequest(null, "orders/" + mId + "/");
-                if (Helper.isSuccess(object) && !object.getString("status").equals(OStatus.CANCELED.toString())) {
+                JSONObject orderJson = api.getRequest(null, "orders/" + mId + "/");
+                if (Helper.isSuccess(orderJson) && !orderJson.getString("status").equals(OStatus.CANCELED.toString())) {
                     res = api.patchRequest(data, "orders/" + mId + "/");
                 } else {
                     res = new JSONObject();
                     res.put("status_code", 400);
+                }
+                if (Helper.isSuccess(res) && order.tariffInfo == null) {
+                    JSONObject tariffJson = api.getArrayRequest(null, "tariffs/");
+                    if (Helper.isSuccess(tariffJson) && tariffJson.getJSONArray("result").length() > 0) {
+                        res.put("tariff_info", tariffJson.getJSONArray("result").getJSONObject(0));
+                    } else {
+                        res = null;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -300,7 +308,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         Helper.setOrder(result);
                     } else if (result.getString("status").equals(OStatus.NEW.toString())) {
                         order.clear();
-                        Helper.destroyOrderPreferences(getActivity().getApplicationContext());
+                        Helper.destroyOrderPreferences(getActivity().getApplicationContext(), user.id);
                         Intent intent = new Intent();
                         intent.putExtra("returnCode", false);
                         getActivity().setResult(isActive ? 3 : 1, intent);
@@ -308,7 +316,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     }
                 } else if (Helper.isBadRequest(result)) {
                     Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
-                    Helper.destroyOrderPreferences(getActivity().getApplicationContext());
+                    Helper.destroyOrderPreferences(getActivity().getApplicationContext(), user.id);
                     order.clear();
                     getActivity().finish();
                 }

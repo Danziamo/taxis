@@ -35,7 +35,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
 
         if (User.getInstance() == null || User.getInstance().id == 0) {
             Helper.getUserPreferences(this);
-            Helper.getOrderPreferences(this);
+            Helper.getOrderPreferences(this, User.getInstance().id);
             ApiService.getInstance().setToken(User.getInstance().getToken());
         }
 

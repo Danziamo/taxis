@@ -114,107 +114,113 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         etDriverLicense.setText(driverLicense);
         etPassportSeries.setText(passportExtra);
         etPassportNumber.setText(passport);
-
-//        updateViews();
-        updateTask(false);
+        if (!isNew && mUser.car != null) {
+            etCarColor.setText(mUser.car.color);
+            etCarNumber.setText(mUser.car.number);
+            etCarYear.setText(mUser.car.year);
+            etTechPassport.setText(mUser.car.technicalCertificate);
+            mBrandId = mUser.car.brandId;
+            mBrandModelId = mUser.car.modelId;
+            userCarId = mUser.car.id;
+        }
+        fillCarBrands();
 
         return rootView;
     }
 
-    private void updateTask(boolean update){
+    private void updateTask(){
         if (mUpdateTask != null)
             return;
 
         JSONObject carJSON = new JSONObject();
         JSONObject userJSON = new JSONObject();
-        if (update) {
-            CarEntity carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
-            CarEntity carBrandModel = (CarEntity)carModelSpinner.getSelectedItem();
 
-            if (carBrand == null || carBrand.id == 0) {
-                carBrandSpinner.requestFocus();
-                Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
-                return;
-            }
+        CarEntity carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
+        CarEntity carBrandModel = (CarEntity)carModelSpinner.getSelectedItem();
 
-            String passportNumberExtra = etPassportSeries.getText().toString();
-            String passportNumber = passportNumberExtra + etPassportNumber.getText().toString();
-            String driverLicenseExtra = etDriverLicenseSeries.getText().toString();
-            String driverLicense = driverLicenseExtra + etDriverLicense.getText().toString();
-            String techPassport = etTechPassport.getText().toString();
-            String carNumber =etCarNumber.getText().toString();
-            String color = etCarColor.getText().toString();
-            String year = etCarYear.getText().toString();
-
-            if (passportNumberExtra.length() != 2) {
-                etPassportSeries.setError("Неверно задано. 2 символа");
-                etPassportSeries.requestFocus();
-                return;
-            }
-
-            if (passportNumber.length() < 6) {
-                etPassportNumber.setError("Неверно задано");
-                etPassportNumber.requestFocus();
-                return;
-            }
-
-            if (driverLicenseExtra.length() != 2) {
-                etDriverLicenseSeries.setError("Неверно задано. 2 символа");
-                etDriverLicenseSeries.requestFocus();
-                return;
-            }
-
-            if (driverLicense.length() < 6) {
-                etDriverLicense.setError("Неверно задано");
-                etDriverLicense.requestFocus();
-                return;
-            }
-
-            if (techPassport.length() < 6) {
-                etTechPassport.setError("Неверно задано");
-                etTechPassport.requestFocus();
-                return;
-            }
-
-            if (carNumber.length() < 6) {
-                etCarNumber.setError("Неверно задано");
-                etCarNumber.requestFocus();
-                return;
-            }
-
-            if (!Helper.isYearValid(year)) {
-                etCarYear.setError("Неверно задано");
-                etCarYear.requestFocus();
-                return;
-            }
-
-            if (color.length() < 3) {
-                etCarColor.setError("Неверно задано");
-                etCarColor.requestFocus();
-                return;
-            }
-
-            try {
-                carJSON.put("driver", mUser.id);
-                carJSON.put("brand", carBrand.id);
-                carJSON.put("brand_model", carBrandModel == null || carBrandModel.id == 0 ? 1 : carBrandModel.id);
-                carJSON.put("car_number", carNumber);
-                carJSON.put("year", year);
-                carJSON.put("color", color);
-                carJSON.put("technical_certificate", techPassport);
-                userJSON.put("passport_number", passportNumber);
-                userJSON.put("driver_license_number", driverLicense);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-            showProgress(true);
+        if (carBrand == null || carBrand.id == 0) {
+            carBrandSpinner.requestFocus();
+            Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        mUpdateTask = new CarUpdateTask(update, carJSON, userJSON);
+        String passportNumberExtra = etPassportSeries.getText().toString();
+        String passportNumber = passportNumberExtra + etPassportNumber.getText().toString();
+        String driverLicenseExtra = etDriverLicenseSeries.getText().toString();
+        String driverLicense = driverLicenseExtra + etDriverLicense.getText().toString();
+        String techPassport = etTechPassport.getText().toString();
+        String carNumber =etCarNumber.getText().toString();
+        String color = etCarColor.getText().toString();
+        String year = etCarYear.getText().toString();
+
+        if (passportNumberExtra.length() != 2) {
+            etPassportSeries.setError("Неверно задано. 2 символа");
+            etPassportSeries.requestFocus();
+            return;
+        }
+
+        if (passportNumber.length() < 6) {
+            etPassportNumber.setError("Неверно задано");
+            etPassportNumber.requestFocus();
+            return;
+        }
+
+        if (driverLicenseExtra.length() != 2) {
+            etDriverLicenseSeries.setError("Неверно задано. 2 символа");
+            etDriverLicenseSeries.requestFocus();
+            return;
+        }
+
+        if (driverLicense.length() < 6) {
+            etDriverLicense.setError("Неверно задано");
+            etDriverLicense.requestFocus();
+            return;
+        }
+
+        if (techPassport.length() < 6) {
+            etTechPassport.setError("Неверно задано");
+            etTechPassport.requestFocus();
+            return;
+        }
+
+        if (carNumber.length() < 6) {
+            etCarNumber.setError("Неверно задано");
+            etCarNumber.requestFocus();
+            return;
+        }
+
+        if (!Helper.isYearValid(year)) {
+            etCarYear.setError("Неверно задано");
+            etCarYear.requestFocus();
+            return;
+        }
+
+        if (color.length() < 3) {
+            etCarColor.setError("Неверно задано");
+            etCarColor.requestFocus();
+            return;
+        }
+
+        try {
+            carJSON.put("driver", mUser.id);
+            carJSON.put("brand", carBrand.id);
+            carJSON.put("brand_model", carBrandModel == null || carBrandModel.id == 0 ? 1 : carBrandModel.id);
+            carJSON.put("car_number", carNumber);
+            carJSON.put("year", year);
+            carJSON.put("color", color);
+            carJSON.put("technical_certificate", techPassport);
+            userJSON.put("passport_number", passportNumber);
+            userJSON.put("driver_license_number", driverLicense);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        showProgress(true);
+        mUpdateTask = new CarUpdateTask(carJSON, userJSON);
         mUpdateTask.execute((Void) null);
     }
 
@@ -222,7 +228,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonSave:
-                updateTask(true);
+                updateTask();
                 break;
             default:
                 getActivity().finish();
@@ -232,30 +238,24 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
     private class CarUpdateTask extends AsyncTask<Void, Void, JSONObject> {
         private JSONObject carJson = new JSONObject();
-        private boolean isUpdate = false;
         private JSONObject userJson = new JSONObject();
 
-        CarUpdateTask(boolean update, JSONObject car, JSONObject user) {
-            isUpdate = update;
+        CarUpdateTask(JSONObject car, JSONObject user) {
             carJson = car;
             userJson = user;
         }
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            if (isUpdate) {
-                JSONObject result = new JSONObject();
-                if (isNew) {
-                    result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
-                    result = ApiService.getInstance().createCar(carJson, "usercars/");
-                    return result;
-                } else {
-                    result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
-                    result = ApiService.getInstance().patchRequest(carJson, "usercars/" + userCarId + "/");
-                    return result;
-                }
+            JSONObject result = new JSONObject();
+            if (isNew) {
+                result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
+                result = ApiService.getInstance().createCar(carJson, "usercars/");
+                return result;
             } else {
-                return ApiService.getInstance().getArrayRequest(null, "usercars/?driver=" + mUser.id);
+                result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
+                result = ApiService.getInstance().patchRequest(carJson, "usercars/" + userCarId + "/");
+                return result;
             }
         }
 
@@ -270,18 +270,10 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                 } else {
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
                 }
-                if (!isUpdate) {
-                    if (Helper.isSuccess(statusCode)) {
-                        fillForms(result.getJSONArray("result"));
-                    } else {
-                        Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
-                    }
+                if (Helper.isSuccess(statusCode)) {
+                    finishUpdate();
                 } else {
-                    if (Helper.isSuccess(statusCode)) {
-                        finishUpdate();
-                    } else {
-                        Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -304,40 +296,15 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void fillForms(JSONArray array) throws JSONException{
-        if (array.length() < 1 && !isNew) return;
-        if (isNew) {
-            FillCarBrands();
-        }
-        for (int i = 0; i < array.length(); ++i) {
-            JSONObject object = array.getJSONObject(i);
-            if (object.getInt("driver") != mUser.id) continue;
-            userCarId = object.getInt("id");
-            String color = Helper.getStringFromJson(object, "color");
-            String techPassport = Helper.getStringFromJson(object, "technical_certificate");
-            String carNumber = Helper.getStringFromJson(object, "car_number");
-            String carYear = Helper.getStringFromJson(object, "year");
-            etCarColor.setText(color);
-            etTechPassport.setText(techPassport);
-            etCarNumber.setText(carNumber);
-            etCarYear.setText(carYear);
-            mBrandId = object.has("brand") ? object.getInt("brand") : 0;
-            mBrandModelId = object.has("brand_model") ? object.getInt("brand_model") : 0;
-            FillCarBrands();
-            break;
-        }
-    }
-
     private class FetchCarBrandTask extends AsyncTask<Void, Void, JSONArray> {
-        private JSONObject json = new JSONObject();
         String api;
         CarEntity carBrand;
         boolean isModel;
 
         FetchCarBrandTask(boolean isModel) {
-            carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
             this.isModel = isModel;
             if (isModel) {
+                carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
                 api = "cars/carbrandmodels/?limit=200&car_brand=" + carBrand.id;
             } else {
                 api = "cars/carbrands/?limit=200&ordering=brand_name";
@@ -346,9 +313,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
         @Override
         protected JSONArray doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
-
             return ApiService.getInstance().fetchCarBrand(api);
         }
 
@@ -372,7 +336,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void FillCarBrands() {
+    private void fillCarBrands() {
         if (mFetchTask != null) {
             return;
         }

@@ -108,8 +108,9 @@
         </activity>
         <activity
             android:name=".FinishOrderDetailsActivity"
+            android:label="@string/title_activity_finish_order_details"
             android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
+            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
