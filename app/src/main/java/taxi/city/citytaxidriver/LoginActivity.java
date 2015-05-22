@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,6 +57,7 @@ public class LoginActivity extends Activity{
     SweetAlertDialog pDialog;
     private User user = User.getInstance();
     private int statusCode;
+    private String detail;
 
     private ApiService api = ApiService.getInstance();
     private Order order = Order.getInstance();
@@ -82,6 +84,13 @@ public class LoginActivity extends Activity{
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mPasswordView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPasswordView.setError(null);
             }
         });
 
@@ -200,12 +209,8 @@ public class LoginActivity extends Activity{
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(phone, password);
             mAuthTask.execute((Void) null);
@@ -213,19 +218,13 @@ public class LoginActivity extends Activity{
     }
 
     private boolean isPhoneValid(String phone) {
-        //TODO: Replace this with your own logic
-        //return email.contains("@");
         return true;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
         if (show) {
@@ -254,8 +253,6 @@ public class LoginActivity extends Activity{
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
             boolean res = false;
             try {
                 JSONObject json = new JSONObject();
@@ -266,6 +263,7 @@ public class LoginActivity extends Activity{
                 JSONObject object = api.loginRequest(json, "login/");
                 if (object != null) {
                     statusCode = object.getInt("status_code");
+                    if (object.has("detail")) detail = object.getString("detail");
                     if (statusCode == HttpStatus.SC_OK) {
                         user.setUser(object);
                         Helper.saveUserPreferences(LoginActivity.this, user);
@@ -295,7 +293,11 @@ public class LoginActivity extends Activity{
             if (success && statusCode == 200) {
                 NextActivity(hasCar);
             } else  if (statusCode == 403) {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                if (detail != null && detail.contains("Account")) {
+                    goToActivation();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                }
                 mPasswordView.requestFocus();
             }
             else {
@@ -308,6 +310,11 @@ public class LoginActivity extends Activity{
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void goToActivation() {
+        Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
+        startActivity(intent);
     }
 
     private void NextActivity(boolean hasCar) {

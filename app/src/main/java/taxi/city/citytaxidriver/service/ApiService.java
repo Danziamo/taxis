@@ -98,24 +98,19 @@ public class ApiService {
             HttpPost request = new HttpPost(url + apiUrl);
             // Add your data
             request.addHeader("content-type", "application/json");
-            request.addHeader("Authorization", "Token " + this.token);
-            HttpParams httpParameters = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
+            //request.addHeader("Authorization", "Token " + this.token);
 
             StringEntity params = new StringEntity(data.toString());
             request.setEntity(params);
 
-            // Execute HTTP Post Request
             HttpResponse response = httpClient.execute(request);
 
             res = parseData(response);
 
         } catch (ClientProtocolException e) {
             res = null;
-            // TODO Auto-generated catch block
         } catch (IOException e) {
             res = null;
-            // TODO Auto-generated catch block
         } catch (Exception e) {
             e.printStackTrace();
             e.getMessage();
@@ -230,13 +225,11 @@ public class ApiService {
         JSONObject json = new JSONObject();
 
         try {
-            HttpPatch request = new HttpPatch(url + apiUrl);
+            HttpPost request = new HttpPost(url + apiUrl);
             // Add your data
             request.addHeader("content-type", "application/json");
 
-            JSONObject object = new JSONObject();
-            object.put("activation_code", data.getString("activation_code"));
-            StringEntity params = new StringEntity(object.toString(), HTTP.UTF_8);
+            StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
             request.setEntity(params);
 
             // Execute HTTP Post Request

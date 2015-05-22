@@ -252,7 +252,7 @@ public class Helper {
 
     public static void getOrderPreferences(Context context, int id) {
         if (id == 0) return;
-        settings = context.getSharedPreferences(ORDER_PREFS+String.valueOf(id), 0);
+        settings = context.getSharedPreferences(ORDER_PREFS + String.valueOf(id), 0);
         Order order = Order.getInstance();
         if (!settings.contains("orderId")) return;
         if (settings.getInt("orderId", 0) == 0) return;
@@ -272,7 +272,7 @@ public class Helper {
         tariff.name = settings.getString("orderTariffName", null);
         tariff.ratio = (double)settings.getFloat("orderTariffRatio", 10);
         tariff.startPrice = (double)settings.getFloat("orderTariffStartPrice", 40);
-        tariff.waitTime = settings.getLong("orderTariffWaitTime", 10*60);
+        tariff.waitTime = settings.getLong("orderTariffWaitTime", 10 * 60);
         tariff.waitRatio = (double)settings.getFloat("orderTariffWaitRatio", 10);
         order.tariffInfo = tariff;
     }
@@ -324,16 +324,17 @@ public class Helper {
         editor.putString("dob", user.dob);
         editor.putString("address", user.address);
         editor.putFloat("rating", (float) user.rating);
-        editor.putInt("carId", user.car.id);
-        editor.putInt("carBrandId", user.car.brandId);
-        editor.putString("carBrandName", user.car.brandName);
-        editor.putInt("carModelId", user.car.modelId);
-        editor.putString("carModelName", user.car.modelName);
-        editor.putString("carColor", user.car.color);
-        editor.putString("carNumber", user.car.number);
-        editor.putString("carTechnicalCertificate", user.car.technicalCertificate);
-        editor.putString("year", user.car.year);
-
+        if (user.car != null) {
+            editor.putInt("carId", user.car.id);
+            editor.putInt("carBrandId", user.car.brandId);
+            editor.putString("carBrandName", user.car.brandName);
+            editor.putInt("carModelId", user.car.modelId);
+            editor.putString("carModelName", user.car.modelName);
+            editor.putString("carColor", user.car.color);
+            editor.putString("carNumber", user.car.number);
+            editor.putString("carTechnicalCertificate", user.car.technicalCertificate);
+            editor.putString("year", user.car.year);
+        }
         editor.apply();
     }
 

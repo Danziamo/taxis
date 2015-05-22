@@ -205,13 +205,13 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         try {
             json.put("first_name", firstName);
             json.put("last_name", lastName);
-            json.put("email", email);
+            json.put("email", email.length() == 0 ? JSONObject.NULL : email);
             json.put("date_of_birth", dob);
             json.put("password", password);
             if (isNew) {
                 //json.put("role", "driver");
                 json.put("phone", phone);
-                json.put("activation_code", "11111");
+                //json.put("activation_code", "11111");
             }
         } catch (JSONException e)  {
             e.printStackTrace();
@@ -239,8 +239,6 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
             if (isNew) return ApiService.getInstance().signUpRequest(mJson, "users/");
             return ApiService.getInstance().patchRequest(mJson, "users/" + user.id + "/");
         }
@@ -287,7 +285,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 user.setUser(object);
                 if (object.has("token")) ApiService.getInstance().setToken(object.getString("token"));
             } catch (JSONException ignored) {}
-            Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
+            Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
             intent.putExtra("NEW", true);
             startActivity(intent);
             getActivity().finish();

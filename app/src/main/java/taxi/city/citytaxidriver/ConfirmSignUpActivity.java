@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,28 +18,21 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Helper;
 
 
 public class ConfirmSignUpActivity extends Activity {
-
-    private View mProgressView;
-    //private View mLoginFormView;
     private EditText mActivationCode;
     private ActivateTask task = null;
-    JSONObject mUserObject = null;
+    SweetAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_sign_up);
-        Intent intent = getIntent();
-        try {
-            mUserObject =  new JSONObject(intent.getStringExtra("DATA"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         Initialize();
     }
 
@@ -52,9 +46,6 @@ public class ConfirmSignUpActivity extends Activity {
                 activate();
             }
         });
-
-        //mLoginFormView = findViewById(R.id.svActivationCode);
-        mProgressView = findViewById(R.id.activate_progress);
     }
 
     private void activate() {
@@ -83,34 +74,15 @@ public class ConfirmSignUpActivity extends Activity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            /*mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });*/
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        if (show) {
+            pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper()
+                    .setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Авторизация");
+            pDialog.setCancelable(true);
+            pDialog.show();
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            pDialog.dismissWithAnimation();
         }
     }
 
@@ -122,10 +94,10 @@ public class ConfirmSignUpActivity extends Activity {
 
         ActivateTask(String code) {
             mCode = code;
-            json = mUserObject;
 
             try {
-                id = json.getInt("id");
+                json.put("phone", User.getInstance().phone);
+                json.put("password", User.getInstance().password);
                 json.put("activation_code", mCode);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -134,12 +106,7 @@ public class ConfirmSignUpActivity extends Activity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // Simulate network access.
-            if (json.has("status_code")) {
-                json.remove("status_code");
-            }
-            return ApiService.getInstance().activateRequest(json, "users/" + id + "/");
+            return ApiService.getInstance().activateRequest(json, "activate/");
         }
 
         @Override
@@ -147,12 +114,10 @@ public class ConfirmSignUpActivity extends Activity {
             task = null;
             showProgress(false);
             try {
-                int statusCode = result.getInt("status_code");
-
-                if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED || statusCode == HttpStatus.SC_CREATED) {
+                if (Helper.isSuccess(result)) {
                     Finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ConfirmSignUpActivity.this, "Не удалось активировать пользователя", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

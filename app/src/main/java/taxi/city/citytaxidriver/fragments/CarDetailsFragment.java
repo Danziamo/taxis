@@ -177,7 +177,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        if (techPassport.length() < 6) {
+        if (techPassport.length() < 6 || techPassport.length() > 10) {
             etTechPassport.setError("Неверно задано");
             etTechPassport.requestFocus();
             return;
@@ -202,20 +202,20 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
 
         try {
-            JSONObject brandJson = new JSONObject();
+            /*JSONObject brandJson = new JSONObject();
             brandJson.put("id", carBrand.id);
             brandJson.put("brand_name", carBrand.name);
 
             JSONObject modelJson = new JSONObject();
             modelJson.put("id", carBrandModel.id);
             modelJson.put("brand_model_name", carBrandModel.name);
-            //modelJson.put("car_brand", brandJson);
+            modelJson.put("car_brand", brandJson);*/
 
             carJSON.put("driver", mUser.id);
-            /*carJSON.put("brand", carBrand.id);
-            carJSON.put("brand_model", carBrandModel.id);*/
-            carJSON.put("brand", brandJson);
-            carJSON.put("brand_model", modelJson);
+            carJSON.put("brand", carBrand.id);
+            carJSON.put("brand_model", carBrandModel.id);
+            /*carJSON.put("brand", brandJson);
+            carJSON.put("brand_model", modelJson);*/
             carJSON.put("car_number", carNumber);
             carJSON.put("year", year);
             carJSON.put("color", color);
@@ -300,6 +300,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     private void finishUpdate() {
         mUser.driverLicenseNumber = etDriverLicenseSeries.getText().toString() + etDriverLicense.getText().toString();
         mUser.passportNumber = etPassportSeries.getText().toString() + etPassportNumber.getText().toString();
+        if (!isNew) {
+            CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
+            mUser.car.brandId = mBrand.id;
+            mUser.car.brandName = mBrand.name;
+            CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
+            mUser.car.modelId = mModel.id;
+            mUser.car.modelName = mModel.name;
+        }
         if (isNew) {
             Intent intent = new Intent(getActivity(), MapsActivity.class);
             startActivity(intent);

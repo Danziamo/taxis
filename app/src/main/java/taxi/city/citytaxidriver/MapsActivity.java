@@ -287,6 +287,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
 
+        btnSOS.setOnClickListener(this);
         btnInfo.setOnClickListener(this);
         btnOkAction.setOnClickListener(this);
         btnSettingsCancel.setOnClickListener(this);
@@ -464,7 +465,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     public void onConnectionFailed(ConnectionResult result) {
         if (result.hasResolution()) {
             try {
-                // Start an Activity that tries to resolve the error
                 result.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
