@@ -18,6 +18,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:id="@+id/viewCenter"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible">
+            </View>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/viewCenter"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/imageViewSearchIcon"
+                android:src="@drawable/car"/>
+
             <LinearLayout
                 android:id="@+id/mainLayout"
                 android:layout_width="match_parent"

@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -74,6 +76,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     TextView tvFeeTime;
     TextView tvTotalSum;
 
+
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
     GlobalParameters gp = GlobalParameters.getInstance();
@@ -93,6 +96,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Button btnSOS;
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
+    ImageView ivIcon;
 
     Location location;
     List<Polyline> polylines = new ArrayList<>();
@@ -276,6 +280,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnSettingsCancel = (Button)findViewById(R.id.buttonDeclineSettings);
         btnWait = (Button)findViewById(R.id.buttonWaitTrip);
         btnSOS = (Button)findViewById(R.id.buttonSos);
+        ivIcon = (ImageView) findViewById(R.id.imageViewSearchIcon);
+        ivIcon.setVisibility(View.GONE);
 
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
@@ -299,6 +305,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             btnSettingsCancel.setTextColor(Color.WHITE);
             llMain.setVisibility(View.GONE);
+            ivIcon.setVisibility(View.GONE);
         } else {
             if (order.status == OStatus.ACCEPTED) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
@@ -318,6 +325,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
                 btnWait.setVisibility(View.INVISIBLE);
                 llButtonTop.setVisibility(View.VISIBLE);
+                ivIcon.setVisibility(View.GONE);
             } else if (order.status == OStatus.PENDING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
@@ -346,6 +354,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSettingsCancel.setText("Настройки");
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 llButtonTop.setVisibility(View.GONE);
+                ivIcon.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -634,14 +643,17 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void setClientLocation() {
         if (order == null || order.id == 0 || order.startPoint == null) return;
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(order.startPoint).title(order.clientPhone));
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(order.startPoint)
+                .title(order.clientPhone)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
 
                 SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
-                pDialog .setTitleText("Вы хотите позвонить?")
+                pDialog.setTitleText("Вы хотите позвонить?")
                         .setContentText(order.clientPhone)
                         .setConfirmText("Позвонить")
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -701,6 +713,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             }
         }
         updateViews();
+        ivIcon.setVisibility(View.GONE);
     }
 
     private void ClearMapFromLines() {
@@ -723,6 +736,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (Helper.isOrderPreferenceActive(MapsActivity.this)) {
                 getPreferences();
                 SendPostRequest(order.status, order.id);
+            }
+            else {
+                ivIcon.setVisibility(View.VISIBLE);
             }
         }
     }
