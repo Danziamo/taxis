@@ -212,12 +212,11 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@+id/linearLayoutSum"
                 android:weightSum="10"
-                android:id="@+id/linearLayoutFixedPrice"
-                android:layout_marginTop="@dimen/spacing_tiny">
+                android:id="@+id/linearLayoutFixedPrice">
 
                 <TextView
                     style="@style/FixedEditText"
@@ -227,7 +226,6 @@
                 <View
                     android:layout_width="1px"
                     android:layout_height="match_parent" >
-
                 </View>
 
                 <TextView

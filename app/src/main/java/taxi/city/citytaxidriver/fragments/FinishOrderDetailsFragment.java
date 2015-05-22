@@ -147,6 +147,7 @@ public class FinishOrderDetailsFragment extends Fragment implements View.OnClick
             btnWait.setVisibility(View.GONE);
             btnMap.setVisibility(View.INVISIBLE);
             btnFinish.setText("Назад");
+            btnFinish.setVisibility(View.GONE);
         } else if (mClient.status.equals(OStatus.PENDING.toString())) {
             btnFinish.setText("Доставил");
             btnWait.setText("Продолжить");
