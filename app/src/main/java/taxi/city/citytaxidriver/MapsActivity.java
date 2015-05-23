@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,7 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -41,9 +44,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +67,16 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    String SENDER_ID = "400358386973";
+    String mRegId;
+    GoogleCloudMessaging gcm;
 
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
 
     private SendPostRequestTask sendTask;
+    private GetUsersLocationTask locationTask;
 
     private SweetAlertDialog pDialog;
     LinearLayout llMain;
@@ -96,6 +105,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
     ImageView ivIcon;
+    Dialog sosDialog;
 
     Location location;
     List<Polyline> polylines = new ArrayList<>();
@@ -118,7 +128,19 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
             if (Helper.isOrderActive(order)) {
                 Helper.saveOrderPreferences(MapsActivity.this, order);
-                if (seconds % 30 < 1) SendPostRequest(order.status, order.id);
+                if (seconds % 30 < 1) {
+                    OStatus status = order.status;
+                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 10) {
+                        status = OStatus.SOS;
+                    } else {
+                        order.sosStartTime = 0;
+                        sosDialog.dismiss();
+                    }
+                    SendPostRequest(status, order.id);
+                }
+            }
+            if(seconds % 15 < 1) {
+                getUsersLocation();
             }
             globalTimerHandler.postDelayed(this, 1000);
         }
@@ -178,6 +200,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         setUpMapIfNeeded();
         CheckEnableGPS();
         SetGooglePlayServices();
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            registerInBackground();
+        }
 
         Initialize();
         order = Order.getInstance();
@@ -215,6 +241,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         tvTime.setText(Helper.getTimeFromLong(order.time));
         tvTotalSum.setText(df.format(order.getTotalSum()));
         updateLabels();
+        if (System.currentTimeMillis()/1000 - order.sosStartTime < 60 * 10) {
+            sosDialog.show();
+        }
     }
 
     private void CheckEnableGPS(){
@@ -263,10 +292,49 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void SetLocationRequest() {
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(10)
-                .setInterval(1000)        // 10 seconds, in milliseconds
+                .setSmallestDisplacement(20)
+                .setInterval(10000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1000); // 1 second, in milliseconds
     }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST).show();
+            } else {
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    mRegId = gcm.register(SENDER_ID);
+                    JSONObject data = new JSONObject();
+                    data.put("android_token", mRegId);
+                    JSONObject result = api.patchRequest(data, "users/" + user.id + "/");
+                } catch (IOException ex) {
+                    msg = "err";
+                } catch (JSONException ignored) {}
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {}
+        }.execute(null, null, null);
+    }
+
 
     private void Initialize() {
         prev = null;
@@ -292,6 +360,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnOkAction.setOnClickListener(this);
         btnSettingsCancel.setOnClickListener(this);
         btnWait.setOnClickListener(this);
+        createSosDialog();
     }
 
     private void updateViews() {
@@ -382,7 +451,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onStart() {
         super.onStart();
-        if (order != null && order.id != 0) order.sos = false;
+        if (order != null && order.id != 0)
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
@@ -475,7 +544,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onResume() {
         super.onResume();
-        if (order != null && order.id != 0) order.sos = false;
+        if (order != null && order.id != 0)
         updateViews();
         setUpMapIfNeeded();
         if (mMap != null && order != null && order.startPoint != null && order.clientPhone != null) {
@@ -564,19 +633,30 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 }
                 break;
             case R.id.buttonSos:
-                sendSos();
+                makeSos();
                 break;
 
         }
         updateViews();
     }
 
-    private void sendSos() {
-        order.status = OStatus.SOS;
-        order.sos = true;
-        SendPostRequest(OStatus.SOS, order.id);
-        Intent intent = new Intent(MapsActivity.this, SosActivity.class);
-        startActivity(intent);
+    private void createSosDialog() {
+        sosDialog = new Dialog(this);
+        sosDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        sosDialog.setContentView(R.layout.fragment_sos);
+        sosDialog.setCancelable(false);
+
+        Window window = sosDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(0xC0000000));
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.dimAmount = 0.7f;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+    }
+
+    private void makeSos() {
+        order.sosStartTime = System.currentTimeMillis()/1000;
+        sosDialog.show();
     }
 
     private void cancelOrder() {
@@ -657,15 +737,18 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             @Override
             public void onInfoWindowClick(Marker marker) {
 
+                final String title = marker.getTitle();
+                if (title.length() != 13) return;
+
                 SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
                 pDialog.setTitleText("Вы хотите позвонить?")
-                        .setContentText(order.clientPhone)
+                        .setContentText(title)
                         .setConfirmText("Позвонить")
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
                                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                callIntent.setData(Uri.parse("tel:" + order.clientPhone));
+                                callIntent.setData(Uri.parse("tel:" + title));
                                 startActivity(callIntent);
                                 sDialog.dismissWithAnimation();
                             }
@@ -795,7 +878,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             JSONObject result = null;
             try {
                 String travelTime = Helper.getTimeFromLong(order.time, order.status);
-                data.put("status", order.sos ? OStatus.SOS : status);
+                data.put("status", status);
                 data.put("driver", driver);
                 data.put("order_sum", status == OStatus.NEW ? 0 : order.getTotalSum());
                 data.put("wait_time_price", status == OStatus.NEW ? 0 : order.getWaitSum());
@@ -859,6 +942,115 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         protected void onCancelled() {
             sendTask = null;
+        }
+    }
+
+    private void getUsersLocation() {
+        if (locationTask != null) {
+            return;
+        }
+
+        locationTask = new GetUsersLocationTask();
+        locationTask.execute((Void) null);
+    }
+
+    private class GetUsersLocationTask extends AsyncTask<Void, Void, JSONArray> {
+        GetUsersLocationTask() {}
+
+        @Override
+        protected JSONArray doInBackground(Void... params) {
+            JSONArray array = new JSONArray();
+            try {
+                JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
+                JSONObject newObject = api.getArrayRequest(null, "info_orders/?status=new");
+                if (Helper.isSuccess(sosObject)) {
+                    JSONArray sosArray = sosObject.getJSONArray("result");
+                    for (int j = 0; j < sosArray.length(); j++) {
+                        array.put(sosArray.getJSONObject(j));
+                    }
+                }
+                if (Helper.isSuccess(newObject)) {
+                    JSONArray newArray = newObject.getJSONArray("result");
+                    for (int j = 0; j < newArray.length(); j++) {
+                        array.put(newArray.getJSONObject(j));
+                    }
+                }
+            } catch (JSONException ignored) {}
+            return array;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+            locationTask = null;
+            displayUsersOnMap(result);
+        }
+
+        @Override
+        protected void onCancelled() {
+            locationTask = null;
+        }
+    }
+
+    private void displayUsersOnMap(JSONArray usersList) {
+        if (usersList.length() < 0) return;
+
+        LatLng userLocation = null;
+        OStatus userStatus = null;
+        String address = null;
+        String phone = null;
+
+        for (int i = 0; i < usersList.length(); ++i) {
+            try {
+                JSONObject user = usersList.getJSONObject(i);
+                userStatus = Helper.getStatus(user.getString("status"));
+                userLocation = userStatus == OStatus.NEW ? Helper.getLatLng(user.getString("address_start")) :
+                        Helper.getLatLng(user.getString("address_stop"));
+                address = user.getString("address_start_name");
+
+                phone = user.getString("client_phone");
+                if (userLocation == null) continue;
+
+                if (userStatus == OStatus.SOS) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(userLocation)
+                            .title(phone)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            final String title = marker.getTitle();
+                            if (title.length() != 13) return;
+
+                            SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
+                            pDialog.setTitleText("Вы хотите позвонить?")
+                                    .setContentText(title)
+                                    .setConfirmText("Позвонить")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                            callIntent.setData(Uri.parse("tel:" + title));
+                                            startActivity(callIntent);
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    })
+                                    .setCancelText("Отмена")
+                                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    });
+                } else if (order.id == 0) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(userLocation)
+                            .title(address)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
+                }
+            } catch (JSONException ignored) {}
         }
     }
 

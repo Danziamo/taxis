@@ -35,7 +35,7 @@ public class Order implements Serializable {
     public double fixedPrice;
     public long time;
     public double waitSum;
-    public boolean sos;
+    public long sosStartTime;
 
     private Order() {
 
@@ -122,6 +122,6 @@ public class Order implements Serializable {
         this.waitSum = 0;
         this.fixedPrice = 0;
         this.tariffInfo = null;
-        this.sos = false;
+        this.sosStartTime = 0;
     }
 }

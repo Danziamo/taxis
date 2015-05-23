@@ -272,7 +272,7 @@ public class LoginActivity extends Activity{
                         if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
                         if (mRegId != null) {
                             JSONObject regObject = new JSONObject();
-                            regObject.put("online_status", true);
+                            regObject.put("online_status", "online");
                             regObject.put("android_token", mRegId);
                             JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         }
@@ -317,20 +317,6 @@ public class LoginActivity extends Activity{
         startActivity(intent);
     }
 
-    private void NextActivity(boolean hasCar) {
-        savePreferences(user);
-        Helper.saveUserPreferences(LoginActivity.this, user);
-        Intent intent;
-        if (hasCar) {
-            intent = new Intent(LoginActivity.this, MapsActivity.class);
-        } else {
-            intent = new Intent(LoginActivity.this, CarDetailsActivity.class);
-        }
-        intent.putExtra("NEW", true);
-        startActivity(intent);
-        finish();
-    }
-
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -345,12 +331,20 @@ public class LoginActivity extends Activity{
         return true;
     }
 
-    /**
-     * Registers the application with GCM servers asynchronously.
-     * <p>
-     * Stores the registration ID and the app versionCode in the application's
-     * shared preferences.
-     */
+    private void NextActivity(boolean hasCar) {
+        savePreferences(user);
+        Helper.saveUserPreferences(LoginActivity.this, user);
+        Intent intent;
+        if (hasCar) {
+            intent = new Intent(LoginActivity.this, MapsActivity.class);
+        } else {
+            intent = new Intent(LoginActivity.this, CarDetailsActivity.class);
+        }
+        intent.putExtra("NEW", true);
+        startActivity(intent);
+        finish();
+    }
+
     private void registerInBackground() {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -361,7 +355,6 @@ public class LoginActivity extends Activity{
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     mRegId = gcm.register(SENDER_ID);
-                    msg = "done";
 
                 } catch (IOException ex) {
                     msg = "err";

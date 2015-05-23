@@ -40,15 +40,9 @@
             android:layout_below="@+id/linearLayout"
             android:gravity="center"
             android:layout_centerHorizontal="true"
-            android:text="Даже если отмените \nвы будете видны на карте \n у других водителей \nв течении 2 мин."
+            android:text="Приложение заблокированно на 10 минут."
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal" />
 
-        <Button
-            style="@style/mediumButton.Red"
-            android:text="Отмена"
-            android:id="@+id/buttonSos"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 </RelativeLayout>

@@ -223,7 +223,8 @@ public class Helper {
         editor.putFloat("orderTariffStartPrice", (float) order.tariffInfo.startPrice);
         editor.putFloat("orderTariffRatio", (float) order.tariffInfo.ratio);
         editor.putLong("orderTariffWaitTime", order.tariffInfo.waitTime);
-        editor.putFloat("orderTariffWaitRatio", (float)order.tariffInfo.waitRatio);
+        editor.putFloat("orderTariffWaitRatio", (float) order.tariffInfo.waitRatio);
+        editor.putLong("orderSosStartTime", order.sosStartTime);
         editor.apply();
     }
 
@@ -267,6 +268,7 @@ public class Helper {
         order.startPoint = Helper.getLatLng(settings.getString("orderStartPoint", null));
         order.addressStart = settings.getString("orderStartAddress", null);
         order.addressEnd = settings.getString("orderEndAddress", null);
+        order.sosStartTime = settings.getLong("orderSosStartTime", 0);
 
         Tariff tariff = new Tariff();
         tariff.name = settings.getString("orderTariffName", null);

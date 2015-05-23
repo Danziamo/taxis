@@ -1,9 +1,6 @@
 package taxi.city.citytaxidriver;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -14,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +20,7 @@ import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 
-public class ConfirmSignUpActivity extends Activity {
+public class ConfirmSignUpActivity extends BaseActivity {
     private EditText mActivationCode;
     private ActivateTask task = null;
     SweetAlertDialog pDialog;
@@ -78,7 +74,7 @@ public class ConfirmSignUpActivity extends Activity {
             pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper()
                     .setBarColor(Color.parseColor("#A5DC86"));
-            pDialog.setTitleText("Авторизация");
+            pDialog.setTitleText("Активация");
             pDialog.setCancelable(true);
             pDialog.show();
         } else {
@@ -90,7 +86,6 @@ public class ConfirmSignUpActivity extends Activity {
 
         private final String mCode;
         private JSONObject json = new JSONObject();
-        private int id;
 
         ActivateTask(String code) {
             mCode = code;

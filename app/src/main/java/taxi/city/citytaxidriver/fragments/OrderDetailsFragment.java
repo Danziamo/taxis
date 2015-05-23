@@ -270,20 +270,13 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                 data.put("address_stop", mStatus.equals(OStatus.NEW.toString()) || mCurrPosition == null
                         ? JSONObject.NULL : mCurrPosition);
 
-                JSONObject orderJson = api.getRequest(null, "orders/" + mId + "/");
+                JSONObject orderJson = api.getRequest(null, "info_orders/" + mId + "/");
                 if (Helper.isSuccess(orderJson) && !orderJson.getString("status").equals(OStatus.CANCELED.toString())) {
                     res = api.patchRequest(data, "orders/" + mId + "/");
+                    res.put("tariff_info", orderJson.getJSONObject("tariff"));
                 } else {
                     res = new JSONObject();
                     res.put("status_code", 400);
-                }
-                if (Helper.isSuccess(res) && order.tariffInfo == null) {
-                    JSONObject tariffJson = api.getArrayRequest(null, "tariffs/");
-                    if (Helper.isSuccess(tariffJson) && tariffJson.getJSONArray("result").length() > 0) {
-                        res.put("tariff_info", tariffJson.getJSONArray("result").getJSONObject(0));
-                    } else {
-                        res = null;
-                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

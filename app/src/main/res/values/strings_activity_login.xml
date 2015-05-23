@@ -9,6 +9,6 @@
 
     <string name="error_invalid_phone">Это поле не правильно заполнено</string>
     <string name="error_invalid_password">Пароль слишком корткий</string>
-    <string name="error_incorrect_password">Пароль неверный</string>
+    <string name="error_incorrect_password">Телефон или пароль неверны</string>
     <string name="error_field_required">Это поле обязяательное</string>
 </resources>
