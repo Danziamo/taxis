@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +13,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,12 +32,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
@@ -42,17 +47,15 @@ public class LoginActivity extends Activity{
 
     private static final String PREFS_NAME = "MyPrefsFile";
     private UserLoginTask mAuthTask = null;
+    private ForgotPasswordTask mForgotTask = null;
 
-    public static final String EXTRA_MESSAGE = "message";
-    public static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "LoginActivity";
 
     private EditText mPhoneView;
     private TextView mPhoneExtraView;
     private EditText mPasswordView;
     private Button mPhoneSignInButton;
+    private TextView mForgotPassword;
 
     SweetAlertDialog pDialog;
     private User user = User.getInstance();
@@ -63,9 +66,6 @@ public class LoginActivity extends Activity{
     private Order order = Order.getInstance();
 
     private SharedPreferences settings;
-    String SENDER_ID = "400358386973";
-    String mRegId;
-    GoogleCloudMessaging gcm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class LoginActivity extends Activity{
         // Set up the login form.
         mPhoneView = (EditText) findViewById(R.id.login_phone);
         mPhoneExtraView = (TextView) findViewById(R.id.textViewPhoneExtra);
+        mForgotPassword = (TextView) findViewById(R.id.textViewForgetPassword);
         mPasswordView = (EditText) findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -102,6 +103,50 @@ public class LoginActivity extends Activity{
                 attemptLogin();
             }
         });
+        mForgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(LoginActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.forgot_password_alert);
+
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+
+                wlp.gravity = Gravity.BOTTOM;
+                wlp.dimAmount = 0.7f;
+                wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                window.setAttributes(wlp);
+
+                final TextView tvExtraPhone = (TextView) dialog.findViewById(R.id.textViewForgotPhoneExtra);
+                final EditText etPhone = (EditText) dialog.findViewById(R.id.etForgotPhone);
+
+                Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
+                Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
+
+                btnOkDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String forgotPhone = tvExtraPhone.getText().toString() + etPhone.getText().toString();
+                        if (forgotPhone.length() != 13) {
+                            etPhone.requestFocus();
+                            etPhone.setError("Неправильный формат");
+                        }
+                        forgotPassword(forgotPhone);
+                        dialog.dismiss();
+                    }
+                });
+
+                btnCancelDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+
 
         Button mPhoneSignUpButton = (Button) findViewById(R.id.btnSignUp);
         mPhoneSignUpButton.setOnClickListener(new OnClickListener() {
@@ -112,19 +157,19 @@ public class LoginActivity extends Activity{
         });
 
         setPreferences();
+    }
 
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
+    private void forgotPassword(String phone) {
+        if (mForgotTask != null) return;
 
-            if (mRegId == null || mRegId.length() < 10 || mRegId.isEmpty()) {
-                registerInBackground();
-            }
-        }
+        showProgress(true);
+        mForgotTask = new ForgotPasswordTask(phone);
+        mForgotTask.execute((Void) null);
     }
 
     private void signUp() {
         Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra("NEW", true);
+        intent.putExtra("SIGNUP", true);
         startActivity(intent);
     }
 
@@ -148,7 +193,6 @@ public class LoginActivity extends Activity{
                 }
             }
         }
-        if (settings.contains("deviceTokenKey")) mRegId = settings.getString("deviceTokenKey", null);
     }
 
     private void savePreferences(User user) {
@@ -156,7 +200,6 @@ public class LoginActivity extends Activity{
         editor.putString("phoneKey", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
         editor.putString("passwordKey", mPasswordView.getText().toString());
         editor.putString("tokenKey", user.getToken());
-        editor.putString("deviceTokenKey", user.deviceToken);
         api.setToken(user.getToken());
         editor.apply();
     }
@@ -270,12 +313,9 @@ public class LoginActivity extends Activity{
                         id = object.getInt("id");
                         JSONObject cars = api.getArrayRequest(null, "usercars/?driver=" + user.id);
                         if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
-                        if (mRegId != null) {
-                            JSONObject regObject = new JSONObject();
-                            regObject.put("online_status", "online");
-                            regObject.put("android_token", mRegId);
-                            JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
-                        }
+                        JSONObject regObject = new JSONObject();
+                        regObject.put("online_status", "online");
+                        JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         res = true;
                     }
                 }
@@ -317,20 +357,6 @@ public class LoginActivity extends Activity{
         startActivity(intent);
     }
 
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
     private void NextActivity(boolean hasCar) {
         savePreferences(user);
         Helper.saveUserPreferences(LoginActivity.this, user);
@@ -345,25 +371,34 @@ public class LoginActivity extends Activity{
         finish();
     }
 
-    private void registerInBackground() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String msg = "";
-                try {
-                    if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-                    }
-                    mRegId = gcm.register(SENDER_ID);
+    public class ForgotPasswordTask extends AsyncTask<Void, Void, JSONObject> {
 
-                } catch (IOException ex) {
-                    msg = "err";
-                }
-                return msg;
-            }
+        private final String mPhone;
 
-            @Override
-            protected void onPostExecute(String msg) {}
-        }.execute(null, null, null);
+        ForgotPasswordTask(String phone) {
+            mPhone = phone;
+        }
+
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return api.resetPasswordRequest("reset_password/?phone=" + mPhone.replace("+", "%2b"));
+        }
+
+        @Override
+        protected void onPostExecute(final JSONObject object) {
+            mForgotTask = null;
+            showProgress(false);
+            Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
+            intent.putExtra("SIGNUP", false);
+            user.phone = mPhone;
+            startActivity(intent);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mForgotTask = null;
+            showProgress(false);
+        }
     }
+
 }

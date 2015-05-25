@@ -114,6 +114,14 @@
             android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp" />
 
+        <TextView
+            style="@style/TextTitle"
+            android:text="Забыли пароль?"
+            android:id="@+id/textViewForgetPassword"
+            android:layout_above="@+id/btnSignUp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp" />
+
 
     </RelativeLayout>
 

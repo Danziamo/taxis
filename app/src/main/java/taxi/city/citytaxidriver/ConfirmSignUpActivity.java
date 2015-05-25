@@ -22,18 +22,25 @@ import taxi.city.citytaxidriver.utils.Helper;
 
 public class ConfirmSignUpActivity extends BaseActivity {
     private EditText mActivationCode;
+    private EditText mPasswordField;
     private ActivateTask task = null;
+    private String mPhone;
     SweetAlertDialog pDialog;
+    private boolean isSignUp = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_sign_up);
+        Intent intent = getIntent();
+        isSignUp = intent.getBooleanExtra("SIGNUP", true);
         Initialize();
     }
 
     private void Initialize() {
         mActivationCode = (EditText) findViewById(R.id.etActivationCode);
+        mPasswordField = (EditText) findViewById(R.id.etActivationPassword);
+        if (isSignUp) mPasswordField.setVisibility(View.INVISIBLE);
 
         Button btn = (Button) findViewById(R.id.btnActivate);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -50,20 +57,26 @@ public class ConfirmSignUpActivity extends BaseActivity {
         }
 
         String mCode = mActivationCode.getText().toString();
+        String password = mPasswordField.getText().toString();
         View focusView = null;
         boolean cancel = false;
 
-        if (mCode == null || mCode.length() != 5) {
-            mActivationCode.setError("Код должен состоять из 5 символов");
+        if (mCode == null || mCode.length() > 5) {
+            mActivationCode.setError("Код не более 5 символов");
             focusView = mActivationCode;
             cancel = true;
+        }
+
+        if (!isSignUp && password.length() < 4) {
+            mPasswordField.setError("Минимум 4 символа");
+            focusView = mPasswordField;
         }
 
         if (cancel) {
             focusView.requestFocus();
         } else {
             showProgress(true);
-            task = new ActivateTask(mCode);
+            task = new ActivateTask(mCode, password);
             task.execute((Void) null);
         }
     }
@@ -85,14 +98,16 @@ public class ConfirmSignUpActivity extends BaseActivity {
     private class ActivateTask extends AsyncTask<Void, Void, JSONObject> {
 
         private final String mCode;
+        private final String mPassword;
         private JSONObject json = new JSONObject();
 
-        ActivateTask(String code) {
+        ActivateTask(String code, String password) {
             mCode = code;
+            mPassword = password;
 
             try {
                 json.put("phone", User.getInstance().phone);
-                json.put("password", User.getInstance().password);
+                json.put("password", isSignUp ? User.getInstance().password : mPassword);
                 json.put("activation_code", mCode);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -101,7 +116,11 @@ public class ConfirmSignUpActivity extends BaseActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return ApiService.getInstance().activateRequest(json, "activate/");
+            if (isSignUp) {
+                return ApiService.getInstance().activateRequest(json, "activate/");
+            } else {
+                return ApiService.getInstance().putRequest(json, "reset_password/");
+            }
         }
 
         @Override
@@ -128,9 +147,11 @@ public class ConfirmSignUpActivity extends BaseActivity {
     }
 
     private void Finish() {
-        Intent intent = new Intent(this, CarDetailsActivity.class);
-        intent.putExtra("NEW", true);
-        startActivity(intent);
+        if (isSignUp) {
+            Intent intent = new Intent(this, CarDetailsActivity.class);
+            intent.putExtra("NEW", true);
+            startActivity(intent);
+        }
         finish();
     }
 }

@@ -45,9 +45,27 @@
                 android:background="@drawable/textbox_background"
                 android:textColor="@color/blacktext2"
                 android:hint="Код авторизации"
+                android:textColorHint="@color/blacktext1"
                 android:paddingRight="9dp"
                 android:paddingTop="1dp"
                 android:layout_marginTop="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="gravity"/>
+
+
+            <EditText
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:id="@+id/etActivationPassword"
+                android:gravity="center"
+                android:background="@drawable/textbox_background"
+                android:textColor="@color/blacktext2"
+                android:hint="Новый пароль"
+                android:textColorHint="@color/blacktext1"
+                android:paddingRight="9dp"
+                android:paddingTop="1dp"
+                android:layout_marginTop="95dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:textAlignment="gravity"/>
