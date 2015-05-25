@@ -26,9 +26,7 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Map;
 
-/**
- * Created by Daniyar on 3/26/2015.
- */
+
 public class ApiService {
     private static final String url = "http://81.88.192.37/api/v1/";
     private static final int CONNECTION_TIMEOUT = 5000;
@@ -98,7 +96,7 @@ public class ApiService {
             HttpPost request = new HttpPost(url + apiUrl);
             // Add your data
             request.addHeader("content-type", "application/json");
-            //request.addHeader("Authorization", "Token " + this.token);
+            request.addHeader("Authorization", "Token " + this.token);
 
             StringEntity params = new StringEntity(data.toString());
             request.setEntity(params);

@@ -41,7 +41,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     Button btnMap;
     Button btnRefresh;
     Button btnMoreOrders;
-    private boolean isNew;
+
     private int limit = 10;
 
     @Override
@@ -53,9 +53,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             finish();
         }
         limit = 10;
-
-        Intent intent = getIntent();
-        isNew = intent.getExtras().getBoolean("NEW", false);
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,22 +85,11 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         btnMoreOrders.setOnClickListener(this);
 
         TextView tvTitle = (TextView) findViewById(R.id.textViewOrderTitle);
-
-        if (!isNew) {
-            tvTitle.setText("История заказов:");
-            btnMap.setText("Назад");
-            fetchData();
-        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if (isNew) {
-            list.clear();
-            lvMain.setAdapter(null);
-            if (user != null && user.id != 0) fetchData();
-        }
     }
 
     private void InitListView(JSONArray array) {
@@ -129,16 +115,10 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void goOrderDetails(Client mClient) {
-        if (isNew) {
-            Intent intent = new Intent(this, OrderDetailsActivity.class);
-            intent.putExtra("DATA", mClient);
-            intent.putExtra("ACTIVE", false);
-            startActivityForResult(intent, 1);
-        } else {
-            Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-            intent.putExtra("DATA", mClient);
-            startActivityForResult(intent, 2);
-        }
+        Intent intent = new Intent(this, OrderDetailsActivity.class);
+        intent.putExtra("DATA", mClient);
+        intent.putExtra("ACTIVE", false);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -192,26 +172,17 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             try {
                 array = new JSONArray();
                 JSONObject result = new JSONObject();
-                if (isNew) {
-                    if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
-                        result = api.getArrayRequest(null, "orders/?status=new");
-                        if (result.getInt("status_code") == HttpStatus.SC_OK) {
-                            JSONArray tempArray = result.getJSONArray("result");
-                            for (int i = 0; i < tempArray.length(); ++i) {
-                                array.put(tempArray.getJSONObject(i));
-                            }
-                        }
-                    }
-                    if (order.id != 0) array.put(order.getOrderAsJson());
-                } else {
-                    result = api.getArrayRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
+
+                if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
+                    result = api.getArrayRequest(null, "orders/?status=new");
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
-                        for (int i = 0; i < tempArray.length() && i < 10; ++i) {
+                        for (int i = 0; i < tempArray.length(); ++i) {
                             array.put(tempArray.getJSONObject(i));
                         }
                     }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {

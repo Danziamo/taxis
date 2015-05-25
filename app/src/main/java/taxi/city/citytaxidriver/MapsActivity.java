@@ -62,12 +62,14 @@ import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
-public class MapsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener {
+public class MapsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener,
+        GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    String SENDER_ID = "400358386973";
+    String SENDER_ID = "226704465596";
     String mRegId;
     GoogleCloudMessaging gcm;
 
@@ -580,6 +582,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
                 }
                 mMap.setMyLocationEnabled(true);
+                mMap.setOnInfoWindowClickListener(this);
             }
         }
     }
@@ -727,42 +730,12 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void setClientLocation() {
         if (order == null || order.id == 0 || order.startPoint == null) return;
-        mMap.clear();
-        Marker marker = mMap.addMarker(new MarkerOptions()
+        //mMap.clear();
+        mMap.addMarker(new MarkerOptions()
                 .position(order.startPoint)
                 .title(order.clientPhone)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.startPoint, 15));
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-
-                final String title = marker.getTitle();
-                if (title.length() != 13) return;
-
-                SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
-                pDialog.setTitleText("Вы хотите позвонить?")
-                        .setContentText(title)
-                        .setConfirmText("Позвонить")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                callIntent.setData(Uri.parse("tel:" + title));
-                                startActivity(callIntent);
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .setCancelText("Отмена")
-                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-            }
-        });
     }
 
     @Override
@@ -858,6 +831,35 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         sendTask = new SendPostRequestTask(status, orderId);
         sendTask.execute((Void) null);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        final String title = marker.getTitle();
+        if (title.length() != 13) return;
+
+        SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
+        pDialog.setTitleText("Вы хотите позвонить?")
+                .setContentText(title)
+                .setConfirmText("Позвонить")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:" + title));
+                        startActivity(callIntent);
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .setCancelText("Отмена")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
+
     }
 
     private class SendPostRequestTask extends AsyncTask<Void, Void, JSONObject> {
@@ -1007,7 +1009,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                         Helper.getLatLng(user.getString("address_stop"));
                 address = user.getString("address_start_name");
 
-                phone = user.getString("client_phone");
+                phone = user.getJSONObject("driver").getString("phone");
                 if (userLocation == null) continue;
 
                 if (userStatus == OStatus.SOS) {
@@ -1015,35 +1017,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                             .position(userLocation)
                             .title(phone)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
-                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                        @Override
-                        public void onInfoWindowClick(Marker marker) {
-                            final String title = marker.getTitle();
-                            if (title.length() != 13) return;
-
-                            SweetAlertDialog pDialog = new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE);
-                            pDialog.setTitleText("Вы хотите позвонить?")
-                                    .setContentText(title)
-                                    .setConfirmText("Позвонить")
-                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sDialog) {
-                                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                            callIntent.setData(Uri.parse("tel:" + title));
-                                            startActivity(callIntent);
-                                            sDialog.dismissWithAnimation();
-                                        }
-                                    })
-                                    .setCancelText("Отмена")
-                                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sDialog) {
-                                            sDialog.dismissWithAnimation();
-                                        }
-                                    })
-                                    .show();
-                        }
-                    });
                 } else if (order.id == 0) {
                     mMap.addMarker(new MarkerOptions()
                             .position(userLocation)
@@ -1051,6 +1024,13 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
                 }
             } catch (JSONException ignored) {}
+        }
+
+        if (order.id != 0 && order.clientPhone != null && order.startPoint != null) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(order.startPoint)
+                    .title(order.clientPhone)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
         }
     }
 

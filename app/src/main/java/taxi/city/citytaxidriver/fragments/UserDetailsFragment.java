@@ -115,6 +115,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             String phone = user.phone.substring(4);
             etPhone.setText(phone);
             etPhoneExtra.setText(extra);
+            etPhone.setEnabled(false);
+            etPhoneExtra.setEnabled(false);
         }
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
