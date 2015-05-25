@@ -132,7 +132,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 Helper.saveOrderPreferences(MapsActivity.this, order);
                 if (seconds % 30 < 1) {
                     OStatus status = order.status;
-                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 10) {
+                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 1) {
                         status = OStatus.SOS;
                     } else {
                         order.sosStartTime = 0;
@@ -243,7 +243,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         tvTime.setText(Helper.getTimeFromLong(order.time));
         tvTotalSum.setText(df.format(order.getTotalSum()));
         updateLabels();
-        if (System.currentTimeMillis()/1000 - order.sosStartTime < 60 * 10) {
+        if (System.currentTimeMillis()/1000 - order.sosStartTime < 60 * 1) {
             sosDialog.show();
         }
     }
