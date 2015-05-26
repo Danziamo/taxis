@@ -106,7 +106,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Button btnSOS;
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
-    ImageView ivIcon;
     Dialog sosDialog;
 
     Location location;
@@ -351,8 +350,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnSettingsCancel = (Button)findViewById(R.id.buttonDeclineSettings);
         btnWait = (Button)findViewById(R.id.buttonWaitTrip);
         btnSOS = (Button)findViewById(R.id.buttonSos);
-        ivIcon = (ImageView) findViewById(R.id.imageViewSearchIcon);
-        ivIcon.setVisibility(View.GONE);
 
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
@@ -378,7 +375,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             btnSettingsCancel.setTextColor(Color.WHITE);
             llMain.setVisibility(View.GONE);
-            ivIcon.setVisibility(View.GONE);
         } else {
             if (order.status == OStatus.ACCEPTED) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
@@ -398,7 +394,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_red);
                 btnWait.setVisibility(View.INVISIBLE);
                 llButtonTop.setVisibility(View.VISIBLE);
-                ivIcon.setVisibility(View.GONE);
             } else if (order.status == OStatus.PENDING) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
                 btnOkAction.setText("Доставил");
@@ -428,7 +423,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSettingsCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 llMain.setVisibility(View.GONE);
                 llButtonTop.setVisibility(View.GONE);
-                ivIcon.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -774,7 +768,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             }
         }
         updateViews();
-        ivIcon.setVisibility(View.GONE);
     }
 
     private void ClearMapFromLines() {
@@ -797,9 +790,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (Helper.isOrderPreferenceActive(MapsActivity.this, user.id)) {
                 getPreferences();
                 SendPostRequest(order.status, order.id);
-            }
-            else {
-                ivIcon.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -1017,12 +1007,12 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                             .position(userLocation)
                             .title(phone)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
-                } else if (order.id == 0) {
+                } /*else if (order.id == 0) {
                     mMap.addMarker(new MarkerOptions()
                             .position(userLocation)
                             .title(address)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
-                }
+                }*/
             } catch (JSONException ignored) {}
         }
 

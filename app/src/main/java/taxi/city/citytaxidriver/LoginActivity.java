@@ -315,6 +315,7 @@ public class LoginActivity extends Activity{
                         if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
                         JSONObject regObject = new JSONObject();
                         regObject.put("online_status", "online");
+                        regObject.put("ios_token", JSONObject.NULL);
                         JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
                         res = true;
                     }
