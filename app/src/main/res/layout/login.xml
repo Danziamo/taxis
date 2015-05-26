@@ -117,7 +117,7 @@
         <TextView
             style="@style/TextTitle"
             android:text="Забыли пароль?"
-            android:id="@+id/textViewForgetPassword"
+            android:id="@+id/textViewForgotPassword"
             android:layout_above="@+id/btnSignUp"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp" />

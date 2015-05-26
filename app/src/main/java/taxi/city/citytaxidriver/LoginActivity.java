@@ -75,7 +75,7 @@ public class LoginActivity extends Activity{
         // Set up the login form.
         mPhoneView = (EditText) findViewById(R.id.login_phone);
         mPhoneExtraView = (TextView) findViewById(R.id.textViewPhoneExtra);
-        mForgotPassword = (TextView) findViewById(R.id.textViewForgetPassword);
+        mForgotPassword = (TextView) findViewById(R.id.textViewForgotPassword);
         mPasswordView = (EditText) findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -133,6 +133,7 @@ public class LoginActivity extends Activity{
                             etPhone.setError("Неправильный формат");
                         }
                         forgotPassword(forgotPhone);
+
                         dialog.dismiss();
                     }
                 });

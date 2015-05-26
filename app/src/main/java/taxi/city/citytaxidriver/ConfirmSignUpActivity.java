@@ -154,11 +154,22 @@ public class ConfirmSignUpActivity extends BaseActivity {
     }
 
     private void Finish() {
-        if (isSignUp) {
+        /*if (isSignUp) {
             Intent intent = new Intent(this, CarDetailsActivity.class);
             intent.putExtra("NEW", true);
             startActivity(intent);
-        }
-        finish();
+        }*/
+        new SweetAlertDialog(ConfirmSignUpActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Успешно")
+                .setContentText(null)
+                .setConfirmText("Ок")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                        finish();
+                    }
+                })
+                .show();
     }
 }

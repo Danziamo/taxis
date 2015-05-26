@@ -230,7 +230,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        showProgress(true);
+        showProgress(true, "Сохранение");
         mUpdateTask = new CarUpdateTask(carJSON, userJSON);
         mUpdateTask.execute((Void) null);
     }
@@ -272,7 +272,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
         @Override
         protected void onPostExecute(final JSONObject result) {
-            showProgress(false);
+            showProgress(false, null);
             mUpdateTask = null;
             int statusCode = -1;
             try {
@@ -338,6 +338,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         @Override
         protected void onPostExecute(final JSONArray result) {
             mFetchTask = null;
+            showProgress(false, null);
             if (result != null) {
                 if (isModel) {
                     FillBrandCarModelSpinnerArray(result);
@@ -360,6 +361,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
+        showProgress(true, "Загрузка");
         mFetchTask = new FetchCarBrandTask(false);
         mFetchTask.execute((Void) null);
     }
@@ -416,6 +418,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        if (getActivity() == null || list == null) return;
         ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -437,12 +441,12 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         carBrandSpinner.setSelection(position);
     }
 
-    public void showProgress(final boolean show) {
+    public void showProgress(final boolean show, String message) {
         if (show) {
             pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper()
                     .setBarColor(Color.parseColor("#A5DC86"));
-            pDialog.setTitleText("Сохранение");
+            pDialog.setTitleText(message);
             pDialog.setCancelable(true);
             pDialog.show();
         } else {
