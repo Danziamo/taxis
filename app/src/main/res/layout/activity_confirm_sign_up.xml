@@ -28,7 +28,7 @@
             android:textSize="25sp"
             android:textColor="@color/white"
             android:text="Авторизация"
-            android:id="@+id/textViewCarRegistration"
+            android:id="@+id/textViewTitle"
             android:layout_marginTop="10dp" />
 
         <RelativeLayout

@@ -327,7 +327,7 @@
         android:layout_centerHorizontal="true">
 
         <Button
-            style="@style/mediumButton.Green"
+            style="@style/mediumButton.Blue"
             android:background="@drawable/button_shape_azure"
             android:text="Доставил"
             android:layout_weight="1"
@@ -335,7 +335,7 @@
             android:layout_marginRight="10dp"/>
 
         <Button
-            style="@style/mediumButton.Green"
+            style="@style/mediumButton.Blue"
             android:background="@drawable/button_shape_azure"
             android:text="На карте"
             android:id="@+id/buttonMap"

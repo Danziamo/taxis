@@ -91,6 +91,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Order order = Order.getInstance();
     ApiService api = ApiService.getInstance();
     GlobalParameters gp = GlobalParameters.getInstance();
+    private ArrayList<Marker> userMarkers = new ArrayList<>();
     User user;
 
     Location prev;
@@ -293,8 +294,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void SetLocationRequest() {
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(20)
-                .setInterval(10000)        // 10 seconds, in milliseconds
+                .setSmallestDisplacement(15)
+                .setInterval(1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1000); // 1 second, in milliseconds
     }
 
@@ -377,7 +378,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             llMain.setVisibility(View.GONE);
         } else {
             if (order.status == OStatus.ACCEPTED) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnOkAction.setText("На месте");
                 btnSOS.setVisibility(View.INVISIBLE);
                 btnInfo.setText("Доп. инфо");
@@ -386,7 +387,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnWait.setVisibility(View.INVISIBLE);
                 llButtonTop.setVisibility(View.VISIBLE);
             } else if (order.status == OStatus.WAITING) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnOkAction.setText("На борту");
                 btnSOS.setVisibility(View.INVISIBLE);
                 btnInfo.setText("Доп. инфо");
@@ -395,7 +396,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnWait.setVisibility(View.INVISIBLE);
                 llButtonTop.setVisibility(View.VISIBLE);
             } else if (order.status == OStatus.PENDING) {
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnOkAction.setText("Доставил");
                 btnSOS.setVisibility(View.VISIBLE);
                 btnInfo.setText("Доп. инфо");
@@ -408,7 +409,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnWait.setVisibility(View.VISIBLE);
                 btnWait.setText("Ожидание");
                 btnInfo.setText("Доп. инфо");
-                btnOkAction.setBackgroundResource(R.drawable.button_shape_azure);
+                btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnOkAction.setText("Доставил");
                 btnSOS.setVisibility(View.VISIBLE);
                 btnSettingsCancel.setText("Настройки");
@@ -872,7 +873,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 String travelTime = Helper.getTimeFromLong(order.time, order.status);
                 data.put("status", status);
                 data.put("driver", driver);
-                data.put("order_sum", status == OStatus.NEW ? 0 : order.getTotalSum());
+                data.put("order_sum", status == OStatus.NEW ? 0 : order.getTravelSum());
                 data.put("wait_time_price", status == OStatus.NEW ? 0 : order.getWaitSum());
                 data.put("address_stop", status == OStatus.NEW ? JSONObject.NULL : Helper.getFormattedLatLng(order.endPoint));
                 data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
@@ -985,6 +986,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void displayUsersOnMap(JSONArray usersList) {
         if (usersList.length() < 0) return;
+        cleanMapFromMarkers();
 
         LatLng userLocation = null;
         OStatus userStatus = null;
@@ -993,35 +995,46 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         for (int i = 0; i < usersList.length(); ++i) {
             try {
-                JSONObject user = usersList.getJSONObject(i);
-                userStatus = Helper.getStatus(user.getString("status"));
-                userLocation = userStatus == OStatus.NEW ? Helper.getLatLng(user.getString("address_start")) :
-                        Helper.getLatLng(user.getString("address_stop"));
-                address = user.getString("address_start_name");
+                JSONObject userJson = usersList.getJSONObject(i);
+                userStatus = Helper.getStatus(userJson.getString("status"));
+                userLocation = userStatus == OStatus.NEW ? Helper.getLatLng(userJson.getString("address_start")) :
+                        Helper.getLatLng(userJson.getString("address_stop"));
+                address = userJson.getString("address_start_name");
 
-                phone = user.getJSONObject("driver").getString("phone");
+                phone = userJson.getJSONObject("driver").getString("phone");
                 if (userLocation == null) continue;
 
-                if (userStatus == OStatus.SOS) {
-                    mMap.addMarker(new MarkerOptions()
+                if (userStatus == OStatus.SOS && !phone.equals(user.phone)) {
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(userLocation)
                             .title(phone)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    userMarkers.add(marker);
                 } /*else if (order.id == 0) {
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(userLocation)
                             .title(address)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
+                            userMarkers.add(marker);
                 }*/
             } catch (JSONException ignored) {}
         }
 
         if (order.id != 0 && order.clientPhone != null && order.startPoint != null) {
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(order.startPoint)
                     .title(order.clientPhone)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
+            userMarkers.add(marker);
         }
+    }
+
+    private void cleanMapFromMarkers() {
+        for (int i = 0; i < userMarkers.size() ; i++){
+            Marker marker = userMarkers.get(i);
+            marker.remove();
+        }
+        userMarkers.clear();
     }
 
     public void showProgress(final boolean show) {

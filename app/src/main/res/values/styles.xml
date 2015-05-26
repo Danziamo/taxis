@@ -45,7 +45,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="mediumButton.Green" parent="@style/mediumButton">
+    <style name="mediumButton.Blue" parent="@style/mediumButton">
         <item name="android:background">@drawable/button_shape_azure</item>
     </style>
 

@@ -78,7 +78,7 @@ public class Client implements Serializable{
         object.put("wait_time", this.waitTime);
         object.put("order_travel_time", this.time);
         object.put("order_sum", this.sum);
-        object.put("distance", this.distance);
+        object.put("order_distance", this.distance);
         return object;
     }
 }

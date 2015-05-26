@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -40,9 +41,15 @@ public class ConfirmSignUpActivity extends BaseActivity {
     private void Initialize() {
         mActivationCode = (EditText) findViewById(R.id.etActivationCode);
         mPasswordField = (EditText) findViewById(R.id.etActivationPassword);
-        if (isSignUp) mPasswordField.setVisibility(View.INVISIBLE);
-
+        TextView tvTitle = (TextView) findViewById(R.id.textViewTitle);
         Button btn = (Button) findViewById(R.id.btnActivate);
+
+        if (isSignUp) {
+            mPasswordField.setVisibility(View.INVISIBLE);
+        } else {
+            tvTitle.setText("Восстановление пароля");
+            btn.setText("Подтвердить");
+        }
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

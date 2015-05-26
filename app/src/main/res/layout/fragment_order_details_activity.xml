@@ -151,7 +151,7 @@
             android:visibility="invisible" />
 
         <Button
-            style="@style/mediumButton.Green"
+            style="@style/mediumButton.Blue"
             android:text="На карте"
             android:id="@+id/buttonMapInfo"
             android:layout_marginLeft="15dp" />
@@ -168,7 +168,7 @@
         android:layout_margin="10dp">
 
         <Button
-            style="@style/mediumButton.Green"
+            style="@style/mediumButton.Blue"
             android:text="На месте"
             android:id="@+id/buttonActionOk"
             android:layout_marginRight="15dp" />

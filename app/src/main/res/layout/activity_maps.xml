@@ -200,12 +200,12 @@
 
                 <Button
                     android:id="@+id/buttonWaitTrip"
-                    style="@style/mediumButton.Green"
+                    style="@style/mediumButton.Black"
                     android:layout_margin="10dp"/>
 
                 <Button
                     android:id="@+id/buttonAdditionalInfo"
-                    style="@style/mediumButton.Green"
+                    style="@style/mediumButton.Black"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>
@@ -220,12 +220,12 @@
 
                 <Button
                     android:id="@+id/buttonStartAction"
-                    style="@style/mediumButton.Green"
+                    style="@style/mediumButton.Black"
                     android:layout_margin="10dp"/>
 
                 <Button
                     android:id="@+id/buttonDeclineSettings"
-                    style="@style/mediumButton.Red"
+                    style="@style/mediumButton.Black"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>
