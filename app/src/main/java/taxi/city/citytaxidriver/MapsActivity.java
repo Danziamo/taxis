@@ -881,7 +881,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("order_travel_time", travelTime);
                 JSONObject checkObject = api.getRequest(null, "orders/" + mOrderId + "/");
 
-                if (checkObject != null && checkObject.getInt("status_code") == HttpStatus.SC_OK) {
+                if (Helper.isSuccess(checkObject)) {
                     String checkStatus = checkObject.getString("status");
                     if (checkStatus == null || checkStatus.equals(OStatus.CANCELED.toString())) {
                         checkObject.put("status_code", 999);
@@ -902,7 +902,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             sendTask = null;
             showProgress(false);
             try {
-                if (result != null && result.getInt("status_code") == HttpStatus.SC_OK) {
+                if (Helper.isSuccess(result)) {
                     Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
                     if (status == OStatus.FINISHED || status == OStatus.NEW) {
                         Helper.destroyOrderPreferences(MapsActivity.this, user.id);

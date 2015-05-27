@@ -5,6 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class User implements Serializable {
 
@@ -55,10 +57,26 @@ public class User implements Serializable {
         String ratingSumString = json.getJSONObject("rating").getString("votes__sum");
         double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
         int ratingCount = json.getJSONObject("rating").getInt("votes__count");
-        this.rating = ratingCount == 0 ? 0 : (int)Math.round(ratingSum/ratingCount);
+        this.rating = ratingCount == 0 ? 0 : round(ratingSum/ratingCount, 1);
         JSONArray car = json.getJSONArray("cars");
         if (car.length() > 0) {
             this.car = new Car(car.getJSONObject(0));
+        }
+    }
+
+    private double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public void setRating(double a, double b) {
+        if (b == 0) {
+            this.rating = 0;
+        } else {
+            this.rating = round(a/b, 1);
         }
     }
 

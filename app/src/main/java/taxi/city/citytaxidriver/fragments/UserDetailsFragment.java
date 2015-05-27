@@ -191,7 +191,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             return;
         }
 
-        if (phone.length() != 13) {
+        if (isNew && phone.length() != 13) {
             etPhone.setError("Телефон должен состоять из 13 символов");
             etPhone.requestFocus();
             return;
@@ -210,11 +210,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             json.put("email", email.length() == 0 ? JSONObject.NULL : email);
             json.put("date_of_birth", dob);
             json.put("password", password);
-            if (isNew) {
-                //json.put("role", "driver");
-                json.put("phone", phone);
-                //json.put("activation_code", "11111");
-            }
+            if (isNew) json.put("phone", phone);
         } catch (JSONException e)  {
             e.printStackTrace();
         }

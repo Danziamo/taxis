@@ -69,12 +69,14 @@
         <activity
             android:name=".MapsActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/MainTheme" >
         </activity>
         <activity
             android:name=".OrderActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity

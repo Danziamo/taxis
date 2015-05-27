@@ -118,7 +118,7 @@ public class AccountFragment extends Fragment {
         String ratingSumString = object.getJSONObject("rating").getString("votes__sum");
         double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
         int ratingCount = object.getJSONObject("rating").getInt("votes__count");
-        user.rating = ratingCount == 0 ? 0 : (int)Math.round(ratingSum/ratingCount);
+        user.setRating(ratingSum, (double)ratingCount);
         ratingBar.setRating((float)user.rating);
         tvRating.setText(getRatingText(user.rating));
     }
