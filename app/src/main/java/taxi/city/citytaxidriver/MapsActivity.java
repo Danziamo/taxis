@@ -448,7 +448,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onStart() {
         super.onStart();
-        if (order != null && order.id != 0)
+        updateViews();
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
@@ -541,7 +541,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onResume() {
         super.onResume();
-        if (order != null && order.id != 0)
         updateViews();
         setUpMapIfNeeded();
         if (mMap != null && order != null && order.startPoint != null && order.clientPhone != null) {
@@ -710,7 +709,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void goToFinishOrderDetails() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
         Client client = new Client(order, user.id, true);
-        client.distance = df.format(order.distance);
+        client.distance = String.valueOf(Helper.round(order.distance, 2));
         intent.putExtra("DATA", client);
         startActivity(intent);
     }
@@ -718,7 +717,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void EndTrip() {
         Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
         Client client = new Client(order, user.id, true);
-        client.distance = df.format(order.distance);
+        client.distance = String.valueOf(Helper.round(order.distance, 2));
         intent.putExtra("DATA", client);
         startActivityForResult(intent, FINISH_ORDER_ID);
     }
@@ -877,7 +876,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("wait_time_price", status == OStatus.NEW ? 0 : order.getWaitSum());
                 data.put("address_stop", status == OStatus.NEW ? JSONObject.NULL : Helper.getFormattedLatLng(order.endPoint));
                 data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
-                data.put("order_distance", (double) Math.round(order.distance * 100) / 100);
+                data.put("order_distance", Helper.round(order.distance, 2));
                 data.put("order_travel_time", travelTime);
                 JSONObject checkObject = api.getRequest(null, "orders/" + mOrderId + "/");
 
