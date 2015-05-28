@@ -228,8 +228,8 @@ public class ApiService {
             request.addHeader("content-type", "application/json");
             //request.addHeader("Authorization", "Token " + this.token);
 
-            StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
-            request.setEntity(params);
+            /*StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
+            request.setEntity(params);*/
 
             // Execute HTTP Post Request
             HttpResponse response = httpClient.execute(request);
