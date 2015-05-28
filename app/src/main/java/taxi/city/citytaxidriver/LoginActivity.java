@@ -170,7 +170,7 @@ public class LoginActivity extends Activity{
 
     private void signUp() {
         Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra("SIGNUP", true);
+        intent.putExtra("NEW", true);
         startActivity(intent);
     }
 

@@ -284,7 +284,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 if (object.has("token")) ApiService.getInstance().setToken(object.getString("token"));
             } catch (JSONException ignored) {}
             Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
-            intent.putExtra("NEW", true);
+            intent.putExtra("SIGNUP", true);
             startActivity(intent);
             getActivity().finish();
         }
