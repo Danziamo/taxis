@@ -126,7 +126,10 @@ public class ConfirmSignUpActivity extends BaseActivity {
             if (isSignUp) {
                 return ApiService.getInstance().activateRequest(json, "activate/");
             } else {
-                return ApiService.getInstance().putRequest(json, "reset_password/");
+                String uri = "?phone=" + User.getInstance().phone
+                        + "&password=" + (mPassword)
+                        + "&activation_code=" + mCode;
+                return ApiService.getInstance().putRequest(null, "reset_password/" + uri.replace("+", "%2b"));
             }
         }
 
@@ -135,7 +138,7 @@ public class ConfirmSignUpActivity extends BaseActivity {
             task = null;
             showProgress(false);
             try {
-                if (Helper.isSuccess(result)) {
+                if (Helper.isSuccess(result) && result.has("detail") && result.getString("detail").toLowerCase().equals("ok")) {
                     User.getInstance().setUser(result);
                     Finish();
                 } else {
