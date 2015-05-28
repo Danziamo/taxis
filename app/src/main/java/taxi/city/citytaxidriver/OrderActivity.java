@@ -54,8 +54,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         }
         limit = 10;
 
-        Intent intent = getIntent();
-        isNew = intent.getExtras().getBoolean("NEW", false);
+        isNew = true;
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {

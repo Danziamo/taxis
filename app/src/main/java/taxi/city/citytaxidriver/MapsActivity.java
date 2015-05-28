@@ -69,7 +69,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    String SENDER_ID = "226704465596";
+    String SENDER_ID = "363431602762";
     String mRegId;
     GoogleCloudMessaging gcm;
 
