@@ -29,8 +29,8 @@ import java.util.Map;
 
 public class ApiService {
     private static final String url = "http://81.88.192.37/api/v1/";
-    private static final int CONNECTION_TIMEOUT = 5000;
-    private static final int SOCKET_TIMEOUT = 10000;
+    private static final int CONNECTION_TIMEOUT = 20000;
+    private static final int SOCKET_TIMEOUT = 20000;
     private String token;
 
     private static ApiService mInstance = null;
