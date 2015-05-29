@@ -138,9 +138,15 @@ public class ConfirmSignUpActivity extends BaseActivity {
             task = null;
             showProgress(false);
             try {
-                if (Helper.isSuccess(result) && result.has("detail") && result.getString("detail").toLowerCase().equals("ok")) {
-                    //User.getInstance().setUser(result);
-                    Finish();
+                if (Helper.isSuccess(result)) {
+                    if (isSignUp) {
+                        User.getInstance().setUser(result);
+                        Finish();
+                    } else if (result.has("detail") && result.getString("detail").toLowerCase().equals("ok")) {
+                        Finish();
+                    } else {
+                        Toast.makeText(ConfirmSignUpActivity.this, "Не удалось активировать пользователя", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(ConfirmSignUpActivity.this, "Не удалось активировать пользователя", Toast.LENGTH_LONG).show();
                 }
