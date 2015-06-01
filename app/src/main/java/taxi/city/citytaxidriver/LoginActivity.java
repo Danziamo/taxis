@@ -388,13 +388,21 @@ public class LoginActivity extends Activity{
         }
 
         @Override
-        protected void onPostExecute(final JSONObject object) {
+        protected void onPostExecute(final JSONObject result) {
             mForgotTask = null;
             showProgress(false);
-            Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
-            intent.putExtra("SIGNUP", false);
-            user.phone = mPhone;
-            startActivity(intent);
+            try {
+                if (Helper.isSuccess(result)) {
+                    Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
+                    intent.putExtra("SIGNUP", false);
+                    user.phone = mPhone;
+                    startActivity(intent);
+                } else if (Helper.isBadRequest(result)) {
+                    Toast.makeText(LoginActivity.this, "Такого номера не существует", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Сервис не доступен", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException ignored) {}
         }
 
         @Override
