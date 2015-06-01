@@ -45,7 +45,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
     private EditText etDoB;
     private TextView tvTitle;
     private EditText etPassword;
-    private EditText etEmail;
+    //private EditText etEmail;
     private boolean isNew = false;
 
     private SweetAlertDialog pDialog;
@@ -76,7 +76,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         etLastName = (EditText)rootView.findViewById(R.id.editTextLastName);
         etFirstName = (EditText)rootView.findViewById(R.id.editTextFirstName);
-        etEmail = (EditText)rootView.findViewById(R.id.editTextEmail);
+        //etEmail = (EditText)rootView.findViewById(R.id.editTextEmail);
         etPhone = (EditText) rootView.findViewById(R.id.textViewPhone);
         etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
         etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
@@ -109,7 +109,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etLastName.setText(user.lastName);
             etFirstName.setText(user.firstName);
             etPassword.setText(user.password);
-            etEmail.setText(user.email);
+            //etEmail.setText(user.email);
             etDoB.setText(user.dob == null || user.dob.equals("null") ? null : user.dob);
             String extra = user.phone.substring(0, 4);
             String phone = user.phone.substring(4);
@@ -170,26 +170,26 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         String lastName = etLastName.getText().toString();
         String phone = etPhoneExtra.getText().toString() + etPhone.getText().toString();
         String password = etPassword.getText().toString();
-        String email = etEmail.getText().toString();
+        //String email = etEmail.getText().toString();
         String dob = etDoB.getText().toString();
 
-        if (firstName == null || firstName.length() < 2) {
+        if (firstName.length() < 2) {
             etFirstName.setError("Имя неправильно задано");
             etFirstName.requestFocus();
             return;
         }
 
-        if (lastName == null || lastName.length() < 2) {
+        if (lastName.length() < 2) {
             etLastName.setError("Фамилия неправильно задано");
             etLastName.requestFocus();
             return;
         }
 
-        if (email != null && email.length() > 0 && !Helper.isValidEmailAddress(email)) {
+        /*if (email.length() > 0 && !Helper.isValidEmailAddress(email)) {
             etEmail.setError("Email неправильно задан");
             etEmail.requestFocus();
             return;
-        }
+        }*/
 
         if (isNew && phone.length() != 13) {
             etPhone.setError("Телефон должен состоять из 13 символов");
@@ -207,8 +207,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         try {
             json.put("first_name", firstName);
             json.put("last_name", lastName);
-            json.put("email", email.length() == 0 ? JSONObject.NULL : email);
-            json.put("date_of_birth", dob);
+            //json.put("email", email.length() == 0 ? JSONObject.NULL : email);
+            json.put("date_of_birth", dob.length() == 0 ? JSONObject.NULL : dob);
             json.put("password", password);
             if (isNew) json.put("phone", phone);
         } catch (JSONException e)  {
@@ -276,7 +276,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         user.firstName = etFirstName.getText().toString();
         user.lastName = etLastName.getText().toString();
         user.password = etPassword.getText().toString();
-        user.email = etEmail.getText().toString();
+        //user.email = etEmail.getText().toString();
         user.dob = etDoB.getText().toString();
         if (isNew) {
             try {
