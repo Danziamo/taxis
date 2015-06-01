@@ -662,6 +662,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void makeSos() {
         order.sosStartTime = System.currentTimeMillis()/1000;
         sosDialog.show();
+        SendPostRequest(OStatus.SOS, order.id);
     }
 
     private void cancelOrder() {
