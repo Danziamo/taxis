@@ -132,7 +132,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 Helper.saveOrderPreferences(MapsActivity.this, order);
                 if (seconds % 30 < 1) {
                     OStatus status = order.status;
-                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 1) {
+                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 3) {
                         status = OStatus.SOS;
                     } else {
                         order.sosStartTime = 0;
@@ -194,9 +194,16 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         user = User.getInstance();
 
-        if (User.getInstance() == null || User.getInstance().id == 0) {
+        if (user == null || user.id == 0) {
             Helper.getUserPreferences(this);
             ApiService.getInstance().setToken(User.getInstance().getToken());
+            if (user == null || user.id == 0) {
+                Toast.makeText(getApplicationContext(), "Сессия вышла, пожалуйста перезайдите", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
         }
         Helper.getOrderPreferences(this, user.id);
         setUpMapIfNeeded();
@@ -449,6 +456,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     protected void onStart() {
         super.onStart();
         updateViews();
+        getUsersLocation();
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
