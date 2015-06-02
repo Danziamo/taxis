@@ -77,6 +77,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
 
+    private static final int SOS_DURATION = 10 * 60; //minutes
+
     private SendPostRequestTask sendTask;
     private GetUsersLocationTask locationTask;
 
@@ -132,7 +134,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 Helper.saveOrderPreferences(MapsActivity.this, order);
                 if (seconds % 30 < 1) {
                     OStatus status = order.status;
-                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= 60 * 3) {
+                    if (order.sosStartTime != 0 && (long)seconds - order.sosStartTime <= SOS_DURATION) {
                         status = OStatus.SOS;
                     } else {
                         order.sosStartTime = 0;
@@ -443,6 +445,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         order.sum = order.tariffInfo.startPrice;
         order.waitTime = 0;
         resetTimer();
+        tvFeeTime.setText(null);
+        tvDistance.setText(null);
+        tvTime.setText(null);
+        tvTotalSum.setText(null);
 
         updateLabels();
     }
