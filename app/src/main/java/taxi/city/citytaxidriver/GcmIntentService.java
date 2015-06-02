@@ -53,7 +53,7 @@ public class GcmIntentService extends IntentService {
                     }
                 }
                 // Post notification of received message.
-                //sendNotification("Received: " + extras.toString());
+                //sendNotification("Received: " + extras.toString())
                 sendNotification(extras.getString("message"));
             }
         }
@@ -68,6 +68,7 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        if (msg == null || msg.length() == 0) return;
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, msg.toLowerCase().contains("новый") ? OrderActivity.class : MapsActivity.class), 0);
 

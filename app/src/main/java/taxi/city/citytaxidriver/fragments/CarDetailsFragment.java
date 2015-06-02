@@ -307,6 +307,10 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
             mUser.car.modelId = mModel.id;
             mUser.car.modelName = mModel.name;
+            mUser.car.color = etCarColor.getText().toString();
+            mUser.car.number = etCarNumber.getText().toString();
+            mUser.car.technicalCertificate = etTechPassport.getText().toString();
+            mUser.car.year = etCarYear.getText().toString();
         }
         if (isNew) {
             Intent intent = new Intent(getActivity(), MapsActivity.class);
