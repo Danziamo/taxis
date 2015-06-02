@@ -253,6 +253,12 @@ public class Helper {
         editor.apply();
     }
 
+    public static void clearUserPreferences(Context context) {
+        settings = context.getSharedPreferences(USER_PREFS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear().apply();
+    }
+
     public static void getOrderPreferences(Context context, int id) {
         if (id == 0) return;
         settings = context.getSharedPreferences(ORDER_PREFS + String.valueOf(id), 0);
