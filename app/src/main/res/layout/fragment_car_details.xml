@@ -44,6 +44,7 @@
                 style="@style/mediumEditText"
                 android:id="@+id/spinnerCarColor"
                 android:hint="Цвет"
+                android:imeOptions="actionNext"
                 android:textSize="16sp"
                 android:inputType="text" />
 
@@ -51,6 +52,7 @@
                 style="@style/mediumEditText"
                 android:id="@+id/editTextCarYear"
                 android:hint="Год машины"
+                android:imeOptions="actionNext"
                 android:padding="5dp"
                 android:textSize="16sp"
                 android:inputType="number" />
@@ -58,6 +60,7 @@
             <EditText
                 style="@style/mediumEditText"
                 android:hint="Серия и номер тех паспорта"
+                android:imeOptions="actionNext"
                 android:id="@+id/editTextTechPassport"
                 android:textSize="16sp"
                 android:inputType="text" />
@@ -66,6 +69,7 @@
                 style="@style/mediumEditText"
                 android:hint="Номер автомобиля"
                 android:id="@+id/editTextCarNumber"
+                android:imeOptions="actionNext"
                 android:textSize="16sp"
                 android:inputType="text" />
 
@@ -79,6 +83,7 @@
                 <EditText
                     style="@style/SmallEditText"
                     android:hint="Серия"
+                    android:imeOptions="actionNext"
                     android:layout_marginRight="@dimen/spacing_tiny"
                     android:id="@+id/editTextDriverLicenseSeries"
                     android:textSize="16sp"
@@ -87,6 +92,7 @@
                 <EditText
                     style="@style/ShortEditText"
                     android:hint="и номер прав"
+                    android:imeOptions="actionNext"
                     android:textColorHint="@color/blacktext1"
                     android:textSize="16sp"
                     android:id="@+id/editTextDriverLicenseNumber"
@@ -104,6 +110,7 @@
                 <EditText
                     style="@style/SmallEditText"
                     android:hint="Серия"
+                    android:imeOptions="actionNext"
                     android:layout_marginRight="@dimen/spacing_tiny"
                     android:id="@+id/editTextPassportSeries"
                     android:textSize="16sp"
@@ -111,6 +118,7 @@
 
                 <EditText
                     style="@style/ShortEditText"
+                    android:imeOptions="actionDone"
                     android:hint="и номер паспортных данных"
                     android:id="@+id/editTextPassportNumber"
                     android:textSize="16sp"

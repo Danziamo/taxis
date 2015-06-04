@@ -25,12 +25,14 @@
         <EditText
             style="@style/mediumEditText"
             android:hint="Фамилия"
+            android:imeOptions="actionNext"
             android:id="@+id/editTextLastName"
             android:inputType="text"
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText
             style="@style/mediumEditText"
+            android:imeOptions="actionNext"
             android:hint="Имя"
             android:id="@+id/editTextFirstName"
             android:inputType="text"
@@ -48,6 +50,7 @@
         <EditText
             style="@style/mediumEditText"
             android:hint="Дата рождения"
+            android:imeOptions="actionNext"
             android:id="@+id/editTextDoB"
             android:inputType="date"
             android:layout_marginTop="@dimen/spacing_tiny"
@@ -72,6 +75,7 @@
             <EditText
                 style="@style/ShortEditText"
                 android:hint="Телефон"
+                android:imeOptions="actionNext"
                 android:id="@+id/textViewPhone"
                 android:inputType="number"/>
         </LinearLayout>
@@ -86,6 +90,7 @@
             <EditText
                 style="@style/mediumEditText"
                 android:hint="Пароль"
+                android:imeOptions="actionDone"
                 android:layout_marginTop="0dp"
                 android:id="@+id/editTextPassword"
                 android:inputType="textPassword" />
