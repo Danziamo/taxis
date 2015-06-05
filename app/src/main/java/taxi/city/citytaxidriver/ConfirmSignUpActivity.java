@@ -143,6 +143,7 @@ public class ConfirmSignUpActivity extends BaseActivity {
                         User.getInstance().setUser(result);
                         Finish();
                     } else if (result.has("detail") && result.getString("detail").toLowerCase().equals("ok")) {
+                        //User.getInstance().setUser(result);
                         Finish();
                     } else {
                         Toast.makeText(ConfirmSignUpActivity.this, "Не удалось активировать пользователя", Toast.LENGTH_LONG).show();
@@ -163,11 +164,19 @@ public class ConfirmSignUpActivity extends BaseActivity {
     }
 
     private void Finish() {
-        /*if (isSignUp) {
-            Intent intent = new Intent(this, CarDetailsActivity.class);
-            intent.putExtra("NEW", true);
-            startActivity(intent);
-        }*/
+        if (isSignUp) {
+            if (User.getInstance().car != null) {
+                Intent intent = new Intent(this, CarDetailsActivity.class);
+                intent.putExtra("NEW", true);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.putExtra("finish", true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                startActivity(intent);
+            }
+        }
+
         new SweetAlertDialog(ConfirmSignUpActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("Успешно")
                 .setContentText(null)

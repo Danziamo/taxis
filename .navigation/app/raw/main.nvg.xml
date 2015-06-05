@@ -14,10 +14,26 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.UserDetailsActivity"/>
+      <point      
+        x = "-244"      
+        y = "2452"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.FinishOrderDetailsActivity"/>
+      <point      
+        x = "1460"      
+        y = "2796"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
         className = "taxi.city.citytaxidriver.LoginActivity"/>
       <point      
-        x = "550"      
-        y = "2170"/>
+        x = "2340"      
+        y = "2048"/>
     </statePointEntry>
     <statePointEntry>
       <state      
@@ -29,11 +45,35 @@
     </statePointEntry>
     <statePointEntry>
       <state      
-        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "taxi.city.citytaxidriver.ConfirmSignUpActivity"/>
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "taxi.city.citytaxidriver.GarajActivity"/>
       <point      
-        x = "700"      
-        y = "2320"/>
+        x = "1768"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.GarajActivity"/>
+      <point      
+        x = "500"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.SplashScreen"/>
+      <point      
+        x = "1364"      
+        y = "408"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.CarDetailsActivity"/>
+      <point      
+        x = "348"      
+        y = "1488"/>
     </statePointEntry>
     <statePointEntry>
       <state      
@@ -46,6 +86,14 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "taxi.city.citytaxidriver.ConfirmSignUpActivity"/>
+      <point      
+        x = "3412"      
+        y = "2044"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
         className = "taxi.city.citytaxidriver.SignUpActivity"/>
       <point      
         x = "750"      
@@ -54,10 +102,10 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "taxi.city.citytaxidriver.OrderActivity"/>
+        className = "taxi.city.citytaxidriver.MapsActivity"/>
       <point      
-        x = "800"      
-        y = "2420"/>
+        x = "500"      
+        y = "100"/>
     </statePointEntry>
     <statePointEntry>
       <state      
@@ -70,18 +118,18 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "taxi.city.citytaxidriver.MapsActivity"/>
+        className = "taxi.city.citytaxidriver.OrderActivity"/>
       <point      
-        x = "500"      
-        y = "100"/>
+        x = "2212"      
+        y = "724"/>
     </statePointEntry>
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
         className = "taxi.city.citytaxidriver.OrderDetailsActivity"/>
       <point      
-        x = "850"      
-        y = "2470"/>
+        x = "3572"      
+        y = "732"/>
     </statePointEntry>
   </locations>
 </navigationModel>

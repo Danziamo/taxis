@@ -27,7 +27,7 @@
             android:gravity="center"
             android:textSize="25sp"
             android:textColor="@color/white"
-            android:text="Авторизация"
+            android:text="Активация"
             android:id="@+id/textViewTitle"
             android:layout_marginTop="10dp" />
 
@@ -45,6 +45,7 @@
                 android:background="@drawable/textbox_background"
                 android:textColor="@color/blacktext2"
                 android:hint="Код авторизации"
+                android:inputType="number"
                 android:textColorHint="@color/blacktext1"
                 android:paddingRight="9dp"
                 android:paddingTop="1dp"
@@ -62,6 +63,7 @@
                 android:background="@drawable/textbox_background"
                 android:textColor="@color/blacktext2"
                 android:hint="Новый пароль"
+                android:inputType="textPassword"
                 android:textColorHint="@color/blacktext1"
                 android:paddingRight="9dp"
                 android:paddingTop="1dp"

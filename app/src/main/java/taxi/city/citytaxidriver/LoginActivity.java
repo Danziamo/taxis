@@ -312,8 +312,7 @@ public class LoginActivity extends Activity{
                         user.setUser(object);
                         Helper.saveUserPreferences(LoginActivity.this, user);
                         id = object.getInt("id");
-                        JSONObject cars = api.getArrayRequest(null, "usercars/?driver=" + user.id);
-                        if (Helper.isSuccess(cars) && cars.has("result") && cars.getJSONArray("result").length() > 0) hasCar = true;
+                        if (object.has("cars") && object.getJSONArray("cars").length() > 0) hasCar = true;
                         JSONObject regObject = new JSONObject();
                         regObject.put("online_status", "online");
                         regObject.put("role", "driver");
@@ -335,8 +334,8 @@ public class LoginActivity extends Activity{
             showProgress(false);
             if (success && statusCode == 200) {
                 NextActivity(hasCar);
-            } else  if (statusCode == 403) {
-                if (detail != null && detail.contains("Account")) {
+            } else  if (Helper.isBadRequest(statusCode)) {
+                if (detail != null && detail.toLowerCase().contains("account")) {
                     goToActivation();
                 } else {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));

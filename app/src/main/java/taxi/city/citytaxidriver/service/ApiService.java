@@ -70,7 +70,6 @@ public class ApiService {
 
             // Execute HTTP Post Request
             HttpResponse response = httpClient.execute(request);
-            int statusCode = response.getStatusLine().getStatusCode();
 
             res = parseData(response);
 

@@ -119,6 +119,17 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPhoneExtra.setEnabled(false);
         }
 
+        etDoB.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    datePickerDialog.show();
+                } else {
+                    datePickerDialog.hide();
+                }
+            }
+        });
+
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
         btnBack.setVisibility(isNew ? View.VISIBLE : View.GONE);
@@ -154,9 +165,9 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             case R.id.buttonSave:
                 updateTask();
                 break;
-            case R.id.editTextDoB:
+            /*case R.id.editTextDoB:
                 datePickerDialog.show();
-                break;
+                break;*/
             default:
                 getActivity().finish();
                 break;
