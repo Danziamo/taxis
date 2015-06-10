@@ -1,5 +1,7 @@
 package taxi.city.citytaxidriver.service;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -9,6 +11,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
+
+import taxi.city.citytaxidriver.App;
+import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.requestMethods.HttpPatch;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -28,13 +33,16 @@ import java.util.Map;
 
 
 public class ApiService {
-    private static final String url = "http://81.88.192.37/api/v1/";
+    //private static final String url = "http://81.88.192.37/api/v1/";
+    private String url = "";
     private static final int CONNECTION_TIMEOUT = 20000;
     private static final int SOCKET_TIMEOUT = 20000;
     private String token;
 
     private static ApiService mInstance = null;
     private ApiService() {
+        Context ctx = App.getContext();
+        this.url = ctx.getResources().getString(R.string.api_url_path);
         this.token = "";
     }
 

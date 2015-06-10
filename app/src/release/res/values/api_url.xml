@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_url_path">
+        http://81.88.192.37/api/v1/
+    </string>
+</resources>

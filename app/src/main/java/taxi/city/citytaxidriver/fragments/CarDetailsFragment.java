@@ -25,6 +25,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.MapsActivity;
+import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.CarEntity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
@@ -177,13 +178,13 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        if (techPassport.length() < 6 || techPassport.length() > 10) {
+        /*if (techPassport.length() > 10) {
             etTechPassport.setError("Неверно задано");
             etTechPassport.requestFocus();
             return;
-        }
+        }*/
 
-        if (carNumber.length() < 6) {
+        if (carNumber.length() < 6 || carNumber.length() > 10) {
             etCarNumber.setError("Неверно задано");
             etCarNumber.requestFocus();
             return;
@@ -202,24 +203,13 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
 
         try {
-            /*JSONObject brandJson = new JSONObject();
-            brandJson.put("id", carBrand.id);
-            brandJson.put("brand_name", carBrand.name);
-
-            JSONObject modelJson = new JSONObject();
-            modelJson.put("id", carBrandModel.id);
-            modelJson.put("brand_model_name", carBrandModel.name);
-            modelJson.put("car_brand", brandJson);*/
-
             carJSON.put("driver", mUser.id);
             carJSON.put("brand", carBrand.id);
             carJSON.put("brand_model", carBrandModel.id);
-            /*carJSON.put("brand", brandJson);
-            carJSON.put("brand_model", modelJson);*/
             carJSON.put("car_number", carNumber);
             carJSON.put("year", year);
             carJSON.put("color", color);
-            carJSON.put("technical_certificate", techPassport);
+            carJSON.put("technical_certificate", techPassport.length() == 0 ? JSONObject.NULL : techPassport);
             userJSON.put("passport_number", passportNumber);
             userJSON.put("driver_license_number", driverLicense);
         } catch (JSONException e) {
@@ -300,20 +290,24 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     private void finishUpdate() {
         mUser.driverLicenseNumber = etDriverLicenseSeries.getText().toString() + etDriverLicense.getText().toString();
         mUser.passportNumber = etPassportSeries.getText().toString() + etPassportNumber.getText().toString();
-        if (!isNew) {
-            CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
-            mUser.car.brandId = mBrand.id;
-            mUser.car.brandName = mBrand.name;
-            CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
-            mUser.car.modelId = mModel.id;
-            mUser.car.modelName = mModel.name;
-            mUser.car.color = etCarColor.getText().toString();
-            mUser.car.number = etCarNumber.getText().toString();
-            mUser.car.technicalCertificate = etTechPassport.getText().toString();
-            mUser.car.year = etCarYear.getText().toString();
-        }
+        //if (!isNew) {
+        Car car = new Car();
+        CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
+        car.brandId = mBrand.id;
+        car.brandName = mBrand.name;
+        CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
+        car.modelId = mModel.id;
+        car.modelName = mModel.name;
+        car.color = etCarColor.getText().toString();
+        car.number = etCarNumber.getText().toString();
+        car.technicalCertificate = etTechPassport.getText().toString();
+        car.year = etCarYear.getText().toString();
+        mUser.car = car;
+        //}
         if (isNew) {
             Intent intent = new Intent(getActivity(), MapsActivity.class);
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
             startActivity(intent);
             getActivity().finish();
         }

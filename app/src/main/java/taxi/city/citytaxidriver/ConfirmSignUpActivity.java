@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +23,7 @@ import taxi.city.citytaxidriver.utils.Helper;
 
 
 public class ConfirmSignUpActivity extends BaseActivity {
+    private static final String PREFS_NAME = "MyPrefsFile";
     private EditText mActivationCode;
     private EditText mPasswordField;
     private ActivateTask task = null;
@@ -141,6 +143,7 @@ public class ConfirmSignUpActivity extends BaseActivity {
                 if (Helper.isSuccess(result)) {
                     if (isSignUp) {
                         User.getInstance().setUser(result);
+                        ApiService.getInstance().setToken(User.getInstance().getToken());
                         Finish();
                     } else if (result.has("detail") && result.getString("detail").toLowerCase().equals("ok")) {
                         //User.getInstance().setUser(result);
@@ -165,7 +168,9 @@ public class ConfirmSignUpActivity extends BaseActivity {
 
     private void Finish() {
         if (isSignUp) {
-            if (User.getInstance().car != null) {
+            savePreferences(User.getInstance());
+            if (User.getInstance().car == null) {
+                Helper.saveUserPreferences(this, User.getInstance());
                 Intent intent = new Intent(this, CarDetailsActivity.class);
                 intent.putExtra("NEW", true);
                 startActivity(intent);
@@ -189,5 +194,14 @@ public class ConfirmSignUpActivity extends BaseActivity {
                     }
                 })
                 .show();
+    }
+
+    private void savePreferences(User user) {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("phoneKey", user.phone);
+        editor.putString("passwordKey", user.password);
+        editor.putString("tokenKey", user.getToken());
+        editor.apply();
     }
 }

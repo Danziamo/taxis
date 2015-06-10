@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -62,7 +63,7 @@ public class LoginActivity extends Activity{
     private int statusCode;
     private String detail;
 
-    private ApiService api = ApiService.getInstance();
+    private ApiService api;
     private Order order = Order.getInstance();
 
     private SharedPreferences settings;
@@ -71,6 +72,7 @@ public class LoginActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        api = ApiService.getInstance();
 
         // Set up the login form.
         mPhoneView = (EditText) findViewById(R.id.login_phone);
@@ -310,6 +312,7 @@ public class LoginActivity extends Activity{
                     if (object.has("detail")) detail = object.getString("detail");
                     if (statusCode == HttpStatus.SC_OK) {
                         user.setUser(object);
+                        ApiService.getInstance().setToken(user.getToken());
                         Helper.saveUserPreferences(LoginActivity.this, user);
                         id = object.getInt("id");
                         if (object.has("cars") && object.getJSONArray("cars").length() > 0) hasCar = true;

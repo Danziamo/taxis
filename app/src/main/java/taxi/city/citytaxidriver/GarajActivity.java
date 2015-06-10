@@ -168,7 +168,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
                 onlineStatus = ApiService.getInstance().patchRequest(onlineStatus, "users/" + String.valueOf(User.getInstance().id) +"/");
                 Helper.clearUserPreferences(GarajActivity.this);
             } catch (JSONException ignored) {}
-            return ApiService.getInstance().logoutRequest(null, "logoout/");
+            return ApiService.getInstance().logoutRequest(null, "logout/");
         }
 
         @Override
