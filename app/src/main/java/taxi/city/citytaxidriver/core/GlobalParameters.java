@@ -16,6 +16,7 @@ public class GlobalParameters {
     }
 
     public String getPosition() {
+        if (currPosition == null) return null;
         return "POINT (" + currPosition.latitude + " " + currPosition.longitude + ")";
     }
 }

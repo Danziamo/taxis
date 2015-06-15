@@ -482,8 +482,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         this.location = location;
 
         if (location != null) {
-            order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
-            gp.currPosition = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             handleNewLocation(location);
         }
@@ -522,6 +520,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
 
         order.endPoint = latLng;
+        gp.currPosition = latLng;
         if (prev == null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         }
