@@ -19,6 +19,7 @@
         <item name="android:imeOptions">actionDone</item>
         <item name="android:textColor">@color/blacktext2</item>
         <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
+        <item name="android:popupMenuStyle">@style/MyActionBar.PopupMenu</item>
     </style>
 
     <style name="MyActionBarTabs" parent="ActionBarTheme">
@@ -26,6 +27,11 @@
         <item name="android:backgroundStacked">#a0999999</item>
         <item name="android:imeOptions">actionDone</item>
         <item name="android:textColor">@color/blacktext2</item>
+    </style>
+
+    <style name="MyActionBar.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/blacktext2</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="DialogBoxTheme" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">

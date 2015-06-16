@@ -26,8 +26,8 @@
     </uses-feature>
 
     <application
-        android:allowBackup="true"
         android:name=".App"
+        android:allowBackup="true"
         android:configChanges="keyboardHidden|orientation|screenSize"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -69,15 +69,15 @@
         </activity>
         <activity
             android:name=".MapsActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/MainTheme" >
         </activity>
         <activity
             android:name=".OrderActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:launchMode="singleTop"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
@@ -121,6 +121,26 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyActionBarTabs"
+            android:parentActivityName=".GarajActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="taxi.city.citytaxidriver.GarajActivity" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyActionBarTabs"
+            android:parentActivityName=".GarajActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="taxi.city.citytaxidriver.GarajActivity" />
         </activity>
     </application>
 

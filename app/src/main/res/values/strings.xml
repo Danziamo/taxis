@@ -9,7 +9,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="action_exit">Exit</string>
+    <string name="action_exit">Выход</string>
     <string name="title_activity_register_next">RegisterNextActivity</string>
     <string name="title_activity_maps">Map</string>
 
@@ -24,4 +24,14 @@
     <string name="title_activity_order_details_activity2">OrderDetailsActivity2</string>
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_sos">SosActivity</string>
+    <string name="title_activity_help">Тех. поддержка</string>
+    <string name="help">Телефон для справок:\n +996702191111\n</string>
+    <string name="info">Почта:\n taxi.support@mirsoft.kg</string>
+    <string name="title_activity_about">О такси (тарифы)</string>
+    <string name="tariff_line1">Cтоимость посадки = 40 сом\n</string>
+    <string name="tariff_line2">1 километр = 12 сом.\n Первый километр бесплатный.\n</string>
+    <string name="tariff_line3">Например:\n 2 километра = 52 сом.\n 3 километра = 64 сом.\n</string>
+    <string name="tariff_line4">Ожидание между точками = 3 сом/мин, первые 5 минут бесплатно.\n</string>
+    <string name="tariff_line5">Доплата за животное (кошка, собака в специальной сумке) по договоренности с водителем.\n</string>
+    <string name="tariff_line6">Если клиент выбрал фиксированную плату,\n оплачивается только фиксированная плата.</string>
 </resources>

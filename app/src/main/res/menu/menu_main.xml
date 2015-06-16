@@ -2,8 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="taxi.city.citytaxidriver.GarajActivity">
-    <item android:id="@+id/action_quit"
-        android:title="@string/action_exit"
-        android:icon="@drawable/ic_action_quit"
-        android:orderInCategory="100" app:showAsAction="always" />
+
+    <item android:id="@+id/empty"
+        android:orderInCategory="101"
+        android:title="@string/action_settings"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_overflow">
+
+        <menu>
+            <item android:id="@+id/action_quit"
+                android:title="@string/action_exit"
+                android:orderInCategory="100"
+                app:showAsAction="never" />
+
+            <item android:id="@+id/action_about"
+                android:title="О такси"
+                app:showAsAction="never"
+                android:orderInCategory="98"/>
+
+            <item android:id="@+id/action_help"
+                android:title="Тех поддержка"
+                app:showAsAction="ifRoom"
+                android:orderInCategory="99"/>
+        </menu>
+
+    </item>
 </menu>
