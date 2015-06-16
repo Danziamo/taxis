@@ -12,6 +12,7 @@
         android:src="@drawable/main_background"
         android:scaleType="centerCrop"/>
     <ScrollView
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -59,6 +60,14 @@
                 android:gravity="center"/>
             <TextView
                 android:text="@string/tariff_line6"
+                android:textColor="@color/translucent_lime"
+                android:padding="6dp"
+                android:textSize="@dimen/font_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+            <TextView
+                android:text="@string/tariff_line7"
                 android:textColor="@color/translucent_lime"
                 android:padding="6dp"
                 android:textSize="@dimen/font_large"
