@@ -96,6 +96,16 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onResume(){
         super.onResume();
         if (isNew) {

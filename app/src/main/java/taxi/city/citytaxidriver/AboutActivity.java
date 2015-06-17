@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.core.User;
 
 public class AboutActivity extends ActionBarActivity {
 
@@ -14,8 +15,19 @@ public class AboutActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        if (User.getInstance() == null || User.getInstance().id == 0) finish();
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override

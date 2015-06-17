@@ -25,7 +25,8 @@
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_sos">SosActivity</string>
     <string name="title_activity_help">Тех. поддержка</string>
-    <string name="help">Телефон для справок:\n +996702191111\n</string>
+    <string name="help">Телефон для справок:\n  +996702191111\n</string>
+    <string name="WhatsApp">Для WhatsApp сообщений:\n +996702191111\n</string>
     <string name="info">Почта:\n taxi.support@mirsoft.kg</string>
     <string name="title_activity_about">О такси (тарифы)</string>
     <string name="tariff_line1">Cтоимость посадки = 40 сом\n</string>

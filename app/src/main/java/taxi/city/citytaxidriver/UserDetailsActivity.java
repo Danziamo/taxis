@@ -27,4 +27,14 @@ public class UserDetailsActivity extends ActionBarActivity {
         imm.hideSoftInputFromWindow(noteTv.getWindowToken(), 0);
         super.onPause();
     }*/
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }

@@ -76,7 +76,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
-
     private static final int SOS_DURATION = 10 * 60; //minutes
 
     private SendPostRequestTask sendTask;
@@ -99,7 +98,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Location prev;
     double distance;
     double price;
-    double freeMeters = 2000;
+    double freeMeters = 0;
     long time;
 
     Button btnOkAction;
