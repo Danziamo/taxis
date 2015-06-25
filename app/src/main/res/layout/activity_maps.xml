@@ -224,8 +224,10 @@
                     android:layout_margin="10dp"/>
 
                 <Button
-                    android:id="@+id/buttonDeclineSettings"
+                    android:id="@+id/buttonSettings"
                     style="@style/mediumButton.Black"
+                    android:text="Настройки"
+                    android:textColor="@color/white"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>

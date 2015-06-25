@@ -103,27 +103,34 @@
             android:layout_above="@+id/btnSignUp"
             android:layout_centerHorizontal="true" />
 
-        <Button
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Зарегистрироваться"
-            android:id="@+id/btnSignUp"
-            android:background="@drawable/button_shape_yellow"
-            android:textColor="#ff1e0a8e"
-            android:textStyle="bold"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="0dp" />
-
         <TextView
             style="@style/TextSubTitle"
             android:text="Забыли пароль?"
             android:id="@+id/textViewForgotPassword"
             android:layout_above="@+id/btnSignUp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="20dp" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Зарегистрироваться"
+            android:id="@+id/btnSignUp"
+            android:background="@drawable/button_shape_yellow"
+            android:textColor="#ff1e0a8e"
+            android:textStyle="bold"
+            android:layout_above="@+id/tvInfo"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="0dp" />
+
+        <TextView
+            android:id ="@+id/tvInfo"
+            android:text="Тех поддержка: +996702191111"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 

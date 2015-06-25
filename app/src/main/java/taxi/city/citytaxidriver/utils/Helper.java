@@ -108,12 +108,22 @@ public class Helper {
         order.tariff = object.has("tariff") ? object.getInt("tariff") : 0;
         order.driver = object.has("driver") ? object.getInt("driver") : 0;
         order.description = object.has("description") ? object.getString("description") : null;
-        order.sum = object.has("order_sum") ? object.getDouble("order_sum") : 0;
-        order.distance = object.has("order_distance") ? object.getDouble("order_distance") : 0;
+        order.sum = object.has("order_sum") ? tryParseDouble(object.getString("order_sum")) : 0;
+        order.distance = object.has("order_distance") ? tryParseDouble(object.getString("order_distance")) : 0;
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
-        order.fixedPrice = object.has("fixed_price") ? object.getDouble("fixed_price") : 0;
+        order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
         order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : null;
+    }
+
+    public static double tryParseDouble(String number) {
+        double result = 0;
+        try {
+            result = Double.valueOf(number);
+        } catch (Exception e) {
+            result = 0;
+        }
+        return result;
     }
 
     /**
@@ -151,6 +161,7 @@ public class Helper {
      */
     public static Long getLongFromString(String s) {
         long res = 0;
+        if (s == null || s.equals("null") || s.isEmpty()) return res;
         try {
             String[] list = s.split(":");
             res += 60*60*Integer.valueOf(list[0]) + 60*Integer.valueOf(list[1]) +Integer.valueOf(list[2]);
@@ -159,16 +170,6 @@ public class Helper {
         }
         return res;
 
-    }
-
-    public double getDoubleFromObject(String s) {
-        double res;
-        try {
-            res = Double.valueOf(s);
-        } catch (Exception e) {
-            res = 0;
-        }
-        return res;
     }
 
     public static boolean isSuccess(int status) {

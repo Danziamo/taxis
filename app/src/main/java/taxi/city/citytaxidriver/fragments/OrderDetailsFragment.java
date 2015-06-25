@@ -238,6 +238,12 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (pDialog != null) pDialog.dismiss();
+    }
+
     private void SendPostRequest(OStatus status) {
         if (mTask != null) {
             return;
@@ -334,6 +340,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         @Override
         protected void onCancelled() {
             mTask = null;
+            showProgress(false);
         }
     }
 }

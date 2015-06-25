@@ -42,7 +42,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     Button btnRefresh;
     Button btnMoreOrders;
     private boolean isNew;
-    private int limit = 10;
+    private int limit = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
