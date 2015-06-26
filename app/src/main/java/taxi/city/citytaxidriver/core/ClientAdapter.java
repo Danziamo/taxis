@@ -75,6 +75,11 @@ public class ClientAdapter extends ArrayAdapter<Client> {
         float weightSum = 6;
         viewHolder.id.setText(String.valueOf(client.id));
         viewHolder.address.setText("#" + String.valueOf(client.id) + " " + client.addressStart);
+        if (client.clientId == null) {
+            viewHolder.address.setTextColor(getContext().getResources().getColor(R.color.blue_text));
+        } else {
+            viewHolder.address.setTextColor(getContext().getResources().getColor(R.color.blacktext2));
+        }
 
         double distance = 0;
         LatLng driverPosition = GlobalParameters.getInstance().currPosition;

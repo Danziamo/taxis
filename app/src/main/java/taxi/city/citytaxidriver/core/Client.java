@@ -29,6 +29,7 @@ public class Client implements Serializable{
     public String waitSum;
     public String fixedPrice;
     public String totalSum;
+    public String clientId;
     public boolean active;
 
     public Client() {}
@@ -52,6 +53,7 @@ public class Client implements Serializable{
         this.time = row.getString("order_travel_time");
         this.waitSum = row.getString("wait_time_price");
         this.fixedPrice = row.getString("fixed_price");
+        this.clientId = row.getString("client").equals("null") ? null : row.getString("client");
     }
 
     public Client(Order order, int driverId, boolean isActive) {

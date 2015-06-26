@@ -1055,14 +1055,17 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     LatLng driverPosition = GlobalParameters.getInstance().currPosition;
                     LatLng clientPosition = Helper.getLatLng(client.startPoint);
                     Location driverLocation = new Location("");
-                    driverLocation.setLatitude(driverPosition.latitude);
-                    driverLocation.setLongitude(driverPosition.longitude);
+                    String distance = "";
+                    if (driverPosition != null) {
+                        driverLocation.setLatitude(driverPosition.latitude);
+                        driverLocation.setLongitude(driverPosition.longitude);
 
-                    Location clientLocation = new Location("");
-                    clientLocation.setLatitude(clientPosition.latitude);
-                    clientLocation.setLongitude(clientPosition.longitude);
-                    String distance = Helper.getFormattedDistance(driverLocation.distanceTo(clientLocation)/1000) + "км";
-                    final String title = client.addressStart + "\n" + distance;
+                        Location clientLocation = new Location("");
+                        clientLocation.setLatitude(clientPosition.latitude);
+                        clientLocation.setLongitude(clientPosition.longitude);
+                        distance = Helper.getFormattedDistance(driverLocation.distanceTo(clientLocation)/1000) + "км";
+                    }
+                    final String title = client.addressStart + " \n" + distance;
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(userLocation)
                             .title(title)
