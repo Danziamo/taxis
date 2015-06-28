@@ -70,7 +70,7 @@ public class ConfirmSignUpActivity extends BaseActivity {
         View focusView = null;
         boolean cancel = false;
 
-        if (mCode == null || mCode.length() > 5) {
+        if (mCode.length() > 5) {
             mActivationCode.setError("Код не более 5 символов");
             focusView = mActivationCode;
             cancel = true;

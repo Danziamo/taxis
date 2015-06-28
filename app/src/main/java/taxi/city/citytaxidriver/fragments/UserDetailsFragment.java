@@ -208,7 +208,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             return;
         }
 
-        if (password == null || password.length() < 3) {
+        if (password.isEmpty() || password.length() < 4) {
             etPassword.setError("Пароль неправильно задан");
             etPassword.requestFocus();
             return;

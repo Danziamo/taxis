@@ -268,7 +268,7 @@ public class LoginActivity extends Activity{
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() >= 4;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
