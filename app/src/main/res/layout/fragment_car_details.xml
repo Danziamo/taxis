@@ -73,57 +73,21 @@
                 android:textSize="16sp"
                 android:inputType="text" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <EditText
+                style="@style/mediumEditText"
+                android:hint="Серия и номер прав"
+                android:id="@+id/editTextDriverLicenseNumber"
+                android:imeOptions="actionNext"
+                android:textSize="16sp"
+                android:inputType="text" />
 
-                android:layout_marginTop="@dimen/spacing_tiny">
-
-                <EditText
-                    style="@style/SmallEditText"
-                    android:hint="Серия"
-                    android:imeOptions="actionNext"
-                    android:layout_marginRight="@dimen/spacing_tiny"
-                    android:id="@+id/editTextDriverLicenseSeries"
-                    android:textSize="16sp"
-                    android:inputType="text" />
-
-                <EditText
-                    style="@style/ShortEditText"
-                    android:hint="и номер прав"
-                    android:imeOptions="actionNext"
-                    android:textColorHint="@color/blacktext1"
-                    android:textSize="16sp"
-                    android:id="@+id/editTextDriverLicenseNumber"
-                    android:inputType="text" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_tiny"
-                android:id="@+id/linearLayoutSeriesdata"
-                android:layout_gravity="center_horizontal">
-
-                <EditText
-                    style="@style/SmallEditText"
-                    android:hint="Серия"
-                    android:imeOptions="actionNext"
-                    android:layout_marginRight="@dimen/spacing_tiny"
-                    android:id="@+id/editTextPassportSeries"
-                    android:textSize="16sp"
-                    android:inputType="text" />
-
-                <EditText
-                    style="@style/ShortEditText"
-                    android:imeOptions="actionDone"
-                    android:hint="и номер паспортных данных"
-                    android:id="@+id/editTextPassportNumber"
-                    android:textSize="16sp"
-                    android:inputType="text" />
-            </LinearLayout>
+            <EditText
+                style="@style/mediumEditText"
+                android:hint="Серия и номер паспортных данных"
+                android:id="@+id/editTextPassportNumber"
+                android:imeOptions="actionDone"
+                android:textSize="16sp"
+                android:inputType="text" />
 
         </LinearLayout>
 

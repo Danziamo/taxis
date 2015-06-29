@@ -51,8 +51,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     EditText etCarNumber;
     EditText etPassportNumber;
     EditText etDriverLicense;
-    EditText etDriverLicenseSeries;
-    EditText etPassportSeries;
     TextView tvTitle;
 
     SweetAlertDialog pDialog;
@@ -89,11 +87,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
         etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
         etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
-        etDriverLicenseSeries = (EditText)rootView.findViewById(R.id.editTextDriverLicenseSeries);
         etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
         etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
-        etPassportSeries = (EditText)rootView.findViewById(R.id.editTextPassportSeries);
-        //tvTitle = (TextView)rootView.findViewById(R.id.textViewCarSettingsTitle);
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
@@ -102,18 +97,10 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         btnBack.setVisibility(isNew ? View.VISIBLE : View.GONE);
         btnSave.setOnClickListener(this);
 
-        String driverLicenseExtra = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
-                ? mUser.driverLicenseNumber.substring(0, 2) : null;
-        String driverLicense = mUser.driverLicenseNumber != null && mUser.driverLicenseNumber.length() > 2
-                ? mUser.driverLicenseNumber.substring(2) : null;
-        String passportExtra = mUser.passportNumber != null && mUser.passportNumber.length() > 2
-                ? mUser.passportNumber.substring(0, 2) : null;
-        String passport = mUser.passportNumber != null && mUser.passportNumber.length() > 2
-                ? mUser.passportNumber.substring(2) : null;
+        String driverLicense = mUser.driverLicenseNumber;
+        String passport = mUser.passportNumber;
 
-        etDriverLicenseSeries.setText(driverLicenseExtra);
         etDriverLicense.setText(driverLicense);
-        etPassportSeries.setText(passportExtra);
         etPassportNumber.setText(passport);
         if (!isNew && mUser.car != null) {
             etCarColor.setText(mUser.car.color);
@@ -145,20 +132,15 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        String passportNumberExtra = etPassportSeries.getText().toString();
-        String passportNumber = passportNumberExtra + etPassportNumber.getText().toString();
-        String driverLicenseExtra = etDriverLicenseSeries.getText().toString();
-        String driverLicense = driverLicenseExtra + etDriverLicense.getText().toString();
+
+        String passportNumber =  etPassportNumber.getText().toString();
+
+        String driverLicense = etDriverLicense.getText().toString();
         String techPassport = etTechPassport.getText().toString();
         String carNumber =etCarNumber.getText().toString();
         String color = etCarColor.getText().toString();
         String year = etCarYear.getText().toString();
 
-        if (passportNumberExtra.length() != 2) {
-            etPassportSeries.setError("Неверно задано. 2 символа");
-            etPassportSeries.requestFocus();
-            return;
-        }
 
         if (passportNumber.length() < 6) {
             etPassportNumber.setError("Неверно задано");
@@ -166,11 +148,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        if (driverLicenseExtra.length() != 2) {
-            etDriverLicenseSeries.setError("Неверно задано. 2 символа");
-            etDriverLicenseSeries.requestFocus();
-            return;
-        }
 
         if (driverLicense.length() < 6) {
             etDriverLicense.setError("Неверно задано");
@@ -178,11 +155,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        /*if (techPassport.length() > 10) {
-            etTechPassport.setError("Неверно задано");
-            etTechPassport.requestFocus();
-            return;
-        }*/
 
         if (carNumber.length() < 6 || carNumber.length() > 10) {
             etCarNumber.setError("Неверно задано");
@@ -209,7 +181,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             carJSON.put("car_number", carNumber);
             carJSON.put("year", year);
             carJSON.put("color", color);
-            carJSON.put("technical_certificate", techPassport.length() == 0 ? JSONObject.NULL : techPassport);
+            carJSON.put("technical_certificate", techPassport);
             userJSON.put("passport_number", passportNumber);
             userJSON.put("driver_license_number", driverLicense);
         } catch (JSONException e) {
@@ -288,8 +260,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     }
 
     private void finishUpdate() {
-        mUser.driverLicenseNumber = etDriverLicenseSeries.getText().toString() + etDriverLicense.getText().toString();
-        mUser.passportNumber = etPassportSeries.getText().toString() + etPassportNumber.getText().toString();
+        mUser.driverLicenseNumber =  etDriverLicense.getText().toString();
+        mUser.passportNumber =  etPassportNumber.getText().toString();
         //if (!isNew) {
         Car car = new Car();
         CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
