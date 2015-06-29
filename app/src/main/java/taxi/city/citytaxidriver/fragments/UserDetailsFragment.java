@@ -296,6 +296,8 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             } catch (JSONException ignored) {}
             Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
             intent.putExtra("SIGNUP", true);
+            intent.putExtra("PHONE", user.phone);
+            intent.putExtra("PASS", user.password);
             startActivity(intent);
             getActivity().finish();
         }

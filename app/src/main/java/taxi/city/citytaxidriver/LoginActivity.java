@@ -339,6 +339,8 @@ public class LoginActivity extends Activity{
                 NextActivity(hasCar);
             } else  if (Helper.isBadRequest(statusCode)) {
                 if (detail != null && detail.toLowerCase().contains("account")) {
+                    User.getInstance().phone = mPhone;
+                    User.getInstance().password = mPassword;
                     goToActivation();
                 } else {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -359,6 +361,8 @@ public class LoginActivity extends Activity{
 
     private void goToActivation() {
         Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
+        intent.putExtra("PHONE", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
+        intent.putExtra("PASS", mPasswordView.getText().toString());
         startActivity(intent);
     }
 
@@ -397,6 +401,7 @@ public class LoginActivity extends Activity{
                 if (Helper.isSuccess(result)) {
                     Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
                     intent.putExtra("SIGNUP", false);
+                    intent.putExtra("PHONE", mPhone);
                     user.phone = mPhone;
                     startActivity(intent);
                 } else if (Helper.isBadRequest(result)) {

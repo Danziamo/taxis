@@ -38,6 +38,11 @@ public class ConfirmSignUpActivity extends BaseActivity {
         Intent intent = getIntent();
         isSignUp = intent.getBooleanExtra("SIGNUP", true);
         Initialize();
+        mPhone = intent.getStringExtra("PHONE");
+        if (intent.hasExtra("PASS")) {
+            String password = intent.getStringExtra("PASS");
+            mPasswordField.setText(password);
+        }
     }
 
     private void Initialize() {
@@ -115,8 +120,8 @@ public class ConfirmSignUpActivity extends BaseActivity {
             mPassword = password;
 
             try {
-                json.put("phone", User.getInstance().phone);
-                json.put("password", isSignUp ? User.getInstance().password : mPassword);
+                json.put("phone", mPhone);
+                json.put("password", mPassword);
                 json.put("activation_code", mCode);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -128,8 +133,8 @@ public class ConfirmSignUpActivity extends BaseActivity {
             if (isSignUp) {
                 return ApiService.getInstance().activateRequest(json, "activate/");
             } else {
-                String uri = "?phone=" + User.getInstance().phone
-                        + "&password=" + (mPassword)
+                String uri = "?phone=" + mPhone
+                        + "&password=" + mPassword
                         + "&activation_code=" + mCode;
                 return ApiService.getInstance().putRequest(null, "reset_password/" + uri.replace("+", "%2b"));
             }
