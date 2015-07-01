@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -13,12 +14,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.MotionEvent;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -140,8 +143,27 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         setDateTimePicker();
+
+        rootView.findViewById(R.id.userContainer).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeyboard();
+                return false;
+            }
+        });
         return rootView;
+
     }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
 
     private void setDateTimePicker() {
         etDoB.setOnClickListener(this);
