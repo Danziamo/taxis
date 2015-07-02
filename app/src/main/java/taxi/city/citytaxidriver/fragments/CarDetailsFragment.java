@@ -184,14 +184,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
 
         if (passportNumber.length() < 6) {
-            etPassportNumber.setError("Неверно задано");
+            etPassportNumber.setError("Минимально 2 символа и 7 цифр");
             etPassportNumber.requestFocus();
             return;
         }
 
 
         if (driverLicense.length() < 6) {
-            etDriverLicense.setError("Неверно задано");
+            etDriverLicense.setError("Минимально 2 символа 9 цифр");
             etDriverLicense.requestFocus();
             return;
         }
