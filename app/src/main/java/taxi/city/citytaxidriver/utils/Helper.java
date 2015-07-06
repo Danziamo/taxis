@@ -116,7 +116,7 @@ public class Helper {
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
         order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
-        order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : null;
+        order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : new Tariff();
     }
 
     public static double tryParseDouble(String number) {

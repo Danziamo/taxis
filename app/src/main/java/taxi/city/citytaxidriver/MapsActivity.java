@@ -896,17 +896,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("wait_time", Helper.getTimeFromLong(order.waitTime));
                 data.put("order_distance", Helper.round(order.distance, 2));
                 data.put("order_travel_time", travelTime);
-                JSONObject checkObject = api.getRequest(null, "orders/" + mOrderId + "/");
+                result = api.patchRequest(data, "orders/" + mOrderId + "/");
 
-                if (Helper.isSuccess(checkObject)) {
-                    String checkStatus = checkObject.getString("status");
-                    if (checkStatus == null || checkStatus.equals(OStatus.CANCELED.toString())) {
-                        checkObject.put("status_code", 999);
-                        result = checkObject;
-                    } else {
-                        result = api.patchRequest(data, "orders/" + mOrderId + "/");
-                    }
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 result = null;
@@ -925,10 +916,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                         Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                         order.clear();
                     }
-                } else if (result != null && result.getInt("status_code") == 999) {
+                } else if (Helper.isBadRequest(result)) {
                     new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Клиент отменил заказ")
-                            .setContentText(result.getString("description"))
+                            .setContentText("")
                             .setConfirmText("Ок")
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override

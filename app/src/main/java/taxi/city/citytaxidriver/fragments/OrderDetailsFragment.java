@@ -276,13 +276,14 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                 data.put("address_stop", mStatus.equals(OStatus.NEW.toString()) || mCurrPosition == null
                         ? JSONObject.NULL : mCurrPosition);
 
-                JSONObject orderJson = api.getRequest(null, "info_orders/" + mId + "/");
-                if (Helper.isSuccess(orderJson) && !orderJson.getString("status").equals(OStatus.CANCELED.toString())) {
-                    res = api.patchRequest(data, "orders/" + mId + "/");
-                    res.put("tariff_info", orderJson.getJSONObject("tariff"));
-                } else {
-                    res = new JSONObject();
-                    res.put("status_code", 400);
+                res = api.patchRequest(data, "orders/" + mId + "/");
+                if (Helper.isSuccess(res)) {
+                    JSONObject tariffJson = api.getRequest(null, "info_orders/" + mId + "/");
+                    if (Helper.isSuccess(tariffJson)) {
+                        res.put("tariff_info", tariffJson.getJSONObject("tariff"));
+                    } else {
+                        res = null;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -298,9 +299,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             try {
                 if (Helper.isSuccess(result)) {
                     Toast.makeText(getActivity(), "Заказ обновлён", Toast.LENGTH_LONG).show();
-                    if (result.getString("status").equals(OStatus.CANCELED.toString()))
-                        order.clear();
-                    else if (result.getString("status").equals(OStatus.ACCEPTED.toString())) {
+                    if (result.getString("status").equals(OStatus.ACCEPTED.toString())) {
                         mClient.status = OStatus.ACCEPTED.toString();
                         mClient.driver = user.id;
                         order.status = OStatus.ACCEPTED;
@@ -318,6 +317,8 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                     Helper.destroyOrderPreferences(getActivity().getApplicationContext(), user.id);
                     order.clear();
                     getActivity().finish();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Не удалось связаться с сервером", Toast.LENGTH_SHORT).show();
                 }
                 if (order.status == OStatus.ONTHEWAY) {
                     Intent intent = new Intent();

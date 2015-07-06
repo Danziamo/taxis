@@ -20,7 +20,13 @@ public class Tariff implements Serializable{
         this.waitRatio = json.getDouble("waiting_between_point_price");
     }
 
-    public Tariff() {}
+    public Tariff() {
+        this.name = "Basic";
+        this.startPrice = 40;
+        this.ratio = 12;
+        this.waitTime = 0;
+        this.waitRatio = 0;
+    }
 
     private Long getLongFromString(String s) {
         long res = 0;
