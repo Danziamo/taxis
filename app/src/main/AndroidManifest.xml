@@ -142,6 +142,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="taxi.city.citytaxidriver.GarajActivity" />
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a6db6ad043b4ea239abd028eed102d3e1bb2d1d3" />
     </application>
 
 </manifest>
