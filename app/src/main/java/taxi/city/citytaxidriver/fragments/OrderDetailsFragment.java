@@ -277,12 +277,13 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         ? JSONObject.NULL : mCurrPosition);
 
                 res = api.patchRequest(data, "orders/" + mId + "/");
-                if (Helper.isSuccess(res)) {
-                    JSONObject tariffJson = api.getRequest(null, "info_orders/" + mId + "/");
-                    if (Helper.isSuccess(tariffJson)) {
-                        res.put("tariff_info", tariffJson.getJSONObject("tariff"));
-                    } else {
-                        res = null;
+                if (Helper.isSuccess(res) && res.getString("status") == OStatus.ACCEPTED.toString()) {
+                    for (int i = 0; i < 10; ++i) {
+                        JSONObject tariffJson = api.getRequest(null, "info_orders/" + mId + "/");
+                        if (Helper.isSuccess(tariffJson)) {
+                            res.put("tariff_info", tariffJson.getJSONObject("tariff"));
+                            break;
+                        }
                     }
                 }
             } catch (JSONException e) {
