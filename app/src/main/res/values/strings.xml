@@ -30,10 +30,11 @@
     <string name="info">Почта:\n taxi.support@mirsoft.kg</string>
     <string name="title_activity_about">О такси (тарифы)</string>
     <string name="tariff_line1">Cтоимость посадки = 40 сом\n</string>
-    <string name="tariff_line2">1 километр = 12 сом.\n</string>
-    <string name="tariff_line3">Например:\n 2 километра = 64 сом.\n 3 километра = 76 сом.\n</string>
+    <string name="tariff_line2">1 километр = 12 сом.\n (округляется до метра)\n</string>
+    <string name="tariff_line3">Например:\n 0.25 киллометра = 43 сом.\n 2 километра = 64 сом.\n 3 километра = 76 сом.\n</string>
+    <string name="tariff_line8">Стоимость поездки округляется по метражу\n</string>
     <string name="tariff_line4">Ожидание между точками = 3 сом/мин, первые 5 минут бесплатно.\n</string>
-    <string name="tariff_line5">Доплата за животное (кошка, собака в специальной сумке) по договоренности с водителем.\n</string>
+    <string name="tariff_line5">Комиссия за 1 поездку 10 сом.\n Пополнять баланс возможно в терминалах "Мобильник"\n на свой лиц. счёт (свой номер телефона)</string>
     <string name="tariff_line6">Если клиент выбрал фиксированную плату,\n оплачивается только данная сумма.</string>
     <string name="tariff_line7">Доплата за выезд за пределы города Бишкек,\n  + 40 сом к общей сумме</string>
 </resources>
