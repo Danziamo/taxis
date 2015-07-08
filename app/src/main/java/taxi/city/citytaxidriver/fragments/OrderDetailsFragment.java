@@ -47,9 +47,9 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     TextView tvClientPhoneLabel;
     ImageButton imgBtnCallClient;
 
-    Button btnOk;
+    Button btnTakeMap;
     Button btnCancel;
-    Button btnMap;
+    Button btnOk;
 
     LinearLayout llBtnMap;
 
@@ -81,12 +81,12 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         tvFixedPrice.setText((int) fixedPrice + " сом");
         if (fixedPrice < 50) llFixedPrice.setVisibility(View.GONE);
 
-        btnOk = (Button) rootView.findViewById(R.id.buttonActionOk);
+        btnTakeMap = (Button) rootView.findViewById(R.id.buttonTakeMap);
         btnCancel = (Button) rootView.findViewById(R.id.buttonActionCancel);
-        btnMap = (Button) rootView.findViewById(R.id.buttonMapInfo);
-        btnOk.setOnClickListener(this);
+        btnOk = (Button) rootView.findViewById(R.id.buttonActionOk);
+        btnTakeMap.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
-        btnMap.setOnClickListener(this);
+        btnOk.setOnClickListener(this);
         imgBtnCallClient.setOnClickListener(this);
 
         updateViews();
@@ -97,8 +97,8 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     private void updateViews() {
         if (mClient.status.equals(OStatus.NEW.toString())) {
             llBtnMap.setVisibility(View.GONE);
-            btnOk.setText("Взять");
-            btnCancel.setText("Заказы");
+            btnTakeMap.setText("Взять");
+            btnCancel.setText("Назад");
             tvClientPhone.setVisibility(View.GONE);
             tvClientPhoneLabel.setVisibility(View.GONE);
             imgBtnCallClient.setVisibility(View.GONE);
@@ -106,7 +106,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             btnCancel.setTextColor(getResources().getColor(R.color.blacktext2));
         } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
             llBtnMap.setVisibility(View.VISIBLE);
-            btnOk.setText("На месте");
+            btnTakeMap.setText("На карте");
             btnCancel.setText("Отказ");
             tvClientPhone.setVisibility(View.VISIBLE);
             tvClientPhoneLabel.setVisibility(View.VISIBLE);
@@ -118,7 +118,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             tvClientPhone.setVisibility(View.VISIBLE);
             tvClientPhoneLabel.setVisibility(View.VISIBLE);
             imgBtnCallClient.setVisibility(View.VISIBLE);
-            btnOk.setText("На борту");
+            llBtnMap.setVisibility(View.GONE);
             btnCancel.setText("Отказ");
             btnCancel.setBackgroundResource(R.drawable.button_shape_red);
             btnCancel.setTextColor(getResources().getColor(R.color.white));
@@ -135,22 +135,31 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             }
         }
         switch (v.getId()) {
-            case R.id.buttonActionOk:
+            case R.id.buttonTakeMap:
                 if (mClient.status.equals(OStatus.NEW.toString())) {
                     showProgress(true);
                     SendPostRequest(OStatus.ACCEPTED);
-                } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra("returnCode", true);
+                    getActivity().setResult(isActive ? 3 : 1, intent);
+                    getActivity().finish();
+                }
+                break;
+            case R.id.buttonActionOk:
+                if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
                     showProgress(true);
                     mClient.status = OStatus.WAITING.toString();
                     order.status = OStatus.WAITING;
                     SendPostRequest(OStatus.WAITING);
-                } else if (mClient.status.equals(OStatus.WAITING.toString())) {
+                }
+                break; /*else if (mClient.status.equals(OStatus.WAITING.toString())) {
                     showProgress(true);
                     mClient.status = OStatus.ONTHEWAY.toString();
                     order.status = OStatus.ONTHEWAY;
                     SendPostRequest(OStatus.ONTHEWAY);
                 }
-                break;
+                break;*/
             case R.id.buttonActionCancel:
                 if (!mClient.status.equals(OStatus.NEW.toString())) cancelOrder();
                 else getActivity().finish();
@@ -158,11 +167,6 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             case R.id.imageButtonCallClient:
                 callClient();
                 break;
-            default:
-                Intent intent = new Intent();
-                intent.putExtra("returnCode", true);
-                getActivity().setResult(isActive ? 3 : 1, intent);
-                getActivity().finish();
         }
     }
 

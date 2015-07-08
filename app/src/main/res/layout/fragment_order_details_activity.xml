@@ -150,8 +150,8 @@
 
         <Button
             style="@style/mediumButton.Blue"
-            android:text="На карте"
-            android:id="@+id/buttonMapInfo"
+            android:text="На месте"
+            android:id="@+id/buttonActionOk"
             android:layout_marginLeft="15dp" />
     </LinearLayout>
 
@@ -167,8 +167,8 @@
 
         <Button
             style="@style/mediumButton.Blue"
-            android:text="На месте"
-            android:id="@+id/buttonActionOk"
+            android:text="На карте"
+            android:id="@+id/buttonTakeMap"
             android:layout_marginRight="15dp" />
 
         <Button
