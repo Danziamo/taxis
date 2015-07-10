@@ -970,19 +970,27 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         protected JSONArray doInBackground(Void... params) {
             JSONArray array = new JSONArray();
             try {
+                if (gp.currPosition != null) {
+                    JSONObject data = new JSONObject();
+                    data.put("cur_position", Helper.getFormattedLatLng(gp.currPosition));
+                    JSONObject updateDriverLocation = api.patchRequest(data, "users/" + user.id + "/");
+                }
+
                 JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
-                JSONObject newObject = api.getArrayRequest(null, "info_orders/?status=new");
                 if (Helper.isSuccess(sosObject)) {
                     JSONArray sosArray = sosObject.getJSONArray("result");
                     for (int j = 0; j < sosArray.length(); j++) {
                         array.put(sosArray.getJSONObject(j));
                     }
                 }
-                if (Helper.isSuccess(newObject)) {
-                    JSONArray newArray = newObject.getJSONArray("result");
-                    for (int j = 0; j < newArray.length(); j++) {
-                        JSONObject object = newArray.getJSONObject(j);
-                        array.put(parseTariff(object));
+                if (order.id == 0) {
+                    JSONObject newObject = api.getArrayRequest(null, "info_orders/?status=new");
+                    if (Helper.isSuccess(newObject)) {
+                        JSONArray newArray = newObject.getJSONArray("result");
+                        for (int j = 0; j < newArray.length(); j++) {
+                            JSONObject object = newArray.getJSONObject(j);
+                            array.put(parseTariff(object));
+                        }
                     }
                 }
             } catch (JSONException ignored) {
