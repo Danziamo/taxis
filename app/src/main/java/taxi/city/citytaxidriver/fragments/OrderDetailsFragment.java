@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -281,16 +283,20 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         ? JSONObject.NULL : mCurrPosition);
 
                 res = api.patchRequest(data, "orders/" + mId + "/");
-                if (Helper.isSuccess(res) && res.getString("status") == OStatus.ACCEPTED.toString()) {
-                    for (int i = 0; i < 10; ++i) {
-                        JSONObject tariffJson = api.getRequest(null, "info_orders/" + mId + "/");
-                        if (Helper.isSuccess(tariffJson)) {
-                            res.put("tariff_info", tariffJson.getJSONObject("tariff"));
-                            break;
+                if (Helper.isSuccess(res)) {
+                    String status = res.getString("status");
+                    if (status.equals(OStatus.ACCEPTED.toString())) {
+                        for (int i = 0; i < 10; ++i) {
+                            JSONObject tariffJson = api.getRequest(null, "info_orders/" + mId + "/");
+                            if (Helper.isSuccess(tariffJson)) {
+                                res.put("tariff_info", tariffJson.getJSONObject("tariff"));
+                                break;
+                            }
                         }
                     }
                 }
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
                 res = null;
             }

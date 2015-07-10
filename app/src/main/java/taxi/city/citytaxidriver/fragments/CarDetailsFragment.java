@@ -22,6 +22,8 @@ import android.widget.Toast;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.fabric.sdk.android.services.common.Crash;
 import taxi.city.citytaxidriver.MapsActivity;
 import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.CarEntity;
@@ -131,7 +134,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                if (getActivity().getCurrentFocus() != null)
+                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
                 return false;
             }
         });
@@ -140,7 +144,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                if (getActivity().getCurrentFocus() != null)
+                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
                 return false;
             }
         });
@@ -225,10 +230,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             carJSON.put("technical_certificate", techPassport);
             userJSON.put("passport_number", passportNumber);
             userJSON.put("driver_license_number", driverLicense);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             return;
         }
@@ -290,6 +293,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
         }
@@ -395,6 +399,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                 list.add(new CarEntity(row.getInt("id"), row.getString("brand_model_name")));
             }
         } catch (JSONException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 
@@ -427,6 +432,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                 list.add(new CarEntity(row.getInt("id"), row.getString("brand_name")));
             }
         } catch (JSONException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 

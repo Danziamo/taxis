@@ -24,8 +24,8 @@ public class Tariff implements Serializable{
         this.name = "Basic";
         this.startPrice = 40;
         this.ratio = 12;
-        this.waitTime = 0;
-        this.waitRatio = 0;
+        this.waitTime = 5;
+        this.waitRatio = 3;
     }
 
     private Long getLongFromString(String s) {

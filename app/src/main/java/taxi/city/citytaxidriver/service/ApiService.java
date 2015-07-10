@@ -3,6 +3,9 @@ package taxi.city.citytaxidriver.service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
+
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -83,13 +86,12 @@ public class ApiService {
 
             res = parseData(response);
 
-        } catch (ClientProtocolException e) {
-            res = null;
-            // TODO Auto-generated catch block
         } catch (IOException e) {
+            Crashlytics.logException(e);
             res = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             res = null;
@@ -114,11 +116,11 @@ public class ApiService {
 
             res = parseData(response);
 
-        } catch (ClientProtocolException e) {
-            res = null;
         } catch (IOException e) {
+            Crashlytics.logException(e);
             res = null;
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             res = null;
@@ -140,6 +142,7 @@ public class ApiService {
             HttpResponse response = httpClient.execute(request);
             json = parseDataArray(response);
         } catch (IOException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
         return json;
@@ -163,9 +166,11 @@ public class ApiService {
             json = parseData(response);
 
         } catch (IOException e) {
+            Crashlytics.logException(e);
             json = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             json = null;
@@ -189,9 +194,11 @@ public class ApiService {
             HttpResponse response = httpClient.execute(request);
             json = parseData(response);
         } catch (IOException e) {
+            Crashlytics.logException(e);
             json = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             json = null;
@@ -217,9 +224,11 @@ public class ApiService {
             json = parseData(response);
 
         } catch (IOException e) {
+            Crashlytics.logException(e);
             json = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             json = null;
@@ -245,9 +254,11 @@ public class ApiService {
             json = parseData(response);
 
         } catch (IOException e) {
+            Crashlytics.logException(e);
             json = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             json = null;
@@ -272,9 +283,11 @@ public class ApiService {
             json = parseData(response);
 
         } catch (IOException e) {
+            Crashlytics.logException(e);
             json = null;
             // TODO Auto-generated catch block
         } catch (Exception e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             e.getMessage();
             json = null;
@@ -293,9 +306,8 @@ public class ApiService {
 
             HttpResponse response = httpClient.execute(request);
             result = parseData(response);
-        } catch (ClientProtocolException e) {
-            result = null;
         } catch (IOException e) {
+            Crashlytics.logException(e);
             result = null;
         }
         return result;
@@ -314,9 +326,8 @@ public class ApiService {
             // Execute HTTP Post Request
             HttpResponse response = httpClient.execute(request);
             result = parseData(response);
-        } catch (ClientProtocolException e) {
-            result = null;
         } catch (IOException e) {
+            Crashlytics.logException(e);
             result = null;
         }
         return result;
@@ -337,13 +348,12 @@ public class ApiService {
 
             JSONArray object = parseDataArray(response);
             result.put("result", object);
-        } catch (ClientProtocolException e) {
-            result = null;
-            // TODO Auto-generated catch block
         } catch (IOException e) {
+            Crashlytics.logException(e);
             result = null;
             // TODO Auto-generated catch block
         } catch (JSONException e) {
+            Crashlytics.logException(e);
             result = null;
             e.printStackTrace();
         }
@@ -356,6 +366,7 @@ public class ApiService {
         try {
             result.put("status_code", statusCode);
         } catch (JSONException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 
@@ -370,6 +381,7 @@ public class ApiService {
             result = new JSONObject(sb.toString());
             result.put("status_code", statusCode);
         } catch (JSONException | IOException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 
@@ -389,6 +401,7 @@ public class ApiService {
             String res = sb.toString();
             return  res;
         } catch (IOException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             return e.getMessage();
         }
@@ -407,6 +420,7 @@ public class ApiService {
 
             result = new JSONArray(sb.toString());
         } catch (JSONException | IOException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 

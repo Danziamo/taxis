@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.MotionEvent;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -245,6 +247,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             json.put("password", password);
             if (isNew) json.put("phone", phone);
         } catch (JSONException e)  {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
 
@@ -294,6 +297,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
         }
@@ -315,7 +319,9 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             try {
                 user.setUser(object);
                 if (object.has("token")) ApiService.getInstance().setToken(object.getString("token"));
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+                Crashlytics.logException(ignored);
+            }
             Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
             intent.putExtra("SIGNUP", true);
             intent.putExtra("PHONE", user.phone);

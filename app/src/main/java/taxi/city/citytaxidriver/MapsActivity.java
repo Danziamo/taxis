@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.fabric.sdk.android.services.common.Crash;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.core.Order;
@@ -335,8 +337,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     data.put("android_token", mRegId);
                     JSONObject result = api.patchRequest(data, "users/" + user.id + "/");
                 } catch (IOException ex) {
+                    Crashlytics.logException(ex);
                     msg = "err";
-                } catch (JSONException ignored) {}
+                } catch (JSONException ignored) {
+                    Crashlytics.logException(ignored);
+                }
                 return msg;
             }
 
@@ -541,6 +546,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             try {
                 result.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
             } catch (IntentSender.SendIntentException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
         }
@@ -899,6 +905,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 result = api.patchRequest(data, "orders/" + mOrderId + "/");
 
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
                 result = null;
             }
@@ -935,6 +942,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     Toast.makeText(MapsActivity.this, "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
                 Toast.makeText(MapsActivity.this, "Внутрення ошибка", Toast.LENGTH_SHORT).show();
             }
@@ -977,7 +985,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                         array.put(parseTariff(object));
                     }
                 }
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+                Crashlytics.logException(ignored);
+            }
             return array;
         }
 
@@ -1003,7 +1013,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
         try {
             object.put("tariff", tariff);
-        } catch (JSONException ignored) {}
+        } catch (JSONException ignored) {
+            Crashlytics.logException(ignored);
+        }
 
         return object;
     }
@@ -1066,7 +1078,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     mOrderMarkerMap.put(marker, client);
                 }
 
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+                Crashlytics.logException(ignored);
+            }
         }
 
         if (order.id != 0 && order.clientPhone != null && order.startPoint != null) {
