@@ -109,9 +109,6 @@ public class ApiService {
             request.addHeader("content-type", "application/json");
             request.addHeader("Authorization", "Token " + this.token);
 
-            StringEntity params = new StringEntity(data.toString());
-            request.setEntity(params);
-
             HttpResponse response = httpClient.execute(request);
 
             res = parseData(response);

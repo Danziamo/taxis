@@ -378,8 +378,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void updateViews() {
         if (order == null || order.id == 0 || order.status == OStatus.NEW) {
-            order.clear();
-            mMap.clear();
+            if (mMap != null)
+                mMap.clear();
             llButtonTop.setVisibility(View.GONE);
             btnSOS.setVisibility(View.INVISIBLE);
             btnOkAction.setText("Заказы");
