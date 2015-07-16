@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -223,6 +224,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         globalTimerHandler.postDelayed(globalTimerRunnable, 0);
         updateViews();
+
+        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                .setCategory("ui_views")
+                .setLabel("main_view")
+                .build());
 
         SetLocationRequest();
     }
@@ -635,6 +641,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 goToSettings();
                 break;
             case R.id.buttonAdditionalInfo:
+                App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                        .setCategory("ui_views")
+                        .setLabel("additional_info_view")
+                        .setAction("addition_info_click")
+                        .build());
                 if (order.status == OStatus.ACCEPTED || order.status == OStatus.WAITING) {
                     goToOrderDetails();
                 } else {

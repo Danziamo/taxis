@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.HitBuilders;
+
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.User;
 
@@ -16,6 +18,11 @@ public class AboutActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         if (User.getInstance() == null || User.getInstance().id == 0) finish();
+
+        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                .setCategory("ui_views")
+                .setLabel("about_view")
+                .build());
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(true);
     }

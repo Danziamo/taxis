@@ -24,6 +24,7 @@ import android.widget.Toast;
 import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.CarDetailsActivity;
 import taxi.city.citytaxidriver.ConfirmSignUpActivity;
 import taxi.city.citytaxidriver.core.User;
@@ -208,6 +210,13 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         //String email = etEmail.getText().toString();
         String dob = etDoB.getText().toString();
 
+        if (isNew) {
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("user")
+                    .setLabel("begin_input")
+                    .build());
+        }
+
         if (firstName.length() < 2) {
             etFirstName.setError("Имя неправильно задано");
             etFirstName.requestFocus();
@@ -236,6 +245,13 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPassword.setError("Минимально 4 знака");
             etPassword.requestFocus();
             return;
+        }
+
+        if (isNew) {
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("user")
+                    .setLabel("finish_input")
+                    .build());
         }
 
         JSONObject json = new JSONObject();

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.HitBuilders;
+
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.User;
 
@@ -19,6 +21,12 @@ public class HelpActivity extends ActionBarActivity {
         if (User.getInstance() == null || User.getInstance().id == 0) {
             finish();
         }
+
+        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                .setCategory("ui_views")
+                .setLabel("help_view")
+                .build());
+
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(true);
     }
