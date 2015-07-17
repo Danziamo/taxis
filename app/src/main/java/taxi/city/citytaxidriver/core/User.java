@@ -41,7 +41,7 @@ public class User implements Serializable {
         this.id = json.getInt("id");
         this.firstName = json.getString("first_name");
         this.lastName = json.getString("last_name");
-        this.token = json.getString("token");
+        this.token = json.has("token") ? json.getString("token") : this.token;
         this.phone = json.getString("phone");
         this.balance = json.getDouble("balance");
         this.email = json.getString("email");
