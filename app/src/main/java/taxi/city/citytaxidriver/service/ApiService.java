@@ -175,6 +175,36 @@ public class ApiService {
         return json;
     }
 
+    public JSONObject createOrder(JSONObject data, String apiUrl) {
+        HttpClient httpClient = getHttpClient();
+        JSONObject json;
+
+        try {
+            HttpPost request = new HttpPost(url + apiUrl);
+            // Add your data
+            request.addHeader("content-type", "application/json");
+            request.addHeader("Authorization", "Token " + this.token);
+
+            StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
+            request.setEntity(params);
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpClient.execute(request);
+            json = parseData(response);
+
+        } catch (IOException e) {
+            Crashlytics.logException(e);
+            json = null;
+            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+            e.getMessage();
+            json = null;
+        }
+        return json;
+    }
+
     public JSONObject signUpRequest(JSONObject data, String apiUrl) {
         HttpClient httpClient = getHttpClient();
         JSONObject json = new JSONObject();

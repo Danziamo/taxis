@@ -194,6 +194,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutCustomTrip"
+                android:layout_above="@+id/linearLayoutStartCancelMap"
+                android:orientation="horizontal">
+
+                <Button
+                    style="@style/mediumButton.Black"
+                    android:id="@+id/buttonCustomTrip"
+                    android:layout_margin="10dp"/>
+
+                <Button
+                    style="@style/mediumButton.Black"
+                    android:visibility="invisible"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/linearLayoutWaitInfo"
                 android:layout_above="@+id/linearLayoutStartCancelMap"
                 android:weightSum="10">

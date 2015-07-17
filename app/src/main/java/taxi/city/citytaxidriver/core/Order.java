@@ -80,10 +80,11 @@ public class Order implements Serializable {
         obj.put("order_time", this.orderTime);
         obj.put("order_distance", (double)Math.round(this.distance*100)/100);
         obj.put("order_sum", getTotalSum());
+        obj.put("fixed_price", this.fixedPrice);
         obj.put("order_travel_time", getTimeFromLong(this.time));
-        obj.put("address_start_name", this.addressStart == null ? JSONObject.NULL : this.addressStart);
-        obj.put("address_stop_name", this.addressEnd == null ? JSONObject.NULL : this.addressEnd);
-        obj.put("description", this.description == null ? JSONObject.NULL : this.description);
+        obj.put("address_start_name", this.addressStart == null ? "" : this.addressStart);
+        obj.put("address_stop_name", this.addressEnd == null ? "" : this.addressEnd);
+        obj.put("description", this.description == null ? "" : this.description);
 
         return obj;
     }

@@ -59,6 +59,7 @@ import io.fabric.sdk.android.services.common.Crash;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.core.Order;
+import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
@@ -82,6 +83,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private SendPostRequestTask sendTask;
     private GetUsersLocationTask locationTask;
+    private CreateOrderTask createTask;
 
     private SweetAlertDialog pDialog;
     LinearLayout llMain;
@@ -109,8 +111,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Button btnInfo;
     Button btnWaitCancel;
     Button btnSOS;
+    Button btnCustomTrip;
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
+    LinearLayout llCustomTrip;
     Dialog sosDialog;
 
     Location location;
@@ -370,15 +374,18 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnSettingsCancel = (Button)findViewById(R.id.buttonSettings);
         btnWaitCancel = (Button)findViewById(R.id.buttonWaitTrip);
         btnSOS = (Button)findViewById(R.id.buttonSos);
+        btnCustomTrip = (Button)findViewById(R.id.buttonCustomTrip);
 
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
+        llCustomTrip = (LinearLayout) findViewById(R.id.linearLayoutCustomTrip);
 
         btnSOS.setOnClickListener(this);
         btnInfo.setOnClickListener(this);
         btnOkAction.setOnClickListener(this);
         btnSettingsCancel.setOnClickListener(this);
         btnWaitCancel.setOnClickListener(this);
+        btnCustomTrip.setOnClickListener(this);
         createSosDialog();
     }
 
@@ -387,6 +394,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (mMap != null)
                 mMap.clear();
             llButtonTop.setVisibility(View.GONE);
+            llCustomTrip.setVisibility(View.VISIBLE);
             btnSOS.setVisibility(View.INVISIBLE);
             btnOkAction.setText("Заказы");
             btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
@@ -394,6 +402,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             btnWaitCancel.setBackgroundResource(R.drawable.button_shape_dark_blue);
             llMain.setVisibility(View.GONE);
         } else {
+            llCustomTrip.setVisibility(View.GONE);
             if (order.status == OStatus.ACCEPTED) {
                 btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
                 btnOkAction.setText("На месте");
@@ -439,6 +448,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 btnSOS.setVisibility(View.INVISIBLE);
                 llMain.setVisibility(View.GONE);
                 llButtonTop.setVisibility(View.GONE);
+                llCustomTrip.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -654,6 +664,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 break;
             case R.id.buttonSos:
                 makeSos();
+                break;
+            case R.id.buttonCustomTrip:
+                createOrder();
                 break;
 
         }
@@ -1130,6 +1143,79 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             pDialog.show();
         } else {
             if (pDialog != null) pDialog.dismissWithAnimation();
+        }
+    }
+
+    private void createOrder() {
+        if (createTask != null) {
+            return;
+        }
+
+        showProgress(true);
+        createTask = new CreateOrderTask();
+        createTask.execute((Void) null);
+    }
+
+    private class CreateOrderTask extends AsyncTask<Void, Void, JSONObject> {
+        CreateOrderTask() {}
+
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            try {
+                String tariffId = "1";
+                JSONObject tariffObject = null;
+                for (int i = 0; i < 10; ++i) {
+                    tariffObject = api.getRequest("", "tariffs/" + tariffId);
+                    if (Helper.isSuccess(tariffObject)) {
+                        break;
+                    }
+                }
+                if (!Helper.isSuccess(tariffObject))
+                    return null;
+
+                JSONObject data = new JSONObject();
+                data = order.getOrderAsJson();
+                data.put("tariff", tariffId);
+                data.put("driver", user.id);
+                data.put("client", user.id);
+                data.put("address_start", Helper.getFormattedLatLng(gp.currPosition));
+                data.put("address_end", Helper.getFormattedLatLng(gp.currPosition));
+                data.put("status", OStatus.ONTHEWAY.toString());
+                data.put("client_phone", user.phone);
+
+                JSONObject orderObject = api.createOrder(null, "orders/");
+                if (Helper.isSuccess(orderObject)) {
+                    orderObject.put("tariff_info", tariffObject);
+                }
+
+                return orderObject;
+
+            } catch (JSONException e) {
+                Crashlytics.logException(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject result) {
+            createTask = null;
+            showProgress(false);
+            try {
+                if (Helper.isSuccess(result)) {
+                    Helper.setOrder(result);
+                    updateViews();
+                } else {
+                    Toast.makeText(MapsActivity.this, "Не удалось создать заказ. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Crashlytics.logException(e);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            locationTask = null;
+            showProgress(false);
         }
     }
 }
