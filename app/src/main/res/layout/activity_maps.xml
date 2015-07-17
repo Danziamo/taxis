@@ -199,8 +199,9 @@
                 android:orientation="horizontal">
 
                 <Button
-                    style="@style/mediumButton.Black"
+                    style="@style/mediumButton.Yellow"
                     android:id="@+id/buttonCustomTrip"
+                    android:text="С борта"
                     android:layout_margin="10dp"/>
 
                 <Button

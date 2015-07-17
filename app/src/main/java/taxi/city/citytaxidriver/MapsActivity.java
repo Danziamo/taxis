@@ -1183,7 +1183,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("status", OStatus.ONTHEWAY.toString());
                 data.put("client_phone", user.phone);
 
-                JSONObject orderObject = api.createOrder(null, "orders/");
+                JSONObject orderObject = api.createOrder(data, "orders/");
                 if (Helper.isSuccess(orderObject)) {
                     orderObject.put("tariff_info", tariffObject);
                 }
@@ -1203,6 +1203,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             try {
                 if (Helper.isSuccess(result)) {
                     Helper.setOrder(result);
+                    SetDefaultValues();
+                    timerHandler.postDelayed(timerRunnable, 0);
                     updateViews();
                 } else {
                     Toast.makeText(MapsActivity.this, "Не удалось создать заказ. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
