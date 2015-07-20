@@ -324,7 +324,14 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                         getActivity().finish();
                     }
                 } else if (Helper.isBadRequest(result)) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Заказ отменён или занят", Toast.LENGTH_SHORT).show();
+                    String detail = result.has("details") ? result.getString("details") : "";
+                    String displayMessage = "Заказ отменён или занят";
+                    if (detail.toLowerCase().contains("does not have enough money")) {
+                        displayMessage = "Не достатончно денег на балансе";
+                    } else if (detail.toLowerCase().contains("canceled")) {
+                        displayMessage = "Заказ отменен клиентом";
+                    }
+                    Toast.makeText(getActivity().getApplicationContext(), displayMessage, Toast.LENGTH_SHORT).show();
                     Helper.destroyOrderPreferences(getActivity().getApplicationContext(), user.id);
                     order.clear();
                     getActivity().finish();

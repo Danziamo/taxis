@@ -214,8 +214,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        if (color.length() < 3) {
-            etCarColor.setError("Неверно задано");
+        if (color.length() < 3 || color.length() > 20) {
+            etCarColor.setError("Не более 20 символов");
             etCarColor.requestFocus();
             return;
         }

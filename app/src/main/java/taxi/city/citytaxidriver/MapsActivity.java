@@ -1162,7 +1162,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         protected JSONObject doInBackground(Void... params) {
             try {
-                String tariffId = "1";
+                String tariffId = "2";
                 JSONObject tariffObject = null;
                 for (int i = 0; i < 10; ++i) {
                     tariffObject = api.getRequest("", "tariffs/" + tariffId);
@@ -1180,7 +1180,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("client", user.id);
                 data.put("address_start", Helper.getFormattedLatLng(gp.currPosition));
                 data.put("address_end", Helper.getFormattedLatLng(gp.currPosition));
-                data.put("status", OStatus.ONTHEWAY.toString());
+                data.put("status", OStatus.ACCEPTED.toString());
                 data.put("client_phone", user.phone);
 
                 JSONObject orderObject = api.createOrder(data, "orders/");
