@@ -1181,7 +1181,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data.put("client", user.id);
                 data.put("address_start", Helper.getFormattedLatLng(gp.currPosition));
                 data.put("address_end", Helper.getFormattedLatLng(gp.currPosition));
-                data.put("status", OStatus.ACCEPTED.toString());
+                data.put("status", OStatus.ONTHEWAY.toString());
                 data.put("client_phone", user.phone);
 
                 JSONObject orderObject = api.createOrder(data, "orders/");
