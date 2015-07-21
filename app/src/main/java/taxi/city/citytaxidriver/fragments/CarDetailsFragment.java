@@ -189,14 +189,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
 
 
         if (passportNumber.length() < 6) {
-            etPassportNumber.setError("Минимально 2 символа и 7 цифр");
+            etPassportNumber.setError("Минимально 6 символа");
             etPassportNumber.requestFocus();
             return;
         }
 
 
         if (driverLicense.length() < 6) {
-            etDriverLicense.setError("Минимально 2 символа 9 цифр");
+            etDriverLicense.setError("Минимально 6 символа");
             etDriverLicense.requestFocus();
             return;
         }
@@ -311,6 +311,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         Car car = new Car();
         CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
         car.brandId = mBrand.id;
+        car.id = mUser.car.id;
         car.brandName = mBrand.name;
         CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
         car.modelId = mModel.id;
