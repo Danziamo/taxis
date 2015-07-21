@@ -297,6 +297,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 .setNegativeButton("Отмена",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(Integer.parseInt(MapsActivity.this.getString(R.string.map_default_zoom))));
                                 d.cancel();
                             }
                         });

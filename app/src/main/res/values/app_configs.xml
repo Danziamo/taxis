@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_default_lat">42.8733</string>
+    <string name="map_default_lng">74.6070</string>
+    <string name="map_default_zoom">13</string>
+</resources>
