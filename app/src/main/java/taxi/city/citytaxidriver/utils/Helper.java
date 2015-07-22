@@ -115,6 +115,7 @@ public class Helper {
         order.sum = object.has("order_sum") ? tryParseDouble(object.getString("order_sum")) : 0;
         order.distance = object.has("order_distance") ? tryParseDouble(object.getString("order_distance")) : 0;
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
+        order.waitTime = object.has("wait_time") ? getLongFromString(object.getString("wait_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
         order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
         order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : new Tariff();
@@ -134,6 +135,7 @@ public class Helper {
         order.sum = object.has("order_sum") ? tryParseDouble(object.getString("order_sum")) : 0;
         order.distance = object.has("order_distance") ? tryParseDouble(object.getString("order_distance")) : 0;
         order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
+        order.waitTime = object.has("wait_time") ? getLongFromString(object.getString("wait_time")) : 0;
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
         order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
         order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff")) : new Tariff();
