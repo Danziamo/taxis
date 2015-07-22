@@ -326,7 +326,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
                 } else if (Helper.isBadRequest(result)) {
                     String detail = result.has("details") ? result.getString("details") : "";
                     String displayMessage = "Заказ отменён или занят";
-                    if (detail.toLowerCase().contains("does not have enough money")) {
+                    if (detail.toLowerCase().contains("user have not enough money")) {
                         displayMessage = "Не достатончно денег на балансе";
                     } else if (detail.toLowerCase().contains("canceled")) {
                         displayMessage = "Заказ отменен клиентом";

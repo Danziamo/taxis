@@ -216,7 +216,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     result = api.getArrayRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
-                        for (int i = 0; i < tempArray.length() && i < 10; ++i) {
+                        for (int i = 0; i < tempArray.length(); ++i) {
                             array.put(tempArray.getJSONObject(i));
                         }
                     }

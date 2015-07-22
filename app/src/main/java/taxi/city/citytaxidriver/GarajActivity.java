@@ -38,6 +38,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
 
         mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOffscreenPageLimit(0);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override

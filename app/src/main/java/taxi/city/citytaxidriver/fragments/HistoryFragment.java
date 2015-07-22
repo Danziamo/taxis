@@ -88,7 +88,7 @@ public class HistoryFragment extends ListFragment implements SwipeRefreshLayout.
                 if (!row.has("status") || row.getString("status").equals(OStatus.CANCELED.toString()))
                     continue;
                 Client details = new Client(row, user.id, false);
-                alist.add("#" + String.valueOf(details.id) + " " +details.addressStart);
+                alist.add("#" + String.valueOf(details.id) + " " + (details.addressStart.isEmpty() ? "С борта" : details.addressStart));
                 list.add(details);
 
             }
