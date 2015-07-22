@@ -259,6 +259,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             json.put("first_name", firstName);
             json.put("last_name", lastName);
             //json.put("email", email.length() == 0 ? JSONObject.NULL : email);
+            json.put("role", "driver");
             json.put("date_of_birth", dob.length() == 0 ? JSONObject.NULL : dob);
             json.put("password", password);
             if (isNew) json.put("phone", phone);
