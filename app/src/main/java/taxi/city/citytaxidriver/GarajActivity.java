@@ -1,9 +1,11 @@
 package taxi.city.citytaxidriver;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -191,6 +193,9 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
             mLogoutTask = null;
             showProgress(false);
             Intent intent = new Intent(GarajActivity.this, LoginActivity.class);
+            ComponentName cn = intent.getComponent();
+            Intent mainIntent = IntentCompat.makeRestartActivityTask(cn);
+            startActivity(mainIntent);
             intent.putExtra("finish", true);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
             startActivity(intent);
