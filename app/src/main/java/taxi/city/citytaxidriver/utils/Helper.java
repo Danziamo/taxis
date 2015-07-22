@@ -100,6 +100,7 @@ public class Helper {
      * Saving instance of a order from JSONObject
      */
     public static void setOrder(JSONObject object) throws JSONException {
+        if (object == null) return;
         Order order = Order.getInstance();
         order.id = object.getInt("id");
         order.clientPhone = object.getString("client_phone");
@@ -117,6 +118,25 @@ public class Helper {
         order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
         order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
         order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff_info")) : new Tariff();
+    }
+
+    public static void setOrderFromLogin(JSONObject object) throws JSONException {
+        if (object == null) return;
+        Order order = Order.getInstance();
+        order.id = object.getInt("id");
+        order.clientPhone = object.getString("client_phone");
+        order.orderTime = object.has("order_time") ? object.getString("order_time") : "00:00:00";
+        order.status = object.has("status") ? getStatus(object.getString("status")) : OStatus.NEW;
+        order.startPoint = object.has("address_start") ? getLatLng(object.getString("address_start")) : null;
+        order.addressStart = object.has("address_start_name") ? object.getString("address_start_name") : null;
+        order.addressEnd = object.has("address_stop_name") ? object.getString("address_stop_name") : null;
+        order.description = object.has("description") ? object.getString("description") : null;
+        order.sum = object.has("order_sum") ? tryParseDouble(object.getString("order_sum")) : 0;
+        order.distance = object.has("order_distance") ? tryParseDouble(object.getString("order_distance")) : 0;
+        order.time = object.has("order_travel_time") ? getLongFromString(object.getString("order_travel_time")) : 0;
+        order.waitSum = object.has("wait_time_price") ? getLongFromString(object.getString("wait_time_price")): 0;
+        order.fixedPrice = object.has("fixed_price") ? tryParseDouble(object.getString("fixed_price")) : 0;
+        order.tariffInfo = object.has("tariff_info") ? new Tariff(object.getJSONObject("tariff")) : new Tariff();
     }
 
     public static double tryParseDouble(String number) {
@@ -214,6 +234,7 @@ public class Helper {
     public static void saveOrderPreferences(Context context, Order order) {
         settings = context.getSharedPreferences(ORDER_PREFS + User.getInstance().id, 0);
         SharedPreferences.Editor editor = settings.edit();
+        editor.clear().apply();
         editor.putFloat("orderDistance", (float)order.distance);
         editor.putInt("orderId", order.id);
         editor.putFloat("orderFixedPrice", (float) order.fixedPrice);
@@ -239,12 +260,12 @@ public class Helper {
         clearOrderPreferences(context, id);
     }
 
-    public static void clearOrderPreferences(Context context, int id) {
+public static void clearOrderPreferences(Context context, int id) {
         if (id == 0) return;
         String pref = ORDER_PREFS + (id == 0 ? "" : id);
         settings = context.getSharedPreferences(pref, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.clear().apply();
+        editor.clear().commit();
     }
 
     public static void resetOrderPreferences(Context context, int id) {
@@ -254,7 +275,7 @@ public class Helper {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("orderId", 0);
         editor.putString("status", null);
-        editor.apply();
+        editor.commit();
     }
 
     public static void clearUserPreferences(Context context) {
@@ -307,7 +328,7 @@ public class Helper {
         user.driverLicenseNumber = settings.getString("license_number", null);
         user.dob = settings.getString("dob", null);
         user.address = settings.getString("address", null);
-        user.rating = (double)settings.getFloat("rating", 0);
+        user.rating = settings.getFloat("rating", 0);
         Car car = new Car();
         car.id = settings.getInt("carId", 0);
         car.brandId = settings.getInt("carBrandId", 0);

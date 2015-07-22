@@ -9,9 +9,6 @@ import java.io.Serializable;
 
 import taxi.city.citytaxidriver.enums.OStatus;
 
-/**
- * Created by Daniyar on 3/27/2015.
- */
 public class Order implements Serializable {
 
 

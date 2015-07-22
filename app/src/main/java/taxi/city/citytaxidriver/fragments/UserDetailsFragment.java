@@ -328,7 +328,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                         etPhone.requestFocus();
                         createSignupErrorAnalyticsError("Пользователь с таким номером уже существует");
                     }
-                } else {
+                } else if (getActivity() != null) {
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {

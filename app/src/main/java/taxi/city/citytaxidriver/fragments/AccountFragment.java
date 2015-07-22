@@ -50,13 +50,13 @@ public class AccountFragment extends Fragment {
         tvAccountNumber.setText(User.getInstance().phone);
         tvAccountBalance.setText(String.valueOf((int)User.getInstance().balance) + "  сом");
         tvRating.setText(getRatingText(user.rating));
-        ratingBar.setRating((float)user.rating);
+        ratingBar.setRating(user.rating);
 
         fetchTask();
         return rootView;
     }
 
-    private String getRatingText(double rating) {
+    private String getRatingText(float rating) {
         if (rating < 1 ) return null;
         if (rating == 1) return "1 звезда";
         if (rating == 5) return "5 звезд";
@@ -89,7 +89,7 @@ public class AccountFragment extends Fragment {
                 }
                 if (Helper.isSuccess(statusCode)) {
                     fillForms(result);
-                } else {
+                } else if (getActivity() != null) {
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {

@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -28,18 +27,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
@@ -51,8 +44,6 @@ public class LoginActivity extends Activity{
     private static final String PREFS_NAME = "MyPrefsFile";
     private UserLoginTask mAuthTask = null;
     private ForgotPasswordTask mForgotTask = null;
-
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private EditText mPhoneView;
     private TextView mPhoneExtraView;
@@ -335,6 +326,46 @@ public class LoginActivity extends Activity{
                         Helper.saveUserPreferences(LoginActivity.this, user);
                         id = object.getInt("id");
                         if (object.has("cars") && object.getJSONArray("cars").length() > 0) hasCar = true;
+
+                        if (hasCar) {
+                            Helper.getOrderPreferences(LoginActivity.this, id);
+                            if (Order.getInstance().id != 0) {
+                                JSONObject orderObject = api.getRequest("", "orders/" + Order.getInstance().id);
+                                if (Helper.isSuccess(orderObject)) {
+                                    if (orderObject.getString("status").equals(OStatus.FINISHED.toString())) {
+                                        order.clear();
+                                        Helper.destroyOrderPreferences(LoginActivity.this, id);
+                                    }
+                                }
+                            } else {
+                                JSONObject orderObject = null;
+                                JSONObject orderResult = api.getArrayRequest("", "info_orders/?status=accepted&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
+                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
+                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
+                                }
+                                orderResult = api.getArrayRequest("", "info_orders/?status=waiting&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
+                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
+                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
+                                }
+                                orderResult = api.getArrayRequest("", "info_orders/?status=ontheway&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
+                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
+                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
+                                }
+                                orderResult = api.getArrayRequest("", "info_orders/?status=pending&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
+                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
+                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
+                                }
+                                orderResult = api.getArrayRequest("", "info_orders/?status=sos&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
+                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
+                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
+                                }
+                                if (orderObject != null) {
+                                    Helper.setOrderFromLogin(orderObject);
+                                    Helper.saveOrderPreferences(LoginActivity.this, Order.getInstance());
+                                }
+                            }
+                        }
+
                         JSONObject regObject = new JSONObject();
                         regObject.put("online_status", "online");
                         regObject.put("role", "driver");

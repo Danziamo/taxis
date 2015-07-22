@@ -27,7 +27,7 @@
             android:hint="Фамилия"
             android:imeOptions="actionNext"
             android:id="@+id/editTextLastName"
-            android:inputType="text"
+            android:inputType="textPersonName"
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText

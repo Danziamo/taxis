@@ -263,7 +263,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         tvTime.setText(Helper.getTimeFromLong(order.time));
         tvTotalSum.setText(df.format(order.getTotalSum()));
         updateLabels();
-        if (System.currentTimeMillis()/1000 - order.sosStartTime < 60 * 1) {
+        if (System.currentTimeMillis()/1000 - order.sosStartTime < SOS_DURATION) {
             sosDialog.show();
         }
     }
@@ -1001,7 +1001,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     JSONObject updateDriverLocation = api.patchRequest(data, "users/" + user.id + "/");
                 }
 
-                JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
+            JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
                 if (Helper.isSuccess(sosObject)) {
                     JSONArray sosArray = sosObject.getJSONArray("result");
                     for (int j = 0; j < sosArray.length(); j++) {
@@ -1178,7 +1178,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 data = order.getOrderAsJson();
                 data.put("tariff", tariffId);
                 data.put("driver", user.id);
-                data.put("client", user.id);
+                data.put("client", JSONObject.NULL);
                 data.put("address_start", Helper.getFormattedLatLng(gp.currPosition));
                 data.put("address_end", Helper.getFormattedLatLng(gp.currPosition));
                 data.put("status", OStatus.ONTHEWAY.toString());
