@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.fabric.sdk.android.services.common.Crash;
+import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.MapsActivity;
 import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.CarEntity;
@@ -166,6 +168,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         if (mUpdateTask != null)
             return;
 
+        if (isNew){
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("car_create")
+                    .setAction("car_create")
+                    .setLabel("Car save button pressed")
+                    .build());
+        }
+
         JSONObject carJSON = new JSONObject();
         JSONObject userJSON = new JSONObject();
 
@@ -175,6 +185,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         if (carBrand == null || carBrand.id == 0) {
             carBrandSpinner.requestFocus();
             Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
+            createCarCreateAnalyticsEvent("Выберите машину");
             return;
         }
 
@@ -191,6 +202,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         if (passportNumber.length() < 6) {
             etPassportNumber.setError("Минимально 6 символа");
             etPassportNumber.requestFocus();
+            createCarCreateAnalyticsEvent("Серия и номер паспортных данных: Минимально 6 символа");
             return;
         }
 
@@ -198,6 +210,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         if (driverLicense.length() < 6) {
             etDriverLicense.setError("Минимально 6 символа");
             etDriverLicense.requestFocus();
+            createCarCreateAnalyticsEvent("Серия и номер прав: Минимально 6 символа");
             return;
         }
 
@@ -205,18 +218,35 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         if (carNumber.length() < 6 || carNumber.length() > 10) {
             etCarNumber.setError("Неверно задано");
             etCarNumber.requestFocus();
+            createCarCreateAnalyticsEvent("Номер автомобиля: Неверно задано");
             return;
         }
 
         if (!Helper.isYearValid(year)) {
             etCarYear.setError("Неверно задано");
             etCarYear.requestFocus();
+            createCarCreateAnalyticsEvent("Год машины: Неверно задано");
             return;
         }
 
-        if (color.length() < 3 || color.length() > 20) {
+        if (color.length() < 3){
+            etCarColor.setError("Не менее 3 символов");
+            etCarColor.requestFocus();
+            createCarCreateAnalyticsEvent("Цвет: Не менее 3 символов");
+            return;
+        }
+
+        if (color.length() > 20) {
             etCarColor.setError("Не более 20 символов");
             etCarColor.requestFocus();
+            createCarCreateAnalyticsEvent("Цвет: Не более 20 символов");
+            return;
+        }
+
+        if(techPassport.length() > 10){
+            etTechPassport.setError("Не более 10 символов");
+            etTechPassport.requestFocus();
+            createCarCreateAnalyticsEvent("Серия и номер тех паспорта: Не более 10 символов");
             return;
         }
 
@@ -239,6 +269,16 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         showProgress(true, "Сохранение");
         mUpdateTask = new CarUpdateTask(carJSON, userJSON);
         mUpdateTask.execute((Void) null);
+    }
+
+    private void createCarCreateAnalyticsEvent(String msg){
+        if (isNew) {
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("car_create")
+                    .setAction("car_create_error")
+                    .setLabel("Car Create Error: " + msg)
+                    .build());
+        }
     }
 
     @Override
@@ -288,7 +328,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
                 }
                 if (Helper.isSuccess(statusCode)) {
-                    finishUpdate();
+                    finishUpdate(result.getInt("id"));
+                    if (isNew){
+                        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                                .setCategory("car_create")
+                                .setAction("car_create")
+                                .setLabel("Car create success")
+                                .build());
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
                 }
@@ -304,14 +351,14 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void finishUpdate() {
+    private void finishUpdate(int carId) {
         mUser.driverLicenseNumber =  etDriverLicense.getText().toString();
         mUser.passportNumber =  etPassportNumber.getText().toString();
         //if (!isNew) {
         Car car = new Car();
         CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
         car.brandId = mBrand.id;
-        car.id = mUser.car.id;
+        car.id = carId;
         car.brandName = mBrand.name;
         CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
         car.modelId = mModel.id;

@@ -203,6 +203,14 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
     private void updateTask() {
         if (mTask != null) return;
 
+        if (isNew){
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("signup")
+                    .setAction("signup")
+                    .setLabel("Signup button pressed")
+                    .build());
+        }
+
         String firstName = etFirstName.getText().toString();
         String lastName = etLastName.getText().toString();
         String phone = etPhoneExtra.getText().toString() + etPhone.getText().toString();
@@ -210,22 +218,19 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         //String email = etEmail.getText().toString();
         String dob = etDoB.getText().toString();
 
-        if (isNew) {
-            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
-                    .setCategory("user")
-                    .setLabel("begin_input")
-                    .build());
-        }
+
 
         if (firstName.length() < 2) {
             etFirstName.setError("Имя неправильно задано");
             etFirstName.requestFocus();
+            createSignupErrorAnalyticsError("Имя неправильно задано");
             return;
         }
 
         if (lastName.length() < 2) {
             etLastName.setError("Фамилия неправильно задано");
             etLastName.requestFocus();
+            createSignupErrorAnalyticsError("Фамилия неправильно задано");
             return;
         }
 
@@ -238,20 +243,15 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         if (isNew && phone.length() != 13) {
             etPhone.setError("Телефон должен состоять из 13 символов");
             etPhone.requestFocus();
+            createSignupErrorAnalyticsError("Телефон должен состоять из 13 символов");
             return;
         }
 
         if (password.isEmpty() || password.length() < 4) {
             etPassword.setError("Минимально 4 знака");
             etPassword.requestFocus();
+            createSignupErrorAnalyticsError("Пароль минимально 4 знака");
             return;
-        }
-
-        if (isNew) {
-            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
-                    .setCategory("user")
-                    .setLabel("finish_input")
-                    .build());
         }
 
         JSONObject json = new JSONObject();
@@ -279,6 +279,16 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         mTask.execute((Void) null);
     }
 
+    private void createSignupErrorAnalyticsError(String msg){
+        if(isNew) {
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("signup")
+                    .setAction("signup error")
+                    .setLabel("Signup Error: " + msg)
+                    .build());
+        }
+    }
+
     private class UserUpdateTask extends AsyncTask<Void, Void, JSONObject> {
 
         private JSONObject mJson;
@@ -304,10 +314,18 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 }
                 if (Helper.isSuccess(statusCode)) {
                     confirmUpdate(result);
+                    if(isNew) {
+                        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                                .setCategory("signup")
+                                .setAction("signup")
+                                .setLabel("Signup success")
+                                .build());
+                    }
                 } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
                     if (result.has("phone")) {
                         etPhone.setError("Пользователь с таким номером уже существует");
                         etPhone.requestFocus();
+                        createSignupErrorAnalyticsError("Пользователь с таким номером уже существует");
                     }
                 } else {
                     Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
