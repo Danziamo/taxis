@@ -32,11 +32,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.tasks.UserLoginTask;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class LoginActivity extends Activity{
@@ -268,7 +268,32 @@ public class LoginActivity extends Activity{
             focusView.requestFocus();
         } else {
             showProgress(true);
-            mAuthTask = new UserLoginTask(phone, password);
+            mAuthTask = new UserLoginTask(phone, password){
+                @Override
+                protected void onPostExecute(Integer statusCode) {
+                    super.onPostExecute(statusCode);
+                    mAuthTask = null;
+                    showProgress(false);
+                    if (statusCode == HttpStatus.SC_OK || statusCode == UserLoginTask.ACCOUNT_HAS_CAR_STATUS_CODE) {
+                        boolean hasCar = (statusCode == UserLoginTask.ACCOUNT_HAS_CAR_STATUS_CODE);
+                        NextActivity(hasCar);
+                    }else if (statusCode == UserLoginTask.NOT_ACTIVATED_ACCOUNT_STATUS_CODE) {
+                        goToActivation();
+                    }else if (statusCode == HttpStatus.SC_UNAUTHORIZED){
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                protected void onCancelled() {
+                    mAuthTask = null;
+                    showProgress(false);
+                }
+
+            };
             mAuthTask.execute((Void) null);
         }
     }
@@ -295,119 +320,6 @@ public class LoginActivity extends Activity{
         }
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mPhone;
-        private final String mPassword;
-        private boolean hasCar = false;
-        private int id = 0;
-
-        UserLoginTask(String phone, String password) {
-            mPhone = phone;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            boolean res = false;
-            try {
-                JSONObject json = new JSONObject();
-                user.phone = mPhone;
-                user.password = mPassword;
-                json.put("phone", mPhone);
-                json.put("password", mPassword);
-                JSONObject object = api.loginRequest(json, "login/");
-                if (object != null) {
-                    statusCode = object.getInt("status_code");
-                    if (object.has("detail")) detail = object.getString("detail");
-                    if (statusCode == HttpStatus.SC_OK) {
-                        user.setUser(object);
-                        ApiService.getInstance().setToken(user.getToken());
-                        Helper.saveUserPreferences(LoginActivity.this, user);
-                        id = object.getInt("id");
-                        if (object.has("cars") && object.getJSONArray("cars").length() > 0) hasCar = true;
-
-                        if (hasCar) {
-                            Helper.getOrderPreferences(LoginActivity.this, id);
-                            if (Order.getInstance().id != 0) {
-                                JSONObject orderObject = api.getRequest("", "orders/" + Order.getInstance().id);
-                                if (Helper.isSuccess(orderObject)) {
-                                    if (orderObject.getString("status").equals(OStatus.FINISHED.toString())) {
-                                        order.clear();
-                                        Helper.destroyOrderPreferences(LoginActivity.this, id);
-                                    }
-                                }
-                            } else {
-                                JSONObject orderObject = null;
-                                JSONObject orderResult = api.getArrayRequest("", "info_orders/?status=accepted&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                                }
-                                orderResult = api.getArrayRequest("", "info_orders/?status=waiting&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                                }
-                                orderResult = api.getArrayRequest("", "info_orders/?status=ontheway&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                                }
-                                orderResult = api.getArrayRequest("", "info_orders/?status=pending&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                                }
-                                orderResult = api.getArrayRequest("", "info_orders/?status=sos&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                                if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                    orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                                }
-                                if (orderObject != null) {
-                                    Helper.setOrderFromLogin(orderObject);
-                                    Helper.saveOrderPreferences(LoginActivity.this, Order.getInstance());
-                                }
-                            }
-                        }
-
-                        JSONObject regObject = new JSONObject();
-                        regObject.put("online_status", "online");
-                        regObject.put("role", "driver");
-                        regObject.put("ios_token", JSONObject.NULL);
-                        JSONObject updateObject = api.patchRequest(regObject, "users/" + id + "/");
-                        res = true;
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                res = false;
-            }
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-            if (success && statusCode == 200) {
-                NextActivity(hasCar);
-            } else  if (Helper.isBadRequest(statusCode)) {
-                if (detail != null && detail.toLowerCase().contains("account")) {
-                    User.getInstance().phone = mPhone;
-                    User.getInstance().password = mPassword;
-                    goToActivation();
-                } else {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                }
-                mPasswordView.requestFocus();
-            }
-            else {
-                Toast.makeText(getApplicationContext(), "Сервис недоступен", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 
     private void goToActivation() {
         Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
