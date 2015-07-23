@@ -392,7 +392,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (mMap != null)
                 mMap.clear();
             llButtonTop.setVisibility(View.GONE);
-            llCustomTrip.setVisibility(View.VISIBLE);
+            llCustomTrip.setVisibility(View.INVISIBLE);
             btnSOS.setVisibility(View.INVISIBLE);
             btnOkAction.setText("Заказы");
             btnOkAction.setBackgroundResource(R.drawable.button_shape_dark_blue);
