@@ -271,10 +271,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void CheckEnableGPS(){
         String provider = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if(!provider.equals("")){
-            Toast.makeText(this, "GPS Enabled: " + provider,
-                    Toast.LENGTH_LONG).show();
-        }else{
+        if(provider.equals("")){
             displayPromptForEnablingGPS();
         }
     }
