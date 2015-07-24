@@ -20,6 +20,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 
 
 public class GarajActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -191,6 +192,11 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
         @Override
         protected void onPostExecute(JSONObject result) {
             mLogoutTask = null;
+
+            SessionHelper sessionHelper = new SessionHelper();
+            sessionHelper.setPassword("");
+            sessionHelper.setToken("");
+
             showProgress(false);
             Intent intent = new Intent(GarajActivity.this, LoginActivity.class);
             ComponentName cn = intent.getComponent();

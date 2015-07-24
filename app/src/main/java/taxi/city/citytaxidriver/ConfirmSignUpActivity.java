@@ -23,10 +23,16 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 
 
 public class ConfirmSignUpActivity extends BaseActivity {
     private static final String PREFS_NAME = "MyPrefsFile";
+
+    public static final String PHONE_KEY = "PHONE";
+    public static final String PASSWORD_KEY = "PASS";
+    public static final String SIGNUP_KEY = "SIGNUP";
+
     private EditText mActivationCode;
     private EditText mPasswordField;
     private ActivateTask task = null;
@@ -39,11 +45,11 @@ public class ConfirmSignUpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_sign_up);
         Intent intent = getIntent();
-        isSignUp = intent.getBooleanExtra("SIGNUP", true);
+        isSignUp = intent.getBooleanExtra(SIGNUP_KEY, true);
         Initialize();
-        mPhone = intent.getStringExtra("PHONE");
-        if (intent.hasExtra("PASS")) {
-            String password = intent.getStringExtra("PASS");
+        mPhone = intent.getStringExtra(PHONE_KEY);
+        if (intent.hasExtra(PASSWORD_KEY)) {
+            String password = intent.getStringExtra(PASSWORD_KEY);
             mPasswordField.setText(password);
         }
         findViewById(R.id.llActivationCodeForm).setOnTouchListener(new View.OnTouchListener() {
@@ -192,7 +198,8 @@ public class ConfirmSignUpActivity extends BaseActivity {
 
     private void Finish() {
         if (isSignUp) {
-            savePreferences(User.getInstance());
+            SessionHelper sessionHelper = new SessionHelper();
+            sessionHelper.save(User.getInstance());
             if (User.getInstance().car == null) {
                 Helper.saveUserPreferences(this, User.getInstance());
                 Intent intent = new Intent(this, CarDetailsActivity.class);
@@ -220,12 +227,4 @@ public class ConfirmSignUpActivity extends BaseActivity {
                 .show();
     }
 
-    private void savePreferences(User user) {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("phoneKey", user.phone);
-        editor.putString("passwordKey", user.password);
-        editor.putString("tokenKey", user.getToken());
-        editor.apply();
-    }
 }

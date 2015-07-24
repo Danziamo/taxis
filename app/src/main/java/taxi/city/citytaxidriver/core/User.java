@@ -38,6 +38,7 @@ public class User implements Serializable {
     }
 
     public void setUser(JSONObject json) throws JSONException {
+        this.car = null;
         this.id = json.getInt("id");
         this.firstName = json.getString("first_name");
         this.lastName = json.getString("last_name");

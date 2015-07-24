@@ -358,9 +358,9 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                 Crashlytics.logException(ignored);
             }
             Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
-            intent.putExtra("SIGNUP", true);
-            intent.putExtra("PHONE", user.phone);
-            intent.putExtra("PASS", user.password);
+            intent.putExtra(ConfirmSignUpActivity.SIGNUP_KEY, true);
+            intent.putExtra(ConfirmSignUpActivity.PHONE_KEY, user.phone);
+            intent.putExtra(ConfirmSignUpActivity.PASSWORD_KEY, user.password);
             startActivity(intent);
             getActivity().finish();
         }

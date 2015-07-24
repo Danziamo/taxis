@@ -34,10 +34,10 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.tasks.UserLoginTask;
 import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 
 public class LoginActivity extends Activity{
 
@@ -152,7 +152,7 @@ public class LoginActivity extends Activity{
             }
         });
 
-        setPreferences();
+        setSessionPreferences();
 
         findViewById(R.id.loginContainer).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -195,26 +195,20 @@ public class LoginActivity extends Activity{
         }
     }
 
-    private void setPreferences() {
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        if (settings.contains("phoneKey")) {
-            String phone = settings.getString("phoneKey", null);
-            if (phone != null && phone.length() > 5) {
-                mPhoneView.setText(phone.substring(4, phone.length()));
-                if (settings.contains("passwordKey")) {
-                    mPasswordView.setText(settings.getString("passwordKey", null));
-                }
-            }
+    private void setSessionPreferences() {
+        SessionHelper sessionHelper = new SessionHelper();
+
+        String phone = sessionHelper.getPhone();
+        if(!phone.isEmpty() && phone.length() > 5){
+            mPhoneView.setText(phone.substring(4, phone.length()));
         }
+        mPasswordView.setText(sessionHelper.getPassword());
     }
 
-    private void savePreferences(User user) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("phoneKey", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
-        editor.putString("passwordKey", mPasswordView.getText().toString());
-        editor.putString("tokenKey", user.getToken());
+    private void saveSessionPreferences(User user) {
+        SessionHelper sessionHelper = new SessionHelper();
+        sessionHelper.save(user);
         api.setToken(user.getToken());
-        editor.apply();
     }
 
     private boolean isNetworkAvailable() {
@@ -323,13 +317,13 @@ public class LoginActivity extends Activity{
 
     private void goToActivation() {
         Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
-        intent.putExtra("PHONE", mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
-        intent.putExtra("PASS", mPasswordView.getText().toString());
+        intent.putExtra(ConfirmSignUpActivity.PHONE_KEY, mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
+        intent.putExtra(ConfirmSignUpActivity.PASSWORD_KEY, mPasswordView.getText().toString());
         startActivity(intent);
     }
 
     private void NextActivity(boolean hasCar) {
-        savePreferences(user);
+        saveSessionPreferences(user);
         Helper.saveUserPreferences(LoginActivity.this, user);
         Intent intent;
         if (hasCar) {
@@ -362,8 +356,8 @@ public class LoginActivity extends Activity{
             try {
                 if (Helper.isSuccess(result)) {
                     Intent intent = new Intent(LoginActivity.this, ConfirmSignUpActivity.class);
-                    intent.putExtra("SIGNUP", false);
-                    intent.putExtra("PHONE", mPhone);
+                    intent.putExtra(ConfirmSignUpActivity.SIGNUP_KEY, false);
+                    intent.putExtra(ConfirmSignUpActivity.PHONE_KEY, mPhone);
                     user.phone = mPhone;
                     startActivity(intent);
                 } else if (Helper.isBadRequest(result)) {

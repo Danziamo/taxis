@@ -375,6 +375,10 @@ public static void clearOrderPreferences(Context context, int id) {
         editor.apply();
     }
 
+    public static void resetCarPreferences(){
+
+    }
+
     public static double getDouble(String number) {
         double result = 0;
         try {
