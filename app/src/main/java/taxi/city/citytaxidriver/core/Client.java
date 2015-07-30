@@ -42,7 +42,7 @@ public class Client implements Serializable{
         this.driver = userId;
         this.id = row.getInt("id");
         this.waitTime = row.getString("wait_time");
-        this.tariff = row.getInt("tariff");
+        //this.tariff = row.getJSONObject("tariff").getInt("id");
         this.status = row.getString("status");
         this.orderTime = row.getString("order_time");
         this.addressStart = row.getString("address_start_name");

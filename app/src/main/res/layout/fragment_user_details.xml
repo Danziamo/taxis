@@ -27,7 +27,7 @@
             android:hint="Фамилия"
             android:imeOptions="actionNext"
             android:id="@+id/editTextLastName"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences"
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText
@@ -35,7 +35,7 @@
             android:imeOptions="actionNext"
             android:hint="Имя"
             android:id="@+id/editTextFirstName"
-            android:inputType="text"
+            android:inputType="textCapSentences"
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText
@@ -109,6 +109,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_width="20dp"
                 android:layout_height="10dp"
+                android:clickable="false"
                 android:layout_alignRight="@+id/editTextPassword"
                 android:layout_alignEnd="@+id/editTextPassword"
                 android:background="@drawable/password_eye"/>
