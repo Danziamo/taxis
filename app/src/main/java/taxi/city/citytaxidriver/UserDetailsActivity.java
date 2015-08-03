@@ -1,7 +1,9 @@
 package taxi.city.citytaxidriver;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.fragments.UserDetailsFragment;
@@ -19,6 +21,9 @@ public class UserDetailsActivity extends ActionBarActivity {
                     .add(R.id.container, new UserDetailsFragment())
                     .commit();
         }
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowTitleEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
     }
 
     /*@Override
@@ -36,5 +41,16 @@ public class UserDetailsActivity extends ActionBarActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

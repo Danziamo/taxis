@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.fragments.CarDetailsFragment;
+import taxi.city.citytaxidriver.fragments.UserDetailsFragment;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 import taxi.city.citytaxidriver.utils.SessionHelper;
@@ -41,7 +43,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
 
         mPageAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(0);
+        mViewPager.setOffscreenPageLimit(2);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -81,8 +83,8 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
         ab.setDisplayShowTitleEnabled(true);
 
         ab.addTab(ab.newTab().setText("Счет").setIcon(R.drawable.ic_action_account).setTabListener(this));
-        ab.addTab(ab.newTab().setText("Кабинет").setIcon(R.drawable.ic_action_personal).setTabListener(this));
-        ab.addTab(ab.newTab().setText("Транспорт").setIcon(R.drawable.ic_action_transport).setTabListener(this));
+        ab.addTab(ab.newTab().setText("Мои заказы").setIcon(R.drawable.ic_action_personal).setTabListener(this));
+ //       ab.addTab(ab.newTab().setText("Транспорт").setIcon(R.drawable.ic_action_transport).setTabListener(this));
         ab.addTab(ab.newTab().setText("История").setIcon(R.drawable.ic_action_history).setTabListener(this));
     }
 
@@ -109,6 +111,13 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
                 return true;
             case R.id.action_help:
                 startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.user_container:
+                startActivity(new Intent(this, UserDetailsActivity.class));
+                return true;
+            case R.id.car_container:
+                startActivity(new Intent(this, CarDetailsActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -149,8 +158,6 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
                 break;
             case 2:
                 break;
-            case 3:
-                break;
         }
     }
 
@@ -167,7 +174,6 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
 
     private void logout() {
         if (mLogoutTask != null) return;
-
 
         showProgress(true);
         mLogoutTask = new LogoutTask();

@@ -58,13 +58,13 @@
                 android:textSize="16sp"
                 android:inputType="number" />
 
-            <EditText
+          <!--  <EditText
                 style="@style/mediumEditText"
                 android:hint="Серия и номер тех паспорта"
                 android:imeOptions="actionNext"
                 android:id="@+id/editTextTechPassport"
                 android:textSize="16sp"
-                android:inputType="text" />
+                android:inputType="text" />-->
 
             <EditText
                 style="@style/mediumEditText"
@@ -74,21 +74,21 @@
                 android:textSize="16sp"
                 android:inputType="text" />
 
-            <EditText
+          <!--  <EditText
                 style="@style/mediumEditText"
                 android:hint="Серия и номер прав"
                 android:id="@+id/editTextDriverLicenseNumber"
                 android:imeOptions="actionNext"
                 android:textSize="16sp"
-                android:inputType="text" />
+                android:inputType="text" />-->
 
-            <EditText
+          <!--  <EditText
                 style="@style/mediumEditText"
                 android:hint="Серия и номер паспортных данных"
                 android:id="@+id/editTextPassportNumber"
                 android:imeOptions="actionDone"
                 android:textSize="16sp"
-                android:inputType="text" />
+                android:inputType="text" />-->
 
         </LinearLayout>
 

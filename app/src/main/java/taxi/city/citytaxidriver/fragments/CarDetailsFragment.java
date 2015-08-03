@@ -58,10 +58,10 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     Spinner carColorSpinner;
     EditText etCarColor;
     EditText etCarYear;
-    EditText etTechPassport;
+    //EditText etTechPassport;
     EditText etCarNumber;
-    EditText etPassportNumber;
-    EditText etDriverLicense;
+    //EditText etPassportNumber;
+    //EditText etDriverLicense;
     TextView tvTitle;
 
     SweetAlertDialog pDialog;
@@ -96,10 +96,10 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         carModelSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarModel);
         etCarColor = (EditText) rootView.findViewById(R.id.spinnerCarColor);
         etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
-        etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
-        etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
+        //etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
+        //etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
         etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
-        etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
+        //etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
         btnBack = (Button)rootView.findViewById(R.id.buttonBack);
@@ -111,13 +111,13 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         String driverLicense = mUser.driverLicenseNumber;
         String passport = mUser.passportNumber;
 
-        etDriverLicense.setText(driverLicense);
-        etPassportNumber.setText(passport);
+        //etDriverLicense.setText(driverLicense);
+        //etPassportNumber.setText(passport);
         if (!isNew && mUser.car != null) {
             etCarColor.setText(mUser.car.color);
             etCarNumber.setText(mUser.car.number);
             etCarYear.setText(mUser.car.year);
-            etTechPassport.setText(mUser.car.technicalCertificate);
+            //etTechPassport.setText(mUser.car.technicalCertificate);
             mBrandId = mUser.car.brandId;
             mBrandModelId = mUser.car.modelId;
             userCarId = mUser.car.id;
@@ -190,16 +190,16 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
 
 
-        String passportNumber =  etPassportNumber.getText().toString();
+       /* String passportNumber =  etPassportNumber.getText().toString();
 
         String driverLicense = etDriverLicense.getText().toString();
-        String techPassport = etTechPassport.getText().toString();
+        String techPassport = etTechPassport.getText().toString();*/
         String carNumber =etCarNumber.getText().toString();
         String color = etCarColor.getText().toString();
         String year = etCarYear.getText().toString();
 
 
-        if (passportNumber.length() < 6) {
+       /* if (passportNumber.length() < 6) {
             etPassportNumber.setError("Минимально 6 символа");
             etPassportNumber.requestFocus();
             createCarCreateAnalyticsEvent("Серия и номер паспортных данных: Минимально 6 символа");
@@ -212,7 +212,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             etDriverLicense.requestFocus();
             createCarCreateAnalyticsEvent("Серия и номер прав: Минимально 6 символа");
             return;
-        }
+        }*/
 
 
         if (carNumber.length() < 6 || carNumber.length() > 10) {
@@ -243,12 +243,12 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        if(techPassport.length() > 10){
+     /*   if(techPassport.length() > 10){
             etTechPassport.setError("Не более 10 символов");
             etTechPassport.requestFocus();
             createCarCreateAnalyticsEvent("Серия и номер тех паспорта: Не более 10 символов");
             return;
-        }
+        }*/
 
         try {
             carJSON.put("driver", mUser.id);
@@ -257,9 +257,9 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             carJSON.put("car_number", carNumber);
             carJSON.put("year", year);
             carJSON.put("color", color);
-            carJSON.put("technical_certificate", techPassport);
+           /* carJSON.put("technical_certificate", techPassport);
             userJSON.put("passport_number", passportNumber);
-            userJSON.put("driver_license_number", driverLicense);
+            userJSON.put("driver_license_number", driverLicense);*/
         } catch (Exception e) {
             Crashlytics.logException(e);
             e.printStackTrace();
@@ -352,8 +352,8 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     }
 
     private void finishUpdate(int carId) {
-        mUser.driverLicenseNumber =  etDriverLicense.getText().toString();
-        mUser.passportNumber =  etPassportNumber.getText().toString();
+       // mUser.driverLicenseNumber =  etDriverLicense.getText().toString();
+       // mUser.passportNumber =  etPassportNumber.getText().toString();
         //if (!isNew) {
         Car car = new Car();
         CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
@@ -365,7 +365,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         car.modelName = mModel.name;
         car.color = etCarColor.getText().toString();
         car.number = etCarNumber.getText().toString();
-        car.technicalCertificate = etTechPassport.getText().toString();
+        //car.technicalCertificate = etTechPassport.getText().toString();
         car.year = etCarYear.getText().toString();
         mUser.car = car;
         //}

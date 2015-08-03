@@ -24,6 +24,17 @@
                 android:title="Тех поддержка"
                 app:showAsAction="ifRoom"
                 android:orderInCategory="99"/>
+
+            <item
+                android:id="@+id/user_container"
+                android:title="Кабинет"
+                android:orderInCategory="97"
+                />
+            <item
+                android:id="@+id/car_container"
+                android:title="Транспорт"
+                android:orderInCategory="96"
+                />
         </menu>
 
     </item>

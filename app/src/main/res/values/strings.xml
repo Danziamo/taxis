@@ -25,6 +25,8 @@
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_sos">SosActivity</string>
     <string name="title_activity_help">Тех. поддержка</string>
+    <string name="title_car_details">Транспорт</string>
+    <string name="title_user_details">Мой кабинет</string>
     <string name="help">Телефон для справок:\n  +996702191111\n</string>
     <string name="WhatsApp">Для WhatsApp сообщений:\n +996702191111\n</string>
     <string name="info">Почта:\n taxi.support@mirsoft.kg</string>
@@ -37,4 +39,7 @@
     <string name="tariff_line5">Комиссия за 1 поездку 10 сом.\n С борта комиссия 3 сома.\n Пополнять баланс возможно в терминалах "Мобильник"\n на свой лиц. счёт (свой номер телефона)</string>
     <string name="tariff_line6">Если клиент выбрал фиксированную плату,\n оплачивается только данная сумма.</string>
     <string name="tariff_line7">Доплата за выезд за пределы города Бишкек,\n  + 40 сом к общей сумме</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
