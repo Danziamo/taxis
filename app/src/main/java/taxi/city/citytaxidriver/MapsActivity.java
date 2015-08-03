@@ -55,14 +55,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import io.fabric.sdk.android.services.common.Crash;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.core.Order;
-import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class MapsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -506,7 +505,27 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void handleNewLocation(Location location) {
-        location.setAltitude(0);
+//        location.setAltitude(0);
+
+        // Fix for phones that do not set the time field
+        if (location.getTime() == 0L) {
+            location.setTime(System.currentTimeMillis());
+        }
+
+        if(prev != null){
+
+            if(location.getTime() <= prev.getTime()){
+                return;
+            }
+
+            long timeDifference = (location.getTime() - prev.getTime()) / 1000;
+            float distance = prev.distanceTo(location);
+            if(distance / timeDifference > Constants.GPS_MAX_SPEED){
+                return;
+            }
+        }
+
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         boolean ifSession = (order.id != 0 && order.status == OStatus.ONTHEWAY);
         int zoom = ifSession ? 17 : 15;
