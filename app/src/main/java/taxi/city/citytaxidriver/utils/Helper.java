@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
@@ -258,6 +259,8 @@ public class Helper {
     }
 
     public static void destroyOrderPreferences(Context context, int id) {
+        if (context == null)
+            context = App.getContext();
         resetOrderPreferences(context, id);
         clearOrderPreferences(context, id);
     }
