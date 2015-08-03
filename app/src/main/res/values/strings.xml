@@ -29,7 +29,7 @@
     <string name="title_user_details">Мой кабинет</string>
     <string name="help">Телефон для справок:\n  +996702191111\n</string>
     <string name="WhatsApp">Для WhatsApp сообщений:\n +996702191111\n</string>
-    <string name="info">Почта:\n taxi.support@mirsoft.kg</string>
+    <string name="info">Почта:\n taxi.support@mirsoft.kg\n</string>
     <string name="title_activity_about">О такси (тарифы)</string>
     <string name="tariff_line1">Cтоимость посадки = 40 сом\n</string>
     <string name="tariff_line2">1 километр = 12 сом.\n (округляется до метра)\n</string>
@@ -39,6 +39,7 @@
     <string name="tariff_line5">Комиссия за 1 поездку 10 сом.\n С борта комиссия 3 сома.\n Пополнять баланс возможно в терминалах "Мобильник"\n на свой лиц. счёт (свой номер телефона)</string>
     <string name="tariff_line6">Если клиент выбрал фиксированную плату,\n оплачивается только данная сумма.</string>
     <string name="tariff_line7">Доплата за выезд за пределы города Бишкек,\n  + 40 сом к общей сумме</string>
+    <string name="info_version">EasyTaxi Водитель  для Андроид\n Версия %1$s.</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
