@@ -214,7 +214,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
         Helper.getOrderPreferences(this, user.id);
         setUpMapIfNeeded();
-        CheckEnableGPS();
+
+        if(!isGPSEnabled()){
+            displayPromptForEnablingGPS(true);
+        }
         SetGooglePlayServices();
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
@@ -267,15 +270,13 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
     }
 
-    private void CheckEnableGPS(){
+    private boolean isGPSEnabled(){
         String provider = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if(provider.equals("")){
-            displayPromptForEnablingGPS();
-        }
+        return !provider.equals("");
     }
 
-    public void displayPromptForEnablingGPS()
+    public void displayPromptForEnablingGPS(final boolean needToZoom)
     {
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(MapsActivity.this);
@@ -293,7 +294,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 .setNegativeButton("Отмена",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
-                                mMap.animateCamera(CameraUpdateFactory.zoomTo(Integer.parseInt(MapsActivity.this.getString(R.string.map_default_zoom))));
+                                if(needToZoom) {
+                                    mMap.animateCamera(CameraUpdateFactory.zoomTo(Integer.parseInt(MapsActivity.this.getString(R.string.map_default_zoom))));
+                                }
                                 d.cancel();
                             }
                         });
@@ -611,6 +614,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         handleNewLocation(this.location);
     }
 
+
+
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -683,7 +688,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 makeSos();
                 break;
             case R.id.buttonCustomTrip:
-                createOrder();
+                createCustomOrder();
                 break;
 
         }
@@ -1163,8 +1168,13 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
     }
 
-    private void createOrder() {
+    private void createCustomOrder() {
         if (createTask != null) {
+            return;
+        }
+
+        if(!isGPSEnabled()){
+            displayPromptForEnablingGPS(false);
             return;
         }
 

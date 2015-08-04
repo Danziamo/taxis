@@ -1,11 +1,14 @@
 package taxi.city.citytaxidriver.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.maps.CameraUpdateFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,6 +143,10 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.buttonTakeMap:
                 if (mClient.status.equals(OStatus.NEW.toString())) {
+                    if(!isGPSEnabled()){
+                        displayPromptForEnablingGPS();
+                        break;
+                    }
                     showProgress(true);
                     SendPostRequest(OStatus.ACCEPTED);
                 } else {
@@ -361,5 +369,36 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             mTask = null;
             showProgress(false);
         }
+    }
+
+
+    private boolean isGPSEnabled(){
+        String provider = Settings.Secure.getString(getActivity().getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        return !provider.equals("");
+    }
+
+    public void displayPromptForEnablingGPS()
+    {
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+        final String message = "Активируйте геолокацию.";
+
+        builder.setMessage(message)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                getActivity().startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton("Отмена",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 }
