@@ -1,8 +1,5 @@
 package taxi.city.citytaxidriver.utils;
 
-/**
- * Created by mbt on 8/3/15.
- */
 public class Constants {
 
     public static final int GPS_MAX_ACCURACY = 50;
@@ -10,4 +7,5 @@ public class Constants {
     // in meter/second
     public static final int GPS_MAX_SPEED = 30; //108 km/h
 
+    public static final double ORDER_SEARCH_RANGE = 15; // km
 }

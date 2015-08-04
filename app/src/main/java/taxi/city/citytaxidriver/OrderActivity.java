@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +28,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.utils.Constants;
 
 public class OrderActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -203,7 +206,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                 JSONObject result = new JSONObject();
                 if (isNew) {
                     if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
-                        result = api.getArrayRequest(null, "orders/?status=new");
+                        result = api.getArrayRequest(null, "orders/?status=new&dist=" + Constants.ORDER_SEARCH_RANGE);
                         if (result.getInt("status_code") == HttpStatus.SC_OK) {
                             JSONArray tempArray = result.getJSONArray("result");
                             for (int i = 0; i < tempArray.length(); ++i) {
@@ -222,9 +225,9 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                     }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (Exception e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
                 array = null;
             }
 

@@ -399,8 +399,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void updateViews() {
         if (order == null || order.id == 0 || order.status == OStatus.NEW) {
-            if (mMap != null)
-                mMap.clear();
+            /*if (mMap != null)
+                mMap.clear();*/
             llButtonTop.setVisibility(View.GONE);
             llCustomTrip.setVisibility(View.VISIBLE);
             btnSOS.setVisibility(View.INVISIBLE);
@@ -1088,7 +1088,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     JSONObject updateDriverLocation = api.patchRequest(data, "users/" + user.id + "/");
                 }
 
-            JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
+                JSONObject sosObject = api.getArrayRequest(null, "info_orders/?status=sos");
                 if (Helper.isSuccess(sosObject)) {
                     JSONArray sosArray = sosObject.getJSONArray("result");
                     for (int j = 0; j < sosArray.length(); j++) {
@@ -1096,12 +1096,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     }
                 }
                 if (order.id == 0) {
-                    JSONObject newObject = api.getArrayRequest(null, "info_orders/?status=new");
+                    JSONObject newObject = api.getArrayRequest(null, "info_orders/?status=new&dist=" + Constants.ORDER_SEARCH_RANGE);
                     if (Helper.isSuccess(newObject)) {
                         JSONArray newArray = newObject.getJSONArray("result");
                         for (int j = 0; j < newArray.length(); j++) {
-                            JSONObject object = newArray.getJSONObject(j);
-                            array.put(parseTariff(object));
+                            array.put(newArray.getJSONObject(j));
                         }
                     }
                 }
@@ -1121,23 +1120,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         protected void onCancelled() {
             locationTask = null;
         }
-    }
-
-    /** TODO: Remove this shit in future **/
-    private JSONObject parseTariff(JSONObject object) {
-        int tariff = 1;
-        try {
-            tariff = object.getJSONObject("tariff").getInt("id");
-        } catch (JSONException e) {
-            tariff = 1;
-        }
-        try {
-            object.put("tariff", tariff);
-        } catch (JSONException ignored) {
-            Crashlytics.logException(ignored);
-        }
-
-        return object;
     }
 
     private void displayUsersOnMap(JSONArray usersList) {
