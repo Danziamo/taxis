@@ -1076,6 +1076,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void displayUsersOnMap(JSONArray usersList) {
         if (usersList.length() < 0) return;
+        if (mMap == null) {
+            setUpMapIfNeeded();
+            return;
+        }
         cleanMapFromMarkers();
 
         LatLng userLocation;

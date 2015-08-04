@@ -55,10 +55,12 @@ public class User implements Serializable {
         this.dob = json.getString("date_of_birth");
         this.address = json.getString("address");
         this.deviceToken = json.getString("android_token");
-        String ratingSumString = json.getJSONObject("rating").getString("votes__sum");
-        double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
-        int ratingCount = json.getJSONObject("rating").getInt("votes__count");
-        this.rating = ratingCount == 0 ? 0 : (float)round(ratingSum/ratingCount, 1);
+        if (json.has("rating")) {
+            String ratingSumString = json.getJSONObject("rating").getString("votes__sum");
+            double ratingSum = ratingSumString == null || ratingSumString.equals("null") ? 0 : Double.valueOf(ratingSumString);
+            int ratingCount = json.getJSONObject("rating").getInt("votes__count");
+            this.rating = ratingCount == 0 ? 0 : (float) round(ratingSum / ratingCount, 1);
+        }
         JSONArray car = json.getJSONArray("cars");
         if (car.length() > 0) {
             this.car = new Car(car.getJSONObject(0));
