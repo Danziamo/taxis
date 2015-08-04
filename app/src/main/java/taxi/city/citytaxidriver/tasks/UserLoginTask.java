@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -67,10 +68,17 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
                     if (hasCar) {
                         Helper.getOrderPreferences(App.getContext(), id);
+                        if (Order.getInstance().id != 0
+                                && (Order.getInstance().status == OStatus.CANCELED)
+                                || Order.getInstance().status == OStatus.NEW) {
+                            Helper.destroyOrderPreferences(App.getContext(), id);
+                            Order.getInstance().clear();
+                        }
                         if (Order.getInstance().id != 0) {
                             JSONObject orderObject = api.getRequest("", "orders/" + Order.getInstance().id);
-                            if (Helper.isSuccess(orderObject)) {
-                                if (orderObject.getString("status").equals(OStatus.FINISHED.toString())) {
+                            if (Helper.isSuccess(orderObject) || Helper.isBadRequest(orderObject)) {
+                                if (orderObject.getString("status").equals(OStatus.FINISHED.toString())
+                                        || orderObject.getString("status").equals(OStatus.CANCELED.toString())) {
                                     Order.getInstance().clear();
                                     Helper.destroyOrderPreferences(App.getContext(), id);
                                 }

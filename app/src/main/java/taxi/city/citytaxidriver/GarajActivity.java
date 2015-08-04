@@ -83,8 +83,8 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
         ab.setDisplayShowTitleEnabled(true);
 
         ab.addTab(ab.newTab().setText("Счет").setIcon(R.drawable.ic_action_account).setTabListener(this));
-        ab.addTab(ab.newTab().setText("Мои заказы").setIcon(R.drawable.ic_action_personal).setTabListener(this));
- //       ab.addTab(ab.newTab().setText("Транспорт").setIcon(R.drawable.ic_action_transport).setTabListener(this));
+        ab.addTab(ab.newTab().setText("Кабинет").setIcon(R.drawable.ic_action_personal).setTabListener(this));
+        ab.addTab(ab.newTab().setText("Транспорт").setIcon(R.drawable.ic_action_transport).setTabListener(this));
         ab.addTab(ab.newTab().setText("История").setIcon(R.drawable.ic_action_history).setTabListener(this));
     }
 
@@ -112,12 +112,12 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
             case R.id.action_help:
                 startActivity(new Intent(this, HelpActivity.class));
                 return true;
-            case R.id.user_container:
+            /*case R.id.user_container:
                 startActivity(new Intent(this, UserDetailsActivity.class));
                 return true;
             case R.id.car_container:
                 startActivity(new Intent(this, CarDetailsActivity.class));
-                return true;
+                return true;*/
         }
         return super.onOptionsItemSelected(item);
     }

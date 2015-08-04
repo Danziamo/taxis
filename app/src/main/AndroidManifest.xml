@@ -93,7 +93,7 @@
             android:parentActivityName=".MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyActionBarTabs"
-            android:windowSoftInputMode="stateUnchanged" >
+            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="taxi.city.citytaxidriver.MapsActivity" />

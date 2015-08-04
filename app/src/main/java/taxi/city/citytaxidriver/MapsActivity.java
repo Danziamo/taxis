@@ -1036,8 +1036,15 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                         order.clear();
                     }
                 } else if (Helper.isBadRequest(result)) {
+                    String detail = result.has("details") ? result.getString("details") : "";
+                    String displayMessage = "Заказ отменён или занят";
+                    if (detail.toLowerCase().contains("user have not enough money")) {
+                        displayMessage = "Не достатончно денег на балансе";
+                    } else if (detail.toLowerCase().contains("canceled")) {
+                        displayMessage = "Заказ отменен клиентом";
+                    }
                     new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Клиент отменил заказ")
+                            .setTitleText(displayMessage)
                             .setContentText("")
                             .setConfirmText("Ок")
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -1049,6 +1056,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                             .show();
                     Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                     order.clear();
+                    if (mMap != null )mMap.clear();
                     updateViews();
                 } else {
                     Toast.makeText(MapsActivity.this, "Не удалось отправить данные на сервер", Toast.LENGTH_SHORT).show();
@@ -1230,9 +1238,27 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             return;
         }
 
-        showProgress(true);
-        createTask = new CreateOrderTask();
-        createTask.execute((Void) null);
+        new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Вы уверены что хотите взять заказ?")
+                        //.setContentText(order.clientPhone)
+                .setConfirmText("Взять")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        showProgress(true);
+                        createTask = new CreateOrderTask();
+                        createTask.execute((Void) null);
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .setCancelText("Отмена")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     private class CreateOrderTask extends AsyncTask<Void, Void, JSONObject> {

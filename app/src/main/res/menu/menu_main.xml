@@ -25,7 +25,7 @@
                 app:showAsAction="ifRoom"
                 android:orderInCategory="99"/>
 
-            <item
+            <!--<item
                 android:id="@+id/user_container"
                 android:title="Кабинет"
                 android:orderInCategory="97"
@@ -34,7 +34,7 @@
                 android:id="@+id/car_container"
                 android:title="Транспорт"
                 android:orderInCategory="96"
-                />
+                />-->
         </menu>
 
     </item>
