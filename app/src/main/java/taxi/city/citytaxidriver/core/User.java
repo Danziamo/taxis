@@ -27,6 +27,7 @@ public class User implements Serializable {
     public String deviceToken;
     public Car car;
     public float rating;
+    public String onlineStatus = "offline";
 
     private User() {}
 
@@ -61,6 +62,11 @@ public class User implements Serializable {
             int ratingCount = json.getJSONObject("rating").getInt("votes__count");
             this.rating = ratingCount == 0 ? 0 : (float) round(ratingSum / ratingCount, 1);
         }
+
+        if(json.has("online_status")){
+            this.onlineStatus = json.getString("online_status");
+        }
+
         JSONArray car = json.getJSONArray("cars");
         if (car.length() > 0) {
             this.car = new Car(car.getJSONObject(0));

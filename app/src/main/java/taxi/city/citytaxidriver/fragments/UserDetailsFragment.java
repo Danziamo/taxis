@@ -41,6 +41,7 @@ import taxi.city.citytaxidriver.ConfirmSignUpActivity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class UserDetailsFragment extends Fragment implements View.OnClickListener {
@@ -63,7 +64,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
     Button btnBack;
 
     private User user;
-    private UserUpdateTask mTask = null;
+    private boolean isUpdateUserTaskRunning = false;
 
 
     public static UserDetailsFragment newInstance() {
@@ -201,7 +202,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
     }
 
     private void updateTask() {
-        if (mTask != null) return;
+        if (isUpdateUserTaskRunning) return;
 
         if (isNew){
             App.getDefaultTracker().send(new HitBuilders.EventBuilder()
@@ -276,8 +277,54 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
         }
 
         showProgress(true);
-        mTask = new UserUpdateTask(json);
-        mTask.execute((Void) null);
+
+        new UpdateUserTask(json, isNew){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                isUpdateUserTaskRunning = true;
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject result) {
+                super.onPostExecute(result);
+                showProgress(false);
+                int statusCode = -1;
+                try {
+                    if(result != null && result.has("status_code")) {
+                        statusCode = result.getInt("status_code");
+                    }
+                    if (Helper.isSuccess(statusCode)) {
+                        confirmUpdate(result);
+                        if(isNew) {
+                            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                                    .setCategory("signup")
+                                    .setAction("signup")
+                                    .setLabel("Signup success")
+                                    .build());
+                        }
+                    } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
+                        if (result.has("phone")) {
+                            etPhone.setError("Пользователь с таким номером уже существует");
+                            etPhone.requestFocus();
+                            createSignupErrorAnalyticsError("Пользователь с таким номером уже существует");
+                        }
+                    } else if (getActivity() != null) {
+                        Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Crashlytics.logException(e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                isUpdateUserTaskRunning = false;
+            }
+        }.execute();
+
     }
 
     private void createSignupErrorAnalyticsError(String msg){
@@ -287,59 +334,6 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
                     .setAction("signup error")
                     .setLabel("Signup Error: " + msg)
                     .build());
-        }
-    }
-
-    private class UserUpdateTask extends AsyncTask<Void, Void, JSONObject> {
-
-        private JSONObject mJson;
-
-        UserUpdateTask(JSONObject json) {
-            mJson = json;
-        }
-
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            if (isNew) return ApiService.getInstance().signUpRequest(mJson, "users/");
-            return ApiService.getInstance().patchRequest(mJson, "users/" + user.id + "/");
-        }
-
-        @Override
-        protected void onPostExecute(final JSONObject result) {
-            mTask = null;
-            showProgress(false);
-            int statusCode = -1;
-            try {
-                if(result != null && result.has("status_code")) {
-                    statusCode = result.getInt("status_code");
-                }
-                if (Helper.isSuccess(statusCode)) {
-                    confirmUpdate(result);
-                    if(isNew) {
-                        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
-                                .setCategory("signup")
-                                .setAction("signup")
-                                .setLabel("Signup success")
-                                .build());
-                    }
-                } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
-                    if (result.has("phone")) {
-                        etPhone.setError("Пользователь с таким номером уже существует");
-                        etPhone.requestFocus();
-                        createSignupErrorAnalyticsError("Пользователь с таким номером уже существует");
-                    }
-                } else if (getActivity() != null) {
-                    Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                Crashlytics.logException(e);
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mTask = null;
         }
     }
 

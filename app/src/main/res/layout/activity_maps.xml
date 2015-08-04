@@ -210,8 +210,9 @@
                     android:layout_margin="10dp"/>
 
                 <Button
+                    android:id="@+id/buttonOnlineStatus"
                     style="@style/mediumButton.Black"
-                    android:visibility="invisible"
+                    android:text="Онлайн"
                     android:layout_margin="10dp"/>
 
             </LinearLayout>

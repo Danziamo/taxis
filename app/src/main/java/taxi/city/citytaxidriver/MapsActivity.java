@@ -61,6 +61,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
 
@@ -83,6 +84,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private SendPostRequestTask sendTask;
     private GetUsersLocationTask locationTask;
     private CreateOrderTask createTask;
+
+    private boolean isUpdateUserTaskRunning = false;
 
     private SweetAlertDialog pDialog;
     LinearLayout llMain;
@@ -111,6 +114,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     Button btnWaitCancel;
     Button btnSOS;
     Button btnCustomTrip;
+    Button btnOnlineStatus;
     LinearLayout llButtonTop;
     LinearLayout llButtonBottom;
     LinearLayout llCustomTrip;
@@ -376,6 +380,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnSOS = (Button)findViewById(R.id.buttonSos);
         btnCustomTrip = (Button)findViewById(R.id.buttonCustomTrip);
 
+        btnOnlineStatus = (Button) findViewById(R.id.buttonOnlineStatus);
+        updateOnlineStatusButtonText();
+
         llButtonTop = (LinearLayout) findViewById(R.id.linearLayoutWaitInfo);
         llButtonBottom = (LinearLayout) findViewById(R.id.linearLayoutStartCancelMap);
         llCustomTrip = (LinearLayout) findViewById(R.id.linearLayoutCustomTrip);
@@ -386,6 +393,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnSettingsCancel.setOnClickListener(this);
         btnWaitCancel.setOnClickListener(this);
         btnCustomTrip.setOnClickListener(this);
+        btnOnlineStatus.setOnClickListener(this);
         createSosDialog();
     }
 
@@ -691,8 +699,66 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 createCustomOrder();
                 break;
 
+            case R.id.buttonOnlineStatus:
+                changeUserOnlineStatus();
+                break;
+
         }
         updateViews();
+    }
+
+    private void changeUserOnlineStatus(){
+        if(isUpdateUserTaskRunning){
+            return;
+        }
+
+        if (!Helper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Нету подключения к интернету", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String newStatus = (user.onlineStatus == "offline") ? "online" : "offline";
+        JSONObject jsonObject = new JSONObject();
+        try{
+            jsonObject.put("online_status", newStatus);
+        }catch (JSONException e)  {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+            return;
+        }
+
+        new UpdateUserTask(jsonObject){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                isUpdateUserTaskRunning = true;
+                showProgress(true);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                super.onPostExecute(jsonObject);
+                isUpdateUserTaskRunning = false;
+                user.onlineStatus = newStatus;
+                updateOnlineStatusButtonText();
+                showProgress(false);
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                isUpdateUserTaskRunning = false;
+                showProgress(false);
+            }
+        }.execute();
+    }
+
+    private void updateOnlineStatusButtonText(){
+        if(user.onlineStatus == "offline"){
+            btnOnlineStatus.setText("Онлайн");
+        }else {
+            btnOnlineStatus.setText("Оффлайн");
+        }
     }
 
     private void createSosDialog() {
@@ -1252,4 +1318,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             showProgress(false);
         }
     }
+
+
 }
