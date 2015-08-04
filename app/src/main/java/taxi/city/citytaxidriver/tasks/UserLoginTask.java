@@ -13,9 +13,6 @@ import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
-/**
- * Created by mbt on 7/23/15.
- */
 public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
     private final String mPhone;
@@ -42,15 +39,15 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
             user.password = mPassword;
             json.put("phone", mPhone);
             json.put("password", mPassword);
-            JSONObject object = api.loginRequest(json, "login/");
-            if (object != null) {
-                if(object.has("status_code")){
-                    statusCode = object.getInt("status_code");
+            JSONObject loginResult = api.loginRequest(json, "login/");
+            if (loginResult != null) {
+                if(loginResult.has("status_code")){
+                    statusCode = loginResult.getInt("status_code");
                 }
 
                 String detail = "";
-                if (object.has("detail")){
-                    detail = object.getString("detail");
+                if (loginResult.has("detail")){
+                    detail = loginResult.getString("detail");
                 }
 
                 if (detail.toLowerCase().contains("account")) {
@@ -58,12 +55,12 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                 }
 
                 if (statusCode == HttpStatus.SC_OK) {
-                    user.setUser(object);
+                    user.setUser(loginResult);
                     ApiService.getInstance().setToken(user.getToken());
                     Helper.saveUserPreferences(App.getContext(), user);
-                    int id = object.getInt("id");
+                    int id = loginResult.getInt("id");
                     boolean hasCar = false;
-                    if (object.has("cars") && object.getJSONArray("cars").length() > 0){
+                    if (loginResult.has("cars") && loginResult.getJSONArray("cars").length() > 0){
                         hasCar = true;
                         statusCode = ACCOUNT_HAS_CAR_STATUS_CODE;
                     }
@@ -78,37 +75,14 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                                     Helper.destroyOrderPreferences(App.getContext(), id);
                                 }
                             }
-                        } else {
-                            JSONObject orderObject = null;
-                            JSONObject orderResult = api.getArrayRequest("", "info_orders/?status=accepted&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                            if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                            }
-                            orderResult = api.getArrayRequest("", "info_orders/?status=waiting&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                            if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                            }
-                            orderResult = api.getArrayRequest("", "info_orders/?status=ontheway&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                            if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                            }
-                            orderResult = api.getArrayRequest("", "info_orders/?status=pending&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                            if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                            }
-                            orderResult = api.getArrayRequest("", "info_orders/?status=sos&ordering=-id&limit=1&driver=" + String.valueOf(user.id));
-                            if (Helper.isSuccess(orderResult) && orderResult.getJSONArray("result").length() > 0) {
-                                orderObject = orderResult.getJSONArray("result").getJSONObject(0);
-                            }
-                            if (orderObject != null) {
-                                Helper.setOrderFromLogin(orderObject);
-                                Helper.saveOrderPreferences(App.getContext(), Order.getInstance());
-                            }
+                        } else if (loginResult.has("is_order_active") && loginResult.getJSONArray("is_order_active").length() > 0) {
+                            JSONObject orderObject = loginResult.getJSONArray("is_order_active").getJSONObject(0);
+                            Helper.setOrderFromLogin(orderObject);
+                            Helper.saveOrderPreferences(App.getContext(), Order.getInstance());
                         }
                     }
 
                     JSONObject regObject = new JSONObject();
-                    regObject.put("online_status", "online");
                     regObject.put("role", "driver");
                     regObject.put("ios_token", JSONObject.NULL);
                     api.patchRequest(regObject, "users/" + id + "/");
