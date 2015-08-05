@@ -3,6 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="taxi.city.citytaxidriver.GarajActivity">
 
+    <item android:id="@+id/action_share"
+        android:title="Поделиться"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="always"
+        />
+
     <item android:id="@+id/empty"
         android:orderInCategory="101"
         android:title="@string/action_settings"

@@ -112,6 +112,8 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
             case R.id.action_help:
                 startActivity(new Intent(this, HelpActivity.class));
                 return true;
+            case R.id.action_share:
+                shareLink();return true;
             /*case R.id.user_container:
                 startActivity(new Intent(this, UserDetailsActivity.class));
                 return true;
@@ -120,6 +122,16 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
                 return true;*/
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareLink(){
+        String text = "Зарабатывай с Easy Taxi. Будь хозяином своего времени.\nhttp://onelink.to/2tru25 \nEasy Taxi\nНам с тобой по пути!";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+
+        startActivity(Intent.createChooser(intent, "Поделиться"));
     }
 
     private void signOut() {
