@@ -571,7 +571,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             order.sum = price;
             order.endPoint = latLng;
 
-            if (prev != null) {
+            /*if (prev != null) {
                 Polyline line = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(prev.getLatitude(), prev.getLongitude()), latLng)
                         .width(12)
@@ -579,7 +579,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                         .geodesic(true));
 
                 polylines.add(line);
-            }
+            }*/
         }
 
         order.endPoint = latLng;
@@ -736,13 +736,12 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             return;
         }
 
-        final String newStatus = (user.onlineStatus == "offline") ? "online" : "offline";
+        final String newStatus = (user.onlineStatus.equals("offline")) ? "online" : "offline";
         JSONObject jsonObject = new JSONObject();
         try{
             jsonObject.put("online_status", newStatus);
         }catch (JSONException e)  {
             Crashlytics.logException(e);
-            e.printStackTrace();
             return;
         }
 
@@ -1096,7 +1095,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             showProgress(false);
             try {
                 if (Helper.isSuccess(result)) {
-                    Toast.makeText(getApplicationContext(), "Заказ обновлён", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MapsActivity.this, "Заказ обновлён", Toast.LENGTH_SHORT).show();
                     if (status == OStatus.FINISHED || status == OStatus.NEW) {
                         Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                         order.clear();

@@ -306,11 +306,11 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         protected JSONObject doInBackground(Void... params) {
             JSONObject result = new JSONObject();
             if (isNew) {
-                result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
+                //result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
                 result = ApiService.getInstance().createCar(carJson, "usercars/");
                 return result;
             } else {
-                result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
+                //result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
                 result = ApiService.getInstance().patchRequest(carJson, "usercars/" + userCarId + "/");
                 return result;
             }
@@ -434,6 +434,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             return;
         }
 
+        showProgress(true, "Загрузка");
         mFetchTask = new FetchCarBrandTask(true);
         mFetchTask.execute((Void) null);
     }
