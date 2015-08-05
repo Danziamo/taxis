@@ -1239,7 +1239,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
 
         new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Вы уверены что хотите взять заказ?")
+                .setTitleText("Вы уверены взять заказ?")
                         //.setContentText(order.clientPhone)
                 .setConfirmText("Взять")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
