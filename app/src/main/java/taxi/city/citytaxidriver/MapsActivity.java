@@ -2,6 +2,8 @@ package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -14,13 +16,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -119,6 +125,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     LinearLayout llButtonBottom;
     LinearLayout llCustomTrip;
     Dialog sosDialog;
+
+    RelativeLayout lockerLayout;
 
     Location location;
     List<Polyline> polylines = new ArrayList<>();
@@ -241,6 +249,15 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 .build());
 
         SetLocationRequest();
+
+        lockerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //********************************Empty
+            }
+        });
+
     }
 
     private void getPreferences() {
@@ -395,6 +412,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         btnCustomTrip.setOnClickListener(this);
         btnOnlineStatus.setOnClickListener(this);
         createSosDialog();
+
+
     }
 
     private void updateViews() {
@@ -754,11 +773,58 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void updateOnlineStatusButtonText(){
-        if(user.onlineStatus == "offline"){
-            btnOnlineStatus.setText("Онлайн");
+        lockerLayout = (RelativeLayout)findViewById(R.id.locker);
+
+        if(user.onlineStatus .equals("offline")){
+            btnOnlineStatus.setText("Активен");
+            lockerLayout.setVisibility(View.VISIBLE);
+
+            changeButtonStation(true);
+
+//            btnCustomTrip.setEnabled(false);
+//            btnOkAction.setEnabled(false);
+//            btnSettingsCancel.setEnabled(false);
+
         }else {
-            btnOnlineStatus.setText("Оффлайн");
+            btnOnlineStatus.setText("Неактивен");
+            lockerLayout.setVisibility(View.GONE);
+
+            changeButtonStation(false);
+//            btnCustomTrip.setEnabled(true);
+//            btnOkAction.setEnabled(true);
+//            btnSettingsCancel.setEnabled(true);
         }
+    }
+
+    public void changeButtonStation(Boolean flag){
+        if(flag){
+            btnCustomTrip.setEnabled(false);
+            btnOkAction.setEnabled(false);
+            btnSettingsCancel.setEnabled(false);
+
+            btnOkAction.setTextColor(getResources().getColor(R.color.blacktext1));
+            btnCustomTrip.setTextColor(getResources().getColor(R.color.blacktext1));
+            btnSettingsCancel.setTextColor(getResources().getColor(R.color.blacktext1));
+
+            btnCustomTrip.setBackgroundResource(R.drawable.button_shape_dark_blue);
+            //btnInfo.setBackgroundResource(R.drawable.button_shape_yellow);
+            btnOnlineStatus.setBackgroundResource(R.drawable.button_shape_yellow);
+            btnOnlineStatus.setTextColor(getResources().getColor(R.color.blacktext2));
+
+        }else{
+            btnCustomTrip.setEnabled(true);
+            btnOkAction.setEnabled(true);
+            btnSettingsCancel.setEnabled(true);
+
+            btnOkAction.setTextColor(getResources().getColor(R.color.white));
+            btnCustomTrip.setTextColor(getResources().getColor(R.color.blacktext2));
+            btnSettingsCancel.setTextColor(getResources().getColor(R.color.white));
+            btnOnlineStatus.setTextColor(getResources().getColor(R.color.white));
+
+            btnCustomTrip.setBackgroundResource(R.drawable.button_shape_yellow);
+            btnOnlineStatus.setBackgroundResource(R.drawable.button_shape_dark_blue);
+        }
+
     }
 
     private void createSosDialog() {
@@ -867,7 +933,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 } else {
                     Helper.saveOrderPreferences(MapsActivity.this, order);
                     order.clear();
-                    Toast.makeText(getApplicationContext(), "Заказ завершен. Ошибка при отправке данных на сервер", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Заказ завершен. нешибка при отправке данных на сервер", Toast.LENGTH_SHORT).show();
                 }
                 ClearMapFromLines();
                 timerHandler.removeCallbacks(timerRunnable);

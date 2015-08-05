@@ -100,6 +100,7 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                     }
 
                     JSONObject regObject = new JSONObject();
+                    User.getInstance().onlineStatus = "online";
                     regObject.put("role", "driver");
                     regObject.put("ios_token", JSONObject.NULL);
                     regObject.put("online_status", "online");
