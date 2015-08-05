@@ -1238,10 +1238,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             return;
         }
 
-        new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Вы уверены взять заказ?")
+        new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Вы берёте клиента с борта?")
                         //.setContentText(order.clientPhone)
-                .setConfirmText("Взять")
+                .setConfirmText("Да")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
@@ -1312,9 +1312,18 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     SetDefaultValues();
                     timerHandler.postDelayed(timerRunnable, 0);
                     updateViews();
-                } else {
+                } else if (Helper.isBadRequest(result)) {
+                    String detail = result.has("details") ? result.getString("details") : "";
+                    String displayMessage = "Не удалось создать заказ. Попробуйте еще раз";
+                    if (detail.toLowerCase().contains("user have not enough money")) {
+                        displayMessage = "Не достатончно денег на балансе";
+                    }
+                    Toast.makeText(MapsActivity.this, displayMessage, Toast.LENGTH_SHORT).show();
+                }
+                else {
                     Toast.makeText(MapsActivity.this, "Не удалось создать заказ. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                 }
+
             } catch (JSONException e) {
                 Crashlytics.logException(e);
             }
