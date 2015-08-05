@@ -24,6 +24,9 @@ public class UserDetailsActivity extends ActionBarActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
+        if (getIntent().getBooleanExtra("NEW", false)) {
+            ab.setTitle("Регистрация");
+        }
     }
 
     /*@Override

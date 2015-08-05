@@ -188,7 +188,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
         protected JSONObject doInBackground(Void... params) {
             try {
                 JSONObject onlineStatus = new JSONObject();
-                onlineStatus.put("online_status", "offline");
+                onlineStatus.put("online_status", "exited");
                 onlineStatus = ApiService.getInstance().patchRequest(onlineStatus, "users/" + String.valueOf(User.getInstance().id) +"/");
                 Helper.clearUserPreferences(GarajActivity.this);
             } catch (JSONException ignored) {}

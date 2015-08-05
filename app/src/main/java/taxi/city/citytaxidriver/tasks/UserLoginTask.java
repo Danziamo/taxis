@@ -3,7 +3,10 @@ package taxi.city.citytaxidriver.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,19 +87,27 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                                 }
                             }
                         } else if (loginResult.has("is_order_active") && loginResult.getJSONArray("is_order_active").length() > 0) {
-                            JSONObject orderObject = loginResult.getJSONArray("is_order_active").getJSONObject(0);
-                            Helper.setOrderFromLogin(orderObject);
-                            Helper.saveOrderPreferences(App.getContext(), Order.getInstance());
+                            JSONArray jsonArray = loginResult.getJSONArray("is_order_active");
+                            for (int i = 0; i < jsonArray.length(); ++i) {
+                                JSONObject orderObject = jsonArray.getJSONObject(i);
+                                if (orderObject.has("driver") && orderObject.getString("driver").equals("null")) continue;
+                                if (orderObject.has("driver") && orderObject.getInt("driver") != user.id ) continue;
+                                Helper.setOrderFromLogin(orderObject);
+                                Helper.saveOrderPreferences(App.getContext(), Order.getInstance());
+                                break;
+                            }
                         }
                     }
 
                     JSONObject regObject = new JSONObject();
                     regObject.put("role", "driver");
                     regObject.put("ios_token", JSONObject.NULL);
+                    regObject.put("online_status", "online");
                     api.patchRequest(regObject, "users/" + id + "/");
                 }
             }
         } catch (JSONException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
         return statusCode;

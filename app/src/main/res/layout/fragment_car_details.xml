@@ -70,7 +70,7 @@
                 style="@style/mediumEditText"
                 android:hint="Номер автомобиля"
                 android:id="@+id/editTextCarNumber"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:textSize="16sp"
                 android:inputType="text" />
 
