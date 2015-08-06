@@ -110,6 +110,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     GlobalParameters gp = GlobalParameters.getInstance();
     private ArrayList<Marker> userMarkers = new ArrayList<>();
     private HashMap<Marker, Client> mOrderMarkerMap = new HashMap<>();
+    private Marker clientMarker;
     User user;
 
     Location prev;
@@ -909,7 +910,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void setClientLocation() {
         if (order == null || order.id == 0 || order.startPoint == null) return;
         //mMap.clear();
-        mMap.addMarker(new MarkerOptions()
+
+        clientMarker = mMap.addMarker(new MarkerOptions()
                 .position(order.startPoint)
                 .title(order.clientPhone)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.client)));
@@ -949,6 +951,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     timerHandler.postDelayed(timerRunnable, 0);
                 }
                 order.endPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                if (clientMarker != null) clientMarker.remove();
                 setClientLocation();
             }
         }
@@ -957,6 +960,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 setClientLocation();
                 SetDefaultValues();
                 timerHandler.postDelayed(timerRunnable, 0);
+            } else {
+                if (clientMarker != null)
+                    clientMarker.remove();
             }
         }
 

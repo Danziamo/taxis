@@ -236,38 +236,28 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     }
 
     private void cancelOrder() {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.alertdialog_decline_order);
 
-        Window window = dialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-
-        wlp.gravity = Gravity.BOTTOM;
-        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        window.setAttributes(wlp);
-
-        EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
-        Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
-        Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
-        // if button is clicked, close the custom dialog
-        btnOkDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showProgress(true);
-                order.status = OStatus.NEW;
-                SendPostRequest(OStatus.NEW);
-                dialog.dismiss();
-            }
-        });
-
-        btnCancelDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Вы уверены что хотите отменить?")
+                        //.setContentText(order.clientPhone)
+                .setConfirmText("Отменить")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        showProgress(true);
+                        order.status = OStatus.NEW;
+                        SendPostRequest(OStatus.NEW);
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .setCancelText("Назад")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     public void showProgress(final boolean show) {
