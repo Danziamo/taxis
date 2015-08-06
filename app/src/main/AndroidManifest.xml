@@ -77,8 +77,9 @@
         <activity
             android:name=".OrderActivity"
             android:launchMode="singleTop"
+            android:label="@string/orders"
             android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
+            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
@@ -122,6 +123,7 @@
         <activity
             android:name=".OrderDetailsActivity"
             android:screenOrientation="portrait"
+            android:label="@string/new_order"
             android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>

@@ -334,6 +334,7 @@ public static void clearOrderPreferences(Context context, int id) {
         user.dob = settings.getString("dob", null);
         user.address = settings.getString("address", null);
         user.rating = settings.getFloat("rating", 0);
+        user.onlineStatus = settings.getString("online_status", "online");
         Car car = new Car();
         car.id = settings.getInt("carId", 0);
         car.brandId = settings.getInt("carBrandId", 0);
@@ -364,6 +365,7 @@ public static void clearOrderPreferences(Context context, int id) {
         editor.putString("dob", user.dob);
         editor.putString("address", user.address);
         editor.putFloat("rating", (float) user.rating);
+        editor.putString("online_status", user.onlineStatus);
         if (user.car != null) {
             editor.putInt("carId", user.car.id);
             editor.putInt("carBrandId", user.car.brandId);

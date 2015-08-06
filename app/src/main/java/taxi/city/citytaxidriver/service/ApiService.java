@@ -1,23 +1,16 @@
 package taxi.city.citytaxidriver.service;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-
-import taxi.city.citytaxidriver.App;
-import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.requestMethods.HttpPatch;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -30,11 +23,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Map;
+
+import taxi.city.citytaxidriver.App;
+import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.requestMethods.HttpPatch;
 
 
 public class ApiService {

@@ -40,6 +40,11 @@ import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class OrderDetailsFragment extends Fragment implements View.OnClickListener {
+
+    public static final String CLIENT_KEY = "DATA";
+    public static final String IS_ACTIVE_ORDER_KEY = "ACTIVE";
+
+
     private Client mClient;
     private boolean isActive;
     private ApiService api = ApiService.getInstance();
@@ -66,8 +71,8 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_order_details_activity, container, false);
-        mClient = (Client) getActivity().getIntent().getSerializableExtra("DATA");
-        isActive = getActivity().getIntent().getBooleanExtra("ACTIVE", false);
+        mClient = (Client) getActivity().getIntent().getSerializableExtra(CLIENT_KEY);
+        isActive = getActivity().getIntent().getBooleanExtra(IS_ACTIVE_ORDER_KEY, false);
 
         TextView tvAddressStart = (TextView) rootView.findViewById(R.id.textViewStartAddress);
         tvClientPhone = (TextView) rootView.findViewById(R.id.textViewClientPhone);

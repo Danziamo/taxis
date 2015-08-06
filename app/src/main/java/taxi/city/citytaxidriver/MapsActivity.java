@@ -66,6 +66,7 @@ import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Constants;
@@ -847,41 +848,29 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void cancelOrder() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.alertdialog_decline_order);
-
-        Window window = dialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-
-        wlp.gravity = Gravity.BOTTOM;
-        wlp.dimAmount = 0.7f;
-        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        window.setAttributes(wlp);
-
-        EditText reason = (EditText) dialog.findViewById(R.id.editTextDeclineReason);
-        Button btnOkDialog = (Button) dialog.findViewById(R.id.buttonOkDecline);
-        Button btnCancelDialog = (Button) dialog.findViewById(R.id.buttonCancelDecline);
-
-        btnOkDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                order.status = OStatus.NEW;
-                showProgress(true);
-                timerHandler.removeCallbacks(timerRunnable);
-                SendPostRequest(order.status, order.id);
-                updateViews();
-                dialog.dismiss();
-            }
-        });
-
-        btnCancelDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        new SweetAlertDialog(MapsActivity.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Вы уверены что хотите отменить?")
+                        //.setContentText(order.clientPhone)
+                .setConfirmText("Отменить")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        order.status = OStatus.NEW;
+                        showProgress(true);
+                        timerHandler.removeCallbacks(timerRunnable);
+                        SendPostRequest(order.status, order.id);
+                        updateViews();
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .setCancelText("Назад")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     private void goToSettings() {
@@ -892,7 +881,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void goToOrderDetails() {
         Intent intent = new Intent(this, OrderDetailsActivity.class);
-        intent.putExtra("DATA", new Client(order, user.id, true));
+        intent.putExtra(OrderDetailsFragment.CLIENT_KEY, new Client(order, user.id, true));
         startActivityForResult(intent, ORDER_DETAILS_ID);
     }
 
@@ -976,7 +965,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void checkPreviousOrder() {
-        if (order.id == 0 || order.status == OStatus.FINISHED) {
+        if (order.id == 0 || order.status == OStatus.FINISHED || order.status == OStatus.NEW) {
             if (Helper.isOrderPreferenceActive(MapsActivity.this, user.id)) {
                 getPreferences();
                 SendPostRequest(order.status, order.id);
@@ -987,7 +976,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void OpenOrder() {
         checkPreviousOrder();
         Intent intent = new Intent(this, OrderActivity.class);
-        intent.putExtra("NEW", true);
         startActivityForResult(intent, MAKE_ORDER_ID);
     }
 
@@ -1046,8 +1034,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     .show();
         } else {
             Intent intent = new Intent(this, OrderDetailsActivity.class);
-            intent.putExtra("DATA", client);
-            intent.putExtra("ACTIVE", false);
+            intent.putExtra(OrderDetailsFragment.CLIENT_KEY, client);
+            intent.putExtra(OrderDetailsFragment.IS_ACTIVE_ORDER_KEY, false);
             startActivityForResult(intent, ORDER_DETAILS_ID);
         }
 
@@ -1099,6 +1087,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     if (status == OStatus.FINISHED || status == OStatus.NEW) {
                         Helper.destroyOrderPreferences(MapsActivity.this, user.id);
                         order.clear();
+                        mMap.clear();
                     }
                 } else if (Helper.isBadRequest(result)) {
                     String detail = result.has("details") ? result.getString("details") : "";

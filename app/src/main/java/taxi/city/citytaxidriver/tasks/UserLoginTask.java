@@ -81,7 +81,8 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                             JSONObject orderObject = api.getRequest("", "orders/" + Order.getInstance().id);
                             if (Helper.isSuccess(orderObject) || Helper.isBadRequest(orderObject)) {
                                 if (orderObject.getString("status").equals(OStatus.FINISHED.toString())
-                                        || orderObject.getString("status").equals(OStatus.CANCELED.toString())) {
+                                        || orderObject.getString("status").equals(OStatus.CANCELED.toString())
+                                        || orderObject.getString("status").equals(OStatus.NEW.toString())) {
                                     Order.getInstance().clear();
                                     Helper.destroyOrderPreferences(App.getContext(), id);
                                 }
@@ -90,6 +91,7 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                             JSONArray jsonArray = loginResult.getJSONArray("is_order_active");
                             for (int i = 0; i < jsonArray.length(); ++i) {
                                 JSONObject orderObject = jsonArray.getJSONObject(i);
+                                if (orderObject.has("status") && orderObject.getString("status").equals(OStatus.NEW.toString())) continue;
                                 if (orderObject.has("driver") && orderObject.getString("driver").equals("null")) continue;
                                 if (orderObject.has("driver") && orderObject.getInt("driver") != user.id ) continue;
                                 Helper.setOrderFromLogin(orderObject);
@@ -100,7 +102,6 @@ public abstract class UserLoginTask extends AsyncTask<Void, Void, Integer> {
                     }
 
                     JSONObject regObject = new JSONObject();
-                    User.getInstance().onlineStatus = "online";
                     regObject.put("role", "driver");
                     regObject.put("ios_token", JSONObject.NULL);
                     regObject.put("online_status", "online");

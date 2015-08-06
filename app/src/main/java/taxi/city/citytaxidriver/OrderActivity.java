@@ -27,10 +27,13 @@ import taxi.city.citytaxidriver.core.ClientAdapter;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
 import taxi.city.citytaxidriver.service.ApiService;
 import taxi.city.citytaxidriver.utils.Constants;
 
 public class OrderActivity extends ActionBarActivity implements View.OnClickListener {
+
+    public static final int REQUEST_CODE_ORDER_DETAILS_FRAGMENT = 1;
 
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
@@ -44,8 +47,8 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     Button btnMap;
     Button btnRefresh;
     Button btnMoreOrders;
-    private boolean isNew;
-    private int limit = 30;
+
+    private int limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +58,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         if (user == null || user.id == 0) {
             finish();
         }
-        limit = 10;
-
-        isNew = true;
+        limit = 15;
 
         lvMain = (ListView) findViewById(R.id.orderList);
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,14 +89,6 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         btnMap.setOnClickListener(this);
         btnRefresh.setOnClickListener(this);
         btnMoreOrders.setOnClickListener(this);
-
-        TextView tvTitle = (TextView) findViewById(R.id.textViewOrderTitle);
-
-        if (!isNew) {
-            tvTitle.setText("История заказов:");
-            btnMap.setText("Назад");
-            fetchData();
-        }
     }
 
     @Override
@@ -111,10 +104,10 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     @Override
     protected void onResume(){
         super.onResume();
-        if (isNew) {
-            list.clear();
-            lvMain.setAdapter(null);
-            if (user != null && user.id != 0) fetchData();
+        list.clear();
+        lvMain.setAdapter(null);
+        if (user != null && user.id != 0){
+            fetchData();
         }
     }
 
@@ -141,23 +134,17 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void goOrderDetails(Client mClient) {
-        if (isNew) {
-            Intent intent = new Intent(this, OrderDetailsActivity.class);
-            intent.putExtra("DATA", mClient);
-            intent.putExtra("ACTIVE", false);
-            startActivityForResult(intent, 1);
-        } else {
-            Intent intent = new Intent(this, FinishOrderDetailsActivity.class);
-            intent.putExtra("DATA", mClient);
-            startActivityForResult(intent, 2);
-        }
+        Intent intent = new Intent(this, OrderDetailsActivity.class);
+        intent.putExtra(OrderDetailsFragment.CLIENT_KEY, mClient);
+        intent.putExtra(OrderDetailsFragment.IS_ACTIVE_ORDER_KEY, false);
+        startActivityForResult(intent, REQUEST_CODE_ORDER_DETAILS_FRAGMENT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         order = Order.getInstance();
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_CODE_ORDER_DETAILS_FRAGMENT) {
             if (data != null && data.getBooleanExtra("returnCode", false)) {
                 Intent intent = new Intent();
                 intent.putExtra("returnCode", true);
@@ -203,20 +190,11 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
             JSONArray array = null;
             try {
                 array = new JSONArray();
-                JSONObject result = new JSONObject();
-                if (isNew) {
-                    if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
-                        result = api.getArrayRequest(null, "orders/?status=new&dist=" + Constants.ORDER_SEARCH_RANGE);
-                        if (result.getInt("status_code") == HttpStatus.SC_OK) {
-                            JSONArray tempArray = result.getJSONArray("result");
-                            for (int i = 0; i < tempArray.length(); ++i) {
-                                array.put(tempArray.getJSONObject(i));
-                            }
-                        }
-                    }
-                    if (order.id != 0) array.put(order.getOrderAsJson());
-                } else {
-                    result = api.getArrayRequest(null, "orders/?driver=" + user.id + "&status=finished&ordering=-id&limit=" + limit);
+                JSONObject result;
+                if (order.id == 0 || order.status == OStatus.FINISHED || order.status == null) {
+                    result = api.getArrayRequest(null, "orders/?status=new"
+                            + "&limit=" + limit
+                            + "&dist=" + Constants.ORDER_SEARCH_RANGE);
                     if (result.getInt("status_code") == HttpStatus.SC_OK) {
                         JSONArray tempArray = result.getJSONArray("result");
                         for (int i = 0; i < tempArray.length(); ++i) {
@@ -224,6 +202,7 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
                         }
                     }
                 }
+                if (order.id != 0) array.put(order.getOrderAsJson());
             } catch (JSONException e) {
                 Crashlytics.logException(e);
             } catch (Exception e) {
