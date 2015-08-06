@@ -123,6 +123,7 @@
         <activity
             android:name=".OrderDetailsActivity"
             android:screenOrientation="portrait"
+            android:parentActivityName=".MapsActivity"
             android:label="@string/new_order"
             android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >

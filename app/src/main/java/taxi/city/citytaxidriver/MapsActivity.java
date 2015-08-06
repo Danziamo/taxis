@@ -86,6 +86,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private static final int FINISH_ORDER_ID = 2;
     private static final int MAKE_ORDER_ID = 1;
     private static final int ORDER_DETAILS_ID = 3;
+
+    public static final int RESULT_CODE_SHOW_ON_THE_MAP = 2;
+
     private static final int SOS_DURATION = 10 * 60; //minutes
 
     private SendPostRequestTask sendTask;
@@ -625,6 +628,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             if (order.status != OStatus.ONTHEWAY && order.status != OStatus.PENDING) setClientLocation();
         }
         mGoogleApiClient.connect();
+        updateOnlineStatusButtonText();
     }
 
     @Override
@@ -759,6 +763,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 super.onPostExecute(jsonObject);
                 isUpdateUserTaskRunning = false;
                 user.onlineStatus = newStatus;
+                Helper.saveUserPreferences(MapsActivity.this, user);
                 updateOnlineStatusButtonText();
                 showProgress(false);
             }
@@ -775,7 +780,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private void updateOnlineStatusButtonText(){
         lockerLayout = (RelativeLayout)findViewById(R.id.locker);
 
-        if(user.onlineStatus .equals("offline")){
+        if (user.onlineStatus.equals("offline")){
             btnOnlineStatus.setText("Активен");
             lockerLayout.setVisibility(View.VISIBLE);
 
@@ -930,7 +935,15 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
             }
         }
         if (requestCode == MAKE_ORDER_ID) {
-            if (data != null && data.getBooleanExtra("returnCode", false)) {
+            if(resultCode == RESULT_CODE_SHOW_ON_THE_MAP){
+                if(data != null) {
+                    Client client = (Client) data.getSerializableExtra(OrderDetailsFragment.CLIENT_EXTRA_KEY);
+                    LatLng latLng = Helper.getLatLng(client.startPoint);
+                    if(latLng != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    }
+                }
+            }else if (data != null && data.getBooleanExtra("returnCode", false)) {
                 if (order.status == OStatus.ONTHEWAY) {
                     SetDefaultValues();
                     timerHandler.postDelayed(timerRunnable, 0);
@@ -946,6 +959,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 timerHandler.postDelayed(timerRunnable, 0);
             }
         }
+
         updateViews();
     }
 

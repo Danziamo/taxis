@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -35,6 +36,9 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
 
     public static final int REQUEST_CODE_ORDER_DETAILS_FRAGMENT = 1;
 
+    public static final int RESULT_CODE_RETURN_TO_MAIN = 1;
+    public static final int RESULT_CODE_SHOW_ON_THE_MAP = 2;
+
     private ArrayList<Client> list = new ArrayList<>();
     private Order order = Order.getInstance();
     private ApiService api = ApiService.getInstance();
@@ -54,6 +58,8 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         user = User.getInstance();
         if (user == null || user.id == 0) {
             finish();
@@ -145,12 +151,20 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         order = Order.getInstance();
         if (requestCode == REQUEST_CODE_ORDER_DETAILS_FRAGMENT) {
-            if (data != null && data.getBooleanExtra("returnCode", false)) {
+            if(resultCode == RESULT_CODE_RETURN_TO_MAIN){
                 Intent intent = new Intent();
                 intent.putExtra("returnCode", true);
                 setResult(1, intent);
                 finish();
+            }else if (resultCode == RESULT_CODE_SHOW_ON_THE_MAP){
+                Intent intent = new Intent();
+                if(data != null) {
+                    intent.putExtra(OrderDetailsFragment.CLIENT_EXTRA_KEY, data.getSerializableExtra(OrderDetailsFragment.CLIENT_EXTRA_KEY));
+                }
+                setResult(MapsActivity.RESULT_CODE_SHOW_ON_THE_MAP, intent);
+                finish();
             }
+
         }
     }
 
@@ -241,5 +255,16 @@ public class OrderActivity extends ActionBarActivity implements View.OnClickList
         } else {
             if (pDialog != null) pDialog.dismissWithAnimation();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

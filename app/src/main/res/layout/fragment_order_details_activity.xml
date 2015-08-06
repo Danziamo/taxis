@@ -144,9 +144,11 @@
         android:layout_margin="10dp">
 
         <Button
-            style="@style/mediumButton"
+            android:id="@+id/btnShowOnMap"
             android:layout_marginRight="15dp"
-            android:visibility="invisible" />
+            android:text="На карте"
+            style="@style/mediumButton.Blue"
+            />
 
         <Button
             style="@style/mediumButton.Blue"

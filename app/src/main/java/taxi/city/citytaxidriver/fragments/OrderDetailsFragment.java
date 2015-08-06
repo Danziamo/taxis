@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.OrderActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.GlobalParameters;
@@ -43,6 +44,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
 
     public static final String CLIENT_KEY = "DATA";
     public static final String IS_ACTIVE_ORDER_KEY = "ACTIVE";
+    public static final String CLIENT_EXTRA_KEY = "CLIENT";
 
 
     private Client mClient;
@@ -61,6 +63,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
     Button btnTakeMap;
     Button btnCancel;
     Button btnOk;
+    Button btnShowOnMap;
 
     LinearLayout llBtnMap;
 
@@ -95,10 +98,15 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         btnTakeMap = (Button) rootView.findViewById(R.id.buttonTakeMap);
         btnCancel = (Button) rootView.findViewById(R.id.buttonActionCancel);
         btnOk = (Button) rootView.findViewById(R.id.buttonActionOk);
+
+        btnShowOnMap = (Button) rootView.findViewById(R.id.btnShowOnMap);
+        btnShowOnMap.setOnClickListener(this);
+
         btnTakeMap.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
         imgBtnCallClient.setOnClickListener(this);
+
 
         updateViews();
 
@@ -107,7 +115,9 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
 
     private void updateViews() {
         if (mClient.status.equals(OStatus.NEW.toString())) {
-            llBtnMap.setVisibility(View.GONE);
+            //llBtnMap.setVisibility(View.GONE);
+            btnOk.setVisibility(View.INVISIBLE);
+            btnShowOnMap.setVisibility(View.VISIBLE);
             btnTakeMap.setText("Взять");
             btnCancel.setText("Назад");
             tvClientPhone.setVisibility(View.GONE);
@@ -116,7 +126,9 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             btnCancel.setBackgroundResource(R.drawable.button_shape_yellow);
             btnCancel.setTextColor(getResources().getColor(R.color.blacktext2));
         } else if (mClient.status.equals(OStatus.ACCEPTED.toString())) {
-            llBtnMap.setVisibility(View.VISIBLE);
+            //llBtnMap.setVisibility(View.VISIBLE);
+            btnOk.setVisibility(View.VISIBLE);
+            btnShowOnMap.setVisibility(View.INVISIBLE);
             btnTakeMap.setText("На карте");
             btnCancel.setText("Отказ");
             tvClientPhone.setVisibility(View.VISIBLE);
@@ -125,11 +137,13 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             btnCancel.setBackgroundResource(R.drawable.button_shape_red);
             btnCancel.setTextColor(getResources().getColor(R.color.white));
         } else {
-            llBtnMap.setVisibility(View.VISIBLE);
+            //llBtnMap.setVisibility(View.VISIBLE);
             tvClientPhone.setVisibility(View.VISIBLE);
             tvClientPhoneLabel.setVisibility(View.VISIBLE);
             imgBtnCallClient.setVisibility(View.VISIBLE);
-            llBtnMap.setVisibility(View.GONE);
+            //llBtnMap.setVisibility(View.GONE);
+            btnOk.setVisibility(View.INVISIBLE);
+            btnShowOnMap.setVisibility(View.INVISIBLE);
             btnCancel.setText("Отказ");
             btnCancel.setBackgroundResource(R.drawable.button_shape_red);
             btnCancel.setTextColor(getResources().getColor(R.color.white));
@@ -182,8 +196,20 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             case R.id.imageButtonCallClient:
                 callClient();
                 break;
+            case R.id.btnShowOnMap:
+                showOnMap();
+                break;
         }
     }
+
+
+    private void showOnMap(){
+        Intent intent = new Intent();
+        intent.putExtra(CLIENT_EXTRA_KEY, mClient);
+        getActivity().setResult(OrderActivity.RESULT_CODE_SHOW_ON_THE_MAP, intent);
+        getActivity().finish();
+    }
+
 
     private void callClient() {
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
