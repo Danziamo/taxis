@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class AccountFragment extends Fragment {

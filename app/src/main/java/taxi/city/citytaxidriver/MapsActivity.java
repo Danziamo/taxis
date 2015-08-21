@@ -59,7 +59,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
-import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.services.LocationService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Constants;

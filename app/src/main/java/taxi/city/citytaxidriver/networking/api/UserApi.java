@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.nerworking.api;
+package taxi.city.citytaxidriver.networking.api;
 
 import java.util.ArrayList;
 

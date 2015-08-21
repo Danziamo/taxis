@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.nerworking.model;
+package taxi.city.citytaxidriver.networking.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

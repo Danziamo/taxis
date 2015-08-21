@@ -36,7 +36,7 @@ import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.ConfirmSignUpActivity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Helper;
 

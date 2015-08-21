@@ -30,7 +30,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
-import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.networking.ApiService;
 
 /**
  * Created by Daniyar on 4/16/2015.

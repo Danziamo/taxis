@@ -37,7 +37,7 @@ import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.CarEntity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class CarDetailsFragment extends Fragment implements View.OnClickListener{

@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.nerworking;
+package taxi.city.citytaxidriver.networking;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
