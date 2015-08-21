@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import org.json.JSONObject;
 
 import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 
 /**
  * Created by mbt on 8/4/15.

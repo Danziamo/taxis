@@ -29,7 +29,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 import taxi.city.citytaxidriver.utils.Constants;
 
 public class OrderActivity extends ActionBarActivity implements View.OnClickListener {

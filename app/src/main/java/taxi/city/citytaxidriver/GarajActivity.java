@@ -18,9 +18,7 @@ import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.fragments.CarDetailsFragment;
-import taxi.city.citytaxidriver.fragments.UserDetailsFragment;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 import taxi.city.citytaxidriver.utils.SessionHelper;
 

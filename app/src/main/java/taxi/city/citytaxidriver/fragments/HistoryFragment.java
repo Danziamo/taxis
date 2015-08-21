@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,11 +24,10 @@ import java.util.ArrayList;
 import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.Client;
-import taxi.city.citytaxidriver.core.ClientAdapter;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 
 public class HistoryFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 

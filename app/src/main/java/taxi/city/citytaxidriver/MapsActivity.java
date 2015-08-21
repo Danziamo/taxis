@@ -2,8 +2,6 @@ package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,15 +14,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.view.DragEvent;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,7 +41,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +59,8 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
+import taxi.city.citytaxidriver.services.LocationService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
@@ -218,6 +211,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
 
         user = User.getInstance();
 
+        startService(new Intent(this, LocationService.class));
+
         if (user == null || user.id == 0) {
             Helper.getUserPreferences(this);
             ApiService.getInstance().setToken(User.getInstance().getToken());
@@ -320,7 +315,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                 .setNegativeButton("Отмена",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
-                                if(needToZoom) {
+                                if (needToZoom) {
                                     mMap.animateCamera(CameraUpdateFactory.zoomTo(Integer.parseInt(MapsActivity.this.getString(R.string.map_default_zoom))));
                                 }
                                 d.cancel();

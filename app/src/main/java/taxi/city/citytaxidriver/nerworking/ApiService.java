@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver.service;
+package taxi.city.citytaxidriver.nerworking;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -245,7 +245,35 @@ public class ApiService {
         } catch (IOException e) {
             Crashlytics.logException(e);
             json = null;
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+            e.getMessage();
+            json = null;
+        }
+        return json;
+    }
+
+    public JSONObject patchRequest(JSONObject data, String apiUrl, String token) {
+        HttpClient httpClient = getHttpClient();
+        JSONObject json;
+
+        try {
+            HttpPatch request = new HttpPatch(url + apiUrl);
+            // Add your data
+            request.addHeader("content-type", "application/json");
+            request.addHeader("Authorization", "Token " + token);
+
+            StringEntity params = new StringEntity(data.toString(), HTTP.UTF_8);
+            request.setEntity(params);
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpClient.execute(request);
+            json = parseData(response);
+
+        } catch (IOException e) {
+            Crashlytics.logException(e);
+            json = null;
         } catch (Exception e) {
             Crashlytics.logException(e);
             e.printStackTrace();

@@ -1,13 +1,11 @@
 package taxi.city.citytaxidriver;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 /**

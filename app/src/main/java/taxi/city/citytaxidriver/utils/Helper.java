@@ -30,7 +30,7 @@ import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 
 /**
  * Created by Daniyar on 4/16/2015.
@@ -39,7 +39,7 @@ public class Helper {
     private static String regexPattern = "\\d+\\.?\\d*";
     private static DecimalFormat df = new DecimalFormat("#.##");
     private final static String ORDER_PREFS = "OrderPrefsFile";
-    private final static String USER_PREFS = "UserPrefsFile";
+    public final static String USER_PREFS = "UserPrefsFile";
     private static SharedPreferences settings;
 
     public static String getFormattedLatLng(LatLng location) {

@@ -1,9 +1,8 @@
-package taxi.city.citytaxidriver;
+package taxi.city.citytaxidriver.services;
 
 /**
  * Created by Daniyar on 4/25/2015.
  */
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

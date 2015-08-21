@@ -19,8 +19,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -33,14 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import io.fabric.sdk.android.services.common.Crash;
 import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.MapsActivity;
 import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.CarEntity;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.service.ApiService;
+import taxi.city.citytaxidriver.nerworking.ApiService;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class CarDetailsFragment extends Fragment implements View.OnClickListener{

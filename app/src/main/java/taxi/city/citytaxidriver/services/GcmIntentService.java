@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver;
+package taxi.city.citytaxidriver.services;
 
 /**
  * Created by Daniyar on 4/25/2015.
@@ -15,6 +15,9 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import taxi.city.citytaxidriver.MapsActivity;
+import taxi.city.citytaxidriver.OrderActivity;
+import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.core.User;
 
 public class GcmIntentService extends IntentService {
