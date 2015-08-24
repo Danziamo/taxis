@@ -7,11 +7,13 @@ import com.squareup.okhttp.OkHttpClient;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
-import taxi.city.citytaxiclient.App;
-import taxi.city.citytaxiclient.R;
-import taxi.city.citytaxiclient.networking.api.OrderApi;
-import taxi.city.citytaxiclient.networking.api.SessionApi;
-import taxi.city.citytaxiclient.networking.api.UserApi;
+import taxi.city.citytaxidriver.App;
+import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.networking.api.AccountRestoreApi;
+import taxi.city.citytaxidriver.networking.api.CarApi;
+import taxi.city.citytaxidriver.networking.api.OrderApi;
+import taxi.city.citytaxidriver.networking.api.SessionApi;
+import taxi.city.citytaxidriver.networking.api.UserApi;
 
 public class RestClient {
     private RestClient() {
@@ -49,4 +51,8 @@ public class RestClient {
     public static SessionApi getSessionService() {
         return createService(SessionApi.class);
     }
+
+    public static CarApi getCarService() { return createService(CarApi.class); }
+
+    public static AccountRestoreApi getAccountApi() { return createService(AccountRestoreApi.class); }
 }

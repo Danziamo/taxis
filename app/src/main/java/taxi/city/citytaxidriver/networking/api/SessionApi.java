@@ -3,8 +3,8 @@ package taxi.city.citytaxidriver.networking.api;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
-import taxi.city.citytaxiclient.models.Session;
-import taxi.city.citytaxiclient.models.User;
+import taxi.city.citytaxidriver.models.Session;
+import taxi.city.citytaxidriver.models.User;
 
 public interface SessionApi {
     @POST("/login/")

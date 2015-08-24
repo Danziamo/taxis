@@ -3,8 +3,8 @@ package taxi.city.citytaxidriver.networking;
 import android.content.Context;
 
 import retrofit.RequestInterceptor;
-import taxi.city.citytaxiclient.App;
-import taxi.city.citytaxiclient.models.GlobalSingleton;
+import taxi.city.citytaxidriver.App;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
 
 public class SessionRequestInterceptor implements RequestInterceptor {
     Context context;

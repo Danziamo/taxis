@@ -3,8 +3,8 @@ package taxi.city.citytaxidriver.networking.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import taxi.city.citytaxiclient.models.OnlineStatus;
-import taxi.city.citytaxiclient.models.Role;
+import taxi.city.citytaxidriver.models.OnlineStatus;
+import taxi.city.citytaxidriver.models.Role;
 
 public class UserStatus {
     @Expose

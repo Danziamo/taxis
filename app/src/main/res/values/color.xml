@@ -9,4 +9,8 @@
     <color name="red">#ff0000</color>
     <color name="blacktext2">#0f0d00</color>
     <color name="blue_text">#24599B</color>
+
+    <color name="ColorPrimary">#000000</color>
+    <color name="ColorPrimaryDark">#000000</color>
+    <color name="TabsScrollColor">#3E3E3D</color>
 </resources>

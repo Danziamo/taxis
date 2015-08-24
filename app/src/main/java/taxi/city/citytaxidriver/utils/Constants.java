@@ -12,4 +12,10 @@ public class Constants {
     public static final double FIXED_PRICE = 70;
 
     public static final String SENDER_ID = "363431602762";
+
+    public static final int SOS_DURATION = 10 * 60;
+
+    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    public static final long DRAWER_CLOSE_DELAY_MS = 250;
 }

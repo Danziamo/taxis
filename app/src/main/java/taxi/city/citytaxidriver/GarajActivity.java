@@ -101,7 +101,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.action_quit:
+            /*case R.id.action_quit:
                 signOut();
                 return true;
             case R.id.action_about:
@@ -111,7 +111,7 @@ public class GarajActivity extends ActionBarActivity implements ActionBar.TabLis
                 startActivity(new Intent(this, HelpActivity.class));
                 return true;
             case R.id.action_share:
-                shareLink();return true;
+                shareLink();return true;*/
             /*case R.id.user_container:
                 startActivity(new Intent(this, UserDetailsActivity.class));
                 return true;

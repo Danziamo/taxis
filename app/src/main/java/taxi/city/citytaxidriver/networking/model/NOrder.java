@@ -3,7 +3,7 @@ package taxi.city.citytaxidriver.networking.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import taxi.city.citytaxiclient.models.OrderStatus;
+import taxi.city.citytaxidriver.models.OrderStatus;
 
 public class NOrder {
 

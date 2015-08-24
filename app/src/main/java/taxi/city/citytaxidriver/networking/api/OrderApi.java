@@ -20,7 +20,7 @@ public interface OrderApi {
     void getAllByStatusAndDriver(@Query("driver") int userId, @Query("status") OrderStatus status, @Query("ordering") String type, @Query("limit") int limit, Callback<ArrayList<Order>> cb);
 
     @GET("/info_orders/")
-    void getAllByDistance(@Query("status") OrderStatus status, @Query("dist") int dist, Callback<ArrayList<Order>> cb);
+    void getAllByDistance(@Query("status") OrderStatus status, @Query("dist") double dist, Callback<ArrayList<Order>> cb);
 
     @GET("/info_orders/")
     void getAllByStatus(@Query("status") OrderStatus status, Callback<ArrayList<Order>> cb);

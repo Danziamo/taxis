@@ -1,48 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="taxi.city.citytaxidriver.GarajActivity">
-
-    <item android:id="@+id/action_share"
-        android:title="Поделиться"
-        android:orderInCategory="90"
-        android:icon="@drawable/ic_share"
-        app:showAsAction="always"
-        />
-
-    <item android:id="@+id/empty"
-        android:orderInCategory="101"
-        android:title="@string/action_settings"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_action_overflow">
-
-        <menu>
-            <item android:id="@+id/action_quit"
-                android:title="@string/action_exit"
-                android:orderInCategory="100"
-                app:showAsAction="never" />
-
-            <item android:id="@+id/action_about"
-                android:title="О такси"
-                app:showAsAction="never"
-                android:orderInCategory="98"/>
-
-            <item android:id="@+id/action_help"
-                android:title="Тех поддержка"
-                app:showAsAction="ifRoom"
-                android:orderInCategory="99"/>
-
-            <!--<item
-                android:id="@+id/user_container"
-                android:title="Кабинет"
-                android:orderInCategory="97"
-                />
-            <item
-                android:id="@+id/car_container"
-                android:title="Транспорт"
-                android:orderInCategory="96"
-                />-->
-        </menu>
-
-    </item>
+    tools:context="taxi.city.citytaxidriver.MainActivity">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
