@@ -33,6 +33,7 @@ public class Rating implements Serializable{
 
     public float getRating() {
         if (count == 0) return 0;
-        return (float)sum/count;
+        int rating = (10 * sum)/count;
+        return (float)rating/10;
     }
 }

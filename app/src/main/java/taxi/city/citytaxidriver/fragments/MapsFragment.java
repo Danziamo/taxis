@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -24,6 +28,8 @@ import taxi.city.citytaxidriver.utils.Constants;
 
 public class MapsFragment extends Fragment {
 
+    private MapView mMapView;
+    private GoogleMap mGoogleMap;
 
     Order mOrder;
     User mUser;
@@ -42,7 +48,28 @@ public class MapsFragment extends Fragment {
         mOrder = GlobalSingleton.getInstance(getActivity()).currentOrder;
         mUser = GlobalSingleton.getInstance(getActivity()).currentUser;
 
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume();// needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        mGoogleMap = mMapView.getMap();
+        mGoogleMap.setMyLocationEnabled(true);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
     }
 
     public void cancelOrder() {

@@ -14,7 +14,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,18 +29,9 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
-import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.enums.OStatus;
-import taxi.city.citytaxidriver.fragments.MapsFragment;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
@@ -88,11 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.container, new MapsFragment())
-                .commit();
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
@@ -116,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!isGPSEnabled()){
             displayPromptForEnablingGPS(true);
         }
-        SetGooglePlayServices();
+        setGooglePlayServices();
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             registerInBackground();
@@ -194,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.create().show();
     }
 
-    private void SetGooglePlayServices() {
+    private void setGooglePlayServices() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -202,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .build();
     }
 
-    private void SetLocationRequest() {
+    private void setLocationRequest() {
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setSmallestDisplacement(15)
@@ -234,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     mRegId = gcm.register(Constants.SENDER_ID);
-                    RestClient.getUserService().updateAndroidToken(mRegId);
+                    RestClient.getUserService().updateAndroidToken(user.getId(), mRegId);
                 } catch (IOException ex) {
                     Crashlytics.logException(ex);
                     msg = "err";
@@ -263,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        setLocationRequest();
         startLocationUpdates();
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);

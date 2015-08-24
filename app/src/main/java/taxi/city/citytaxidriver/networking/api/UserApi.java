@@ -65,9 +65,9 @@ public interface UserApi {
 
     @FormUrlEncoded
     @PATCH("/users/{userId}/")
-    void updateAndroidToken(@Field("android_token") String androidToken, Callback<Object> cb);
+    void updateAndroidToken(@Path("userId") int id, @Field("android_token") String androidToken, Callback<Object> cb);
 
     @FormUrlEncoded
     @PATCH("/users/{userId}/")
-    Object updateAndroidToken(@Field("android_token") String androidToken);
+    Object updateAndroidToken(@Path("userId") int id, @Field("android_token") String androidToken);
 }

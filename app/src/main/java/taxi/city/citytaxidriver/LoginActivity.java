@@ -32,9 +32,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.Session;
 import taxi.city.citytaxidriver.networking.ApiService;
+import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.tasks.UserLoginTask;
 import taxi.city.citytaxidriver.utils.Helper;
 import taxi.city.citytaxidriver.utils.SessionHelper;
@@ -262,7 +268,7 @@ public class LoginActivity extends Activity{
             focusView.requestFocus();
         } else {
             showProgress(true);
-            mAuthTask = new UserLoginTask(phone, password){
+            /*mAuthTask = new UserLoginTask(phone, password){
                 @Override
                 protected void onPostExecute(Integer statusCode) {
                     super.onPostExecute(statusCode);
@@ -288,7 +294,28 @@ public class LoginActivity extends Activity{
                 }
 
             };
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute((Void) null);*/
+            Session session = new Session();
+            session.setPhone(mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
+            session.setPassword(mPasswordView.getText().toString());
+            RestClient.getSessionService().login(session, new Callback<taxi.city.citytaxidriver.models.User>() {
+                @Override
+                public void success(taxi.city.citytaxidriver.models.User user, Response response) {
+                    showProgress(false);
+                    GlobalSingleton.getInstance(LoginActivity.this).currentUser = user;
+                    GlobalSingleton.getInstance(LoginActivity.this).token = user.getToken();
+                    GlobalSingleton.getInstance(LoginActivity.this).currentOrder = user.getActiveOrder();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    showProgress(false);
+                }
+            });
         }
     }
 

@@ -30,7 +30,8 @@ public class SplashScreen extends Activity {
         String password = sessionHelper.getPassword();
 
         if(!phone.isEmpty() && !password.isEmpty()){
-            new UserLoginTask(phone, password){
+            goToLoginActivity();
+            /*new UserLoginTask(phone, password){
                 @Override
                 protected void onPostExecute(final Integer statusCode) {
                     super.onPostExecute(statusCode);
@@ -52,7 +53,7 @@ public class SplashScreen extends Activity {
                         }
                     }, SPLASH_TIME_OUT);
                 }
-            }.execute();
+            }.execute();*/
         }else{
             new Handler().postDelayed(new Runnable() {
 

@@ -47,6 +47,11 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return TITLES[position];
+    }
+
     public Fragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
