@@ -72,7 +72,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    String SENDER_ID = "363431602762";
+
     String mRegId;
     GoogleCloudMessaging gcm;
 
@@ -363,7 +363,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     if (gcm == null) {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
-                    mRegId = gcm.register(SENDER_ID);
+                    mRegId = gcm.register(Constants.SENDER_ID);
                     JSONObject data = new JSONObject();
                     data.put("android_token", mRegId);
                     JSONObject result = api.patchRequest(data, "users/" + user.id + "/");

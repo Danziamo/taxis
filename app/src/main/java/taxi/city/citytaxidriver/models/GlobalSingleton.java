@@ -2,6 +2,8 @@ package taxi.city.citytaxidriver.models;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class GlobalSingleton {
     Context context;
     private static GlobalSingleton instance;
@@ -9,6 +11,7 @@ public class GlobalSingleton {
     public User currentUser;
     public Order currentOrder;
     public String token;
+    public LatLng curPosition;
 
 
     public static GlobalSingleton getInstance(Context context) {
@@ -19,5 +22,10 @@ public class GlobalSingleton {
 
     private GlobalSingleton(Context context) {
         this.context = context;
+    }
+
+    public String getPosition() {
+        if (curPosition == null) return null;
+        return "POINT (" + curPosition.latitude + " " + curPosition.longitude + ")";
     }
 }

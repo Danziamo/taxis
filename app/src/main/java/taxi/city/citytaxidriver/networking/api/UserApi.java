@@ -1,5 +1,7 @@
 package taxi.city.citytaxidriver.networking.api;
 
+import com.squareup.okhttp.Call;
+
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -14,11 +16,11 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
-import taxi.city.citytaxiclient.models.OnlineStatus;
-import taxi.city.citytaxiclient.models.Role;
-import taxi.city.citytaxiclient.models.User;
-import taxi.city.citytaxiclient.networking.model.NUser;
-import taxi.city.citytaxiclient.networking.model.UserStatus;
+import taxi.city.citytaxidriver.models.OnlineStatus;
+import taxi.city.citytaxidriver.models.Role;
+import taxi.city.citytaxidriver.models.User;
+import taxi.city.citytaxidriver.networking.model.NUser;
+import taxi.city.citytaxidriver.networking.model.UserStatus;
 
 public interface UserApi {
     @POST("/users")
@@ -52,4 +54,16 @@ public interface UserApi {
 
     @GET("/users/")
     void getDrivers(@Query("online_status") OnlineStatus status, @Query("role") Role role, Callback<ArrayList<User>> cb);
+
+    @FormUrlEncoded
+    @PATCH("/users/{userId}/")
+    void updatePosition(@Field("cur_position") String position, Callback<Object> cb);
+
+    @FormUrlEncoded
+    @PATCH("/users/{userId}/")
+    void updateStatus(@Field("online_status") OnlineStatus status, Callback<Object> cb);
+
+    @FormUrlEncoded
+    @PATCH("/users/{userId}/")
+    void updateAndroidToken(@Field("android_token") String androidToken, Callback<Object> cb);
 }

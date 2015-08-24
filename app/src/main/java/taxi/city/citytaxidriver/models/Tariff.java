@@ -25,4 +25,44 @@ public class Tariff implements Serializable {
     @Expose
     @SerializedName("waiting_between_point_price")
     private double waitingRatio;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getStartPrice() {
+        return startPrice;
+    }
+
+    public void setStartPrice(double startPrice) {
+        this.startPrice = startPrice;
+    }
+
+    public double getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
+    }
+
+    public double getWaitingRatio() {
+        return waitingRatio;
+    }
+
+    public void setWaitingRatio(double waitingRatio) {
+        this.waitingRatio = waitingRatio;
+    }
 }

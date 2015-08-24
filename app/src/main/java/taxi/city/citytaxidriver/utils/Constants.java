@@ -10,4 +10,6 @@ public class Constants {
     public static final double ORDER_SEARCH_RANGE = 15; // km
 
     public static final double FIXED_PRICE = 70;
+
+    public static final String SENDER_ID = "363431602762";
 }
