@@ -3,21 +3,28 @@ package taxi.city.citytaxidriver.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.adapters.OrderAdapter;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
@@ -31,8 +38,14 @@ public class MapsFragment extends Fragment {
     private MapView mMapView;
     private GoogleMap mGoogleMap;
 
+    private HashMap<Marker, Order> mNewOrderMarkerMap;
+    private HashMap<Marker, Order> mSosOrderMarkerMap;
+
     Order mOrder;
     User mUser;
+
+    private OrderAdapter orderAdapter;
+    private RecyclerView rvOrders;
 
     public MapsFragment() {
 
@@ -62,6 +75,16 @@ public class MapsFragment extends Fragment {
 
         mGoogleMap = mMapView.getMap();
         mGoogleMap.setMyLocationEnabled(true);
+
+        rvOrders = (RecyclerView)view.findViewById(R.id.rvOrders);
+        //rvOrders.addItemDecoration(new RecyclerViewSimpleDivider(getActivity()));
+        rvOrders.setHasFixedSize(true);
+
+        orderAdapter = new OrderAdapter(new ArrayList<Order>(), R.layout.sample_cardview, getActivity());
+
+        rvOrders.setAdapter(orderAdapter);
+        rvOrders.setItemAnimator(new DefaultItemAnimator());
+        rvOrders.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
     }
@@ -105,7 +128,8 @@ public class MapsFragment extends Fragment {
         RestClient.getOrderService().getAllByDistance(OrderStatus.NEW, Constants.ORDER_SEARCH_RANGE, new Callback<ArrayList<Order>>() {
             @Override
             public void success(ArrayList<Order> orders, Response response) {
-
+                GlobalSingleton.getInstance(getActivity()).newOrders = orders;
+                orderAdapter.setDataset(orders);
             }
 
             @Override
@@ -127,5 +151,9 @@ public class MapsFragment extends Fragment {
 
             }
         });
+    }
+
+    public void displayOrderOnMap(Order order) {
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.getStartPointPosition(), 17));
     }
 }

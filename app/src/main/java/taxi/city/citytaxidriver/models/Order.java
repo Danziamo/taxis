@@ -1,9 +1,14 @@
 package taxi.city.citytaxidriver.models;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import taxi.city.citytaxidriver.utils.Constants;
 
@@ -72,6 +77,9 @@ public class Order implements Serializable{
     private double distance;
 
     private boolean isActive;
+
+    private double latitude;
+    private double longitude;
 
     public int getId() {
         return id;
@@ -226,6 +234,23 @@ public class Order implements Serializable{
     public double getTravelSum() {
         if (this.fixedPrice >= Constants.FIXED_PRICE) return fixedPrice;
         return this.sum;
+    }
+
+    public LatLng getStartPointPosition() {
+        String s = this.startPoint;
+        String regexPattern = "\\d+\\.?\\d*";
+        if (s == null || s.equals("null"))
+            return null;
+        List<String> geo = new ArrayList<>();
+        Matcher m = Pattern.compile(regexPattern).matcher(s);
+        while(m.find()) {
+            geo.add(m.group());
+        }
+        if (geo.size() != 2)
+            return null;
+        double latitude = Double.valueOf(geo.get(0).trim());
+        double longitude = Double.valueOf(geo.get(1).trim());
+        return new LatLng(latitude, longitude);
     }
 
     public Order () {}

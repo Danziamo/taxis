@@ -199,6 +199,14 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name=".NewOrdersActivity"
+            android:label="@string/title_activity_new_orders"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="taxi.city.citytaxidriver.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

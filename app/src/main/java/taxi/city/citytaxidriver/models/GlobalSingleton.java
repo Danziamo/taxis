@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 public class GlobalSingleton {
     Context context;
     private static GlobalSingleton instance;
@@ -12,7 +14,7 @@ public class GlobalSingleton {
     public Order currentOrder;
     public String token;
     public LatLng curPosition;
-
+    public ArrayList<Order> newOrders;
 
     public static GlobalSingleton getInstance(Context context) {
         if(instance == null) instance = new GlobalSingleton(context);

@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,11 +34,14 @@ import com.google.android.gms.location.LocationServices;
 import java.io.IOException;
 
 import taxi.city.citytaxidriver.adapters.TabsPagerAdapter;
+import taxi.city.citytaxidriver.fragments.MapsFragment;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.services.LocationService;
 import taxi.city.citytaxidriver.utils.Constants;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -324,5 +328,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void logout() {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.NEW_ORDERS_KEY) {
+            if (data != null && resultCode == RESULT_OK) {
+                MapsFragment fragment = (MapsFragment)pagerAdapter.getRegisteredFragment(0);
+                fragment.displayOrderOnMap((Order)data.getSerializableExtra("DATA"));
+            }
+        }
     }
 }

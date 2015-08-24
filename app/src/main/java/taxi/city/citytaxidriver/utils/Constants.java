@@ -18,4 +18,9 @@ public class Constants {
     public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     public static final long DRAWER_CLOSE_DELAY_MS = 250;
+
+
+
+
+    public static final int NEW_ORDERS_KEY = 1;
 }

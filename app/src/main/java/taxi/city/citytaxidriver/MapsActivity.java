@@ -1405,5 +1405,4 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         }
     }
 
-
 }

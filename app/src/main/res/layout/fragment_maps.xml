@@ -13,7 +13,9 @@
         android:layout_height="match_parent"
         map:cameraTargetLat="@string/map_default_lat"
         map:cameraTargetLng="@string/map_default_lng"
+        map:cameraZoom="13"
         tools:ignore="MissingPrefix"
         />
+
 
 </RelativeLayout>

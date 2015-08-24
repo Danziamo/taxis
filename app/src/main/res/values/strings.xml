@@ -50,4 +50,5 @@
     <string name="som">сом</string>
     <string name="km">км</string>
     <string name="map">Карта</string>
+    <string name="title_activity_new_orders">NewOrdersActivity</string>
 </resources>
