@@ -24,10 +24,6 @@ public class AccountFragment extends Fragment {
     RatingBar ratingBar;
     User user;
 
-    public static AccountFragment newInstance() {
-        return new AccountFragment();
-    }
-
     public AccountFragment() {
     }
 

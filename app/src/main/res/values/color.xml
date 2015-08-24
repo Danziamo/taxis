@@ -13,4 +13,6 @@
     <color name="ColorPrimary">#000000</color>
     <color name="ColorPrimaryDark">#000000</color>
     <color name="TabsScrollColor">#3E3E3D</color>
+
+    <color name="CardView">#45ED00</color>
 </resources>

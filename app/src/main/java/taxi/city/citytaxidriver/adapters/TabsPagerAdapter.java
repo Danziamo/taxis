@@ -1,4 +1,4 @@
-package taxi.city.citytaxidriver;
+package taxi.city.citytaxidriver.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,9 +32,9 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new MapsFragment();
             case 1:
-                return AccountFragment.newInstance();
+                return new AccountFragment();
             case 2:
-                return HistoryFragment.newInstance();
+                return new HistoryFragment();
             default:
                 return null;
         }

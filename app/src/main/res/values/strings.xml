@@ -46,4 +46,8 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <string name="som">сом</string>
+    <string name="km">км</string>
+    <string name="map">Карта</string>
 </resources>

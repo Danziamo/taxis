@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 
+import taxi.city.citytaxidriver.adapters.TabsPagerAdapter;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
