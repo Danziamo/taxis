@@ -236,6 +236,10 @@ public class Order implements Serializable{
         return this.sum;
     }
 
+    public boolean isFixedPrice () {
+        return this.fixedPrice > Constants.FIXED_PRICE;
+    }
+
     public LatLng getStartPointPosition() {
         String s = this.startPoint;
         String regexPattern = "\\d+\\.?\\d*";

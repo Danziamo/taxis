@@ -8,14 +8,89 @@
     <com.google.android.gms.maps.MapView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapView"
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/llFooter"
         map:cameraTargetLat="@string/map_default_lat"
         map:cameraTargetLng="@string/map_default_lng"
         map:cameraZoom="13"
         tools:ignore="MissingPrefix"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/llFooter"
+        >
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/red"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAddress"
+                android:layout_gravity="left"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvStatus"
+                android:layout_gravity="center"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvPrice"
+                android:layout_gravity="right"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:id="@+id/btnBort"
+                android:layout_weight="4"
+                android:text="С БОРТА"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:id="@+id/btnStatus"
+                android:layout_weight="2"
+                android:text="online"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:id="@+id/btnOrders"
+                android:layout_weight="4"
+                android:text="ЗАКАЗЫ"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

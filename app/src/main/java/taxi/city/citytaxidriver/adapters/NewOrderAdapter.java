@@ -3,6 +3,7 @@ package taxi.city.citytaxidriver.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import taxi.city.citytaxidriver.MainActivity;
 import taxi.city.citytaxidriver.NewOrdersActivity;
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.fragments.MapsFragment;
 import taxi.city.citytaxidriver.models.Order;
+import taxi.city.citytaxidriver.utils.Constants;
 
 public class NewOrderAdapter extends RecyclerView.Adapter<NewOrderAdapter.ViewHolder> {
     private ArrayList<Order> items;

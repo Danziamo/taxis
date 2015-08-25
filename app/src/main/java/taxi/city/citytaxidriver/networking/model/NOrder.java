@@ -3,35 +3,48 @@ package taxi.city.citytaxidriver.networking.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 
 public class NOrder {
 
     @Expose
-    @SerializedName("client_phone")
-    public String clientPhone;
-
     public OrderStatus status;
 
     @Expose
-    public int tariff;
+    @SerializedName("address_stop")
+    public String addressStopPoint;
 
     @Expose
-    public int client;
+    public int driver;
 
     @Expose
-    @SerializedName("fixed_price")
-    public double fixedPrice;
+    @SerializedName("wait_time")
+    public String waitTime;
 
     @Expose
-    @SerializedName("adress_start_name")
-    public String  startName;
+    @SerializedName("wait_time_price")
+    public double waitTimePrice;
 
     @Expose
-    @SerializedName("adress_stop_name")
-    public String stopName;
+    @SerializedName("order_travel_time")
+    public String duration;
 
     @Expose
-    @SerializedName("adress_start")
-    public String startPoint;
+    @SerializedName("order_sum")
+    public double sum;
+
+    @Expose
+    @SerializedName("order_distance")
+    public double distance;
+
+    public NOrder (Order order) {
+        waitTime = order.getWaitTime();
+        waitTimePrice = order.getWaitTimePrice();
+        duration = order.getDuration();
+        sum = order.getSum();
+        distance = order.getDistance();
+        driver = order.getDriver().getId();
+        this.addressStopPoint = order.getStopPoint();
+    }
 }
