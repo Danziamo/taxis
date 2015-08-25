@@ -295,6 +295,7 @@ public class LoginActivity extends Activity{
 
             };
             mAuthTask.execute((Void) null);*/
+            RestClient.getOrderService()
             Session session = new Session();
             session.setPhone(mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
             session.setPassword(mPasswordView.getText().toString());

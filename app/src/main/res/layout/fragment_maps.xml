@@ -17,6 +17,158 @@
         tools:ignore="MissingPrefix"
         />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/locker"
+        android:background="@drawable/locker"
+        android:visibility="gone" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="НЕАКТИВЕН"
+            android:textSize="35dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:gravity="center" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llOrderDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#80ffffff"
+        android:paddingLeft="10dp"
+        android:visibility="gone"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="5"
+                android:gravity="left"
+                android:text="Ожидание:"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvWaitTime"
+                android:layout_weight="3.5"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="1.5"
+                android:gravity="left"
+                android:text="@string/meter_time"
+                style="@style/CounterTextView"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="5"
+                android:gravity="left"
+                android:text="Сумма:"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvWaitSum"
+                android:layout_weight="3.5"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                android:text=""
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="1.5"
+                android:gravity="left"
+                android:text="@string/meter_currency"
+                style="@style/CounterTextView"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="5"
+                android:gravity="left"
+                android:text="Расстояние:"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDistance"
+                android:layout_weight="3.5"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                android:text=""
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="1.5"
+                android:gravity="left"
+                android:text="@string/meter_distance"
+                style="@style/CounterTextView"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="5"
+                android:gravity="left"
+                android:text="Сумма проезда:"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvTravelSum"
+                android:layout_weight="3.5"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                android:text=""
+                android:textColor="@color/red"
+                style="@style/CounterTextView"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_weight="1.5"
+                android:gravity="left"
+                android:text="@string/meter_currency"
+                style="@style/CounterTextView"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,26 +185,26 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/tvAddress"
                 android:layout_gravity="left"
                 />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/tvStatus"
                 android:layout_gravity="center"
                 />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/tvPrice"
                 android:layout_gravity="right"
                 />
@@ -68,24 +220,27 @@
             <android.support.v7.widget.AppCompatButton
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:id="@+id/btnBort"
+                android:id="@+id/btnLeft"
                 android:layout_weight="4"
+                android:gravity="center"
                 android:text="С БОРТА"
                 />
 
             <android.support.v7.widget.AppCompatButton
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:id="@+id/btnStatus"
+                android:id="@+id/btnCenter"
                 android:layout_weight="2"
+                android:gravity="center"
                 android:text="online"
                 />
 
             <android.support.v7.widget.AppCompatButton
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:id="@+id/btnOrders"
+                android:id="@+id/btnRight"
                 android:layout_weight="4"
+                android:gravity="center"
                 android:text="ЗАКАЗЫ"
                 />
 

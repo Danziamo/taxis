@@ -30,6 +30,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 
@@ -267,6 +268,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void handleNewLocation(Location location) {
+        GlobalSingleton.getInstance(MainActivity.this).curPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        MapsFragment fragment = (MapsFragment)pagerAdapter.getRegisteredFragment(0);
+        fragment.updateOrderDetails(location);
+
     }
 
     @Override

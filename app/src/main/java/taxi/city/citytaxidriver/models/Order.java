@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import taxi.city.citytaxidriver.utils.Constants;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class Order implements Serializable{
 
@@ -141,13 +142,37 @@ public class Order implements Serializable{
         return waitTime;
     }
 
+    public long getWaitTimeLong(){
+        long res = 0;
+        String timeStr = getWaitTime();
+        if (timeStr == null || timeStr.equals("null") || timeStr.isEmpty()) return res;
+        try {
+            String[] list = timeStr.split(":");
+            res += 60*60*Integer.valueOf(list[0]) + 60*Integer.valueOf(list[1]) +Integer.valueOf(list[2]);
+        } catch (Exception e) {
+            res = 0;
+        }
+        return res;
+    }
+
     public void setWaitTime(String waitTime) {
         this.waitTime = waitTime;
     }
 
+    public void setWaitTime(long seconds) {
+        int hr = (int)seconds/3600;
+        int rem = (int)seconds%3600;
+        int mn = rem/60;
+        int sec = rem%60;
+        String hrStr = (hr<10 ? "0" : "")+hr;
+        String mnStr = (mn<10 ? "0" : "")+mn;
+        String secStr = (sec<10 ? "0" : "")+sec;
+        this.waitTime = String.format("%s:%s:%s", hrStr, mnStr, secStr);
+    }
+
     public double getWaitTimePrice() {
         if (this.fixedPrice >= Constants.FIXED_PRICE) return 0;
-        return this.waitTimePrice;
+        return tariff.getWaitingRatio() * (double)getWaitTimeLong()/60;
     }
 
     public void setWaitTimePrice(double waitTimePrice) {
@@ -228,12 +253,12 @@ public class Order implements Serializable{
 
     public double getTotalSum() {
         if (this.fixedPrice >= Constants.FIXED_PRICE) return this.fixedPrice;
-        return this.sum + this.waitTimePrice;
+        return this.getTravelSum() + this.getWaitTimePrice();
     }
 
     public double getTravelSum() {
         if (this.fixedPrice >= Constants.FIXED_PRICE) return fixedPrice;
-        return this.sum;
+        return tariff.getStartPrice() + tariff.getRatio() * distance;
     }
 
     public boolean isFixedPrice () {

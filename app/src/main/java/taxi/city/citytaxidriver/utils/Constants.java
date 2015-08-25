@@ -11,6 +11,8 @@ public class Constants {
 
     public static final double FIXED_PRICE = 70;
 
+    public static final int DEFAULT_BORT_TARIFF = 2;
+
     public static final String SENDER_ID = "363431602762";
 
     public static final int SOS_DURATION = 10 * 60;

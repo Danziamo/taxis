@@ -13,6 +13,8 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
+import taxi.city.citytaxidriver.models.Tariff;
+import taxi.city.citytaxidriver.networking.model.BOrder;
 import taxi.city.citytaxidriver.networking.model.NOrder;
 
 public interface OrderApi {
@@ -29,7 +31,7 @@ public interface OrderApi {
     void getById(@Path("orderId") int orderId, Callback<Order> cb);
 
     @POST("/orders/")
-    void createOrder(@Body NOrder order, Callback<Order> cb);
+    void createOrder(@Body BOrder order, Callback<NOrder> cb);
 
     @FormUrlEncoded
     @PATCH("/orders/{orderId}/")
@@ -37,4 +39,7 @@ public interface OrderApi {
 
     @PATCH("/orders/{orderId}/")
     void update(@Path("orderId") int orderId, @Body NOrder order, Callback<Order> cb);
+
+    @GET("/tariffs/{tariffId}/")
+    void getTariffById(@Path("tariffId") int id, Callback<Tariff> cb);
 }

@@ -47,8 +47,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="som">сом</string>
-    <string name="km">км</string>
+    <string name="meter_currency">сом</string>
+    <string name="meter_distance">км</string>
+    <string name="meter_time">мин</string>
     <string name="map">Карта</string>
     <string name="title_activity_new_orders">NewOrdersActivity</string>
 
@@ -56,4 +57,5 @@
     <!-- MapsFragment -->
 
     <string name="alert_info_order">Инфо заказа</string>
+    <string name="s_borta">С Борта</string>
 </resources>

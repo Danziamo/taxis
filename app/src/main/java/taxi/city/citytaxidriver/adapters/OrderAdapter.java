@@ -1,7 +1,6 @@
 package taxi.city.citytaxidriver.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.models.Order;
 
@@ -62,8 +60,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         Order item = items.get(position);
         holder.mAddressView.setText(item.getStartName());
         holder.mInfoView.setText("#" + item.getId());
-        holder.mPriceView.setText(String.valueOf((int)item.getTotalSum()) + mContext.getResources().getString(R.string.som));
-        holder.mDistanceView.setText(String.valueOf((int)item.getDistance()) + mContext.getResources().getString(R.string.km));
+        holder.mPriceView.setText(String.valueOf((int)item.getTotalSum()) + mContext.getResources().getString(R.string.meter_currency));
+        holder.mDistanceView.setText(String.valueOf((int)item.getDistance()) + mContext.getResources().getString(R.string.meter_distance));
         holder.itemView.setTag(item);
     }
 

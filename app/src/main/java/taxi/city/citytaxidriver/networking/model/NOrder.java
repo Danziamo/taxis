@@ -7,6 +7,8 @@ import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 
 public class NOrder {
+    @Expose
+    public int id;
 
     @Expose
     public OrderStatus status;
@@ -38,7 +40,10 @@ public class NOrder {
     @SerializedName("order_distance")
     public double distance;
 
+    public NOrder () {}
+
     public NOrder (Order order) {
+        id = order.getId();
         waitTime = order.getWaitTime();
         waitTimePrice = order.getWaitTimePrice();
         duration = order.getDuration();
@@ -46,5 +51,6 @@ public class NOrder {
         distance = order.getDistance();
         driver = order.getDriver().getId();
         this.addressStopPoint = order.getStopPoint();
+        this.status = order.getStatus();
     }
 }

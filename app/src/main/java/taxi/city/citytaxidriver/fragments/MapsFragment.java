@@ -1,15 +1,11 @@
 package taxi.city.citytaxidriver.fragments;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -34,16 +29,18 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.adapters.OrderAdapter;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
+import taxi.city.citytaxidriver.models.Tariff;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
+import taxi.city.citytaxidriver.networking.model.BOrder;
 import taxi.city.citytaxidriver.networking.model.NOrder;
 import taxi.city.citytaxidriver.utils.Constants;
+import taxi.city.citytaxidriver.utils.Helper;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
+public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener {
 
     private MapView mMapView;
     private GoogleMap mGoogleMap;
@@ -52,17 +49,26 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     TextView tvPrice;
     TextView tvStatus;
 
+    LinearLayout llOrderDetails;
+    TextView tvWaitTime;
+    TextView tvWaitSum;
+    TextView tvDistance;
+    TextView tvTravelSum;
+
+    Button btnLeft;
+    Button btnRight;
+    Button btnCenter;
 
     private HashMap<Marker, Order> mNewOrderMarkerMap;
     private HashMap<Marker, Order> mSosOrderMarkerMap;
 
     Order mOrder;
     User mUser;
+    private Location prevLocation;
 
     public MapsFragment() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,6 +102,19 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         tvPrice = (TextView)view.findViewById(R.id.tvPrice);
         tvStatus = (TextView)view.findViewById(R.id.tvStatus);
 
+        llOrderDetails = (LinearLayout)view.findViewById(R.id.llOrderDetails);
+        tvWaitTime = (TextView)view.findViewById(R.id.tvWaitTime);
+        tvWaitSum = (TextView)view.findViewById(R.id.tvWaitSum);
+        tvDistance = (TextView)view.findViewById(R.id.tvDistance);
+        tvTravelSum = (TextView)view.findViewById(R.id.tvTravelSum);
+
+        btnLeft = (Button)view.findViewById(R.id.btnLeft);
+        btnRight = (Button)view.findViewById(R.id.btnRight);
+        btnCenter = (Button)view.findViewById(R.id.btnCenter);
+
+        btnLeft.setOnClickListener(this);
+        btnRight.setOnClickListener(this);
+        btnCenter.setOnClickListener(this);
 
         getNewOrders();
         getSosOrders();
@@ -108,17 +127,38 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mMapView.onResume();
     }
 
-    public void cancelOrder() {
-        RestClient.getOrderService().updateStatus(mOrder.getId(), OrderStatus.NEW, new Callback<Order>() {
+    public void createBortOrder() {
+        RestClient.getOrderService().getTariffById(Constants.DEFAULT_BORT_TARIFF, new Callback<Tariff>() {
             @Override
-            public void success(Order order, Response response) {
-                mOrder = null;
-                GlobalSingleton.getInstance(getActivity()).currentOrder = null;
+            public void success(Tariff tariff, Response response) {
+                final Order order = new Order();
+                order.setDriver(mUser);
+                order.setStatus(OrderStatus.ONTHEWAY);
+                order.setStartName("");
+                order.setStopName("");
+                order.setStartPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
+                order.setStopPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
+                order.setClientPhone(mUser.getPhone());
+                order.setTariff(tariff);
+                RestClient.getOrderService().createOrder(new BOrder(order), new Callback<NOrder>() {
+                    @Override
+                    public void success(NOrder nOrder, Response response) {
+                        order.setId(nOrder.id);
+                        mOrder = order;
+                        GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
+                        updateFooter();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getActivity(), "Failed to create order", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Failed to cancel order", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to fetch tariff", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,12 +167,47 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         RestClient.getOrderService().update(mOrder.getId(), new NOrder(mOrder), new Callback<Order>() {
             @Override
             public void success(Order order, Response response) {
-
+                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                updateFooter();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "Failure", Toast.LENGTH_SHORT).show();
+                if (mOrder.getStatus() == OrderStatus.FINISHED) {
+                    //TODO write to database
+                }
+                updateFooter();
+            }
+        });
+    }
 
+    private void finishOrder() {
+        mOrder.setStatus(OrderStatus.FINISHED);
+        mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
+        updateOrder();
+    }
+
+    private void cancelOrder() {
+        mOrder.setStatus(OrderStatus.NEW);
+        mOrder.setStopPoint(null);
+        updateOrder();
+    }
+
+    private void takeOrder(Order order) {
+        //TODO krutilka
+        order.setDriver(mUser);
+        order.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
+        RestClient.getOrderService().update(order.getId(), new NOrder(order), new Callback<Order>() {
+            @Override
+            public void success(Order order, Response response) {
+                mOrder = order;
+                GlobalSingleton.getInstance(getActivity()).currentOrder = order;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "Cannot take order", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -260,30 +335,86 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         dialog.show();
     }
 
-    private void takeOrder(Order order) {
-        //TODO krutilka
-        order.setDriver(mUser);
-        RestClient.getOrderService().update(order.getId(), new NOrder(order), new Callback<Order>() {
-            @Override
-            public void success(Order order, Response response) {
-                mOrder = order;
-                GlobalSingleton.getInstance(getActivity()).currentOrder = order;
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Cannot take order", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void updateFooter() {
-
+        if (mOrder == null) {
+            btnLeft.setText(getString(R.string.s_borta));
+            btnRight.setText(getString(R.string.orders));
+            btnCenter.setText("ОНЛАЙН");
+        } else if (mOrder.getStatus() == OrderStatus.ACCEPTED) {
+            btnLeft.setText("На месте");
+            btnRight.setText("Отказ");
+            tvStatus.setText(mOrder.getStartName());
+        } else if (mOrder.getStatus() == OrderStatus.WAITING) {
+            btnLeft.setText("На борту");
+            btnRight.setText("Отказ");
+            tvStatus.setText("Ожидание");
+        } else if (mOrder.getStatus() == OrderStatus.ONTHEWAY) {
+            btnLeft.setText("Доставил");
+            btnCenter.setText("Ожидание");
+            tvStatus.setText("В пути");
+            //TODO подумать
+            btnRight.setText("Доп. инфо");
+        } else if (mOrder.getStatus() == OrderStatus.PENDING) {
+            btnLeft.setText("Доставил");
+            btnRight.setText("Доп. инфо");
+            btnCenter.setText("Продолжить");
+            tvStatus.setText("Ожидание");
+        } else {
+            btnLeft.setText(getString(R.string.s_borta));
+            btnRight.setText(getString(R.string.orders));
+            btnCenter.setText("ОНЛАЙН");
+        }
     }
 
-    private void updateCounter() {
-        if (mOrder != null) {
-
+    private void updateCounterViews() {
+        if (mOrder == null) {
+            llOrderDetails.setVisibility(View.GONE);
+        } else {
+            llOrderDetails.setVisibility(View.VISIBLE);
+            tvWaitTime.setText(String.valueOf(mOrder.getWaitTime()));
+            tvWaitSum.setText(String.valueOf((int) mOrder.getWaitTimePrice()));
+            tvDistance.setText(String.valueOf(mOrder.getDistance()));
+            tvTravelSum.setText(String.valueOf((int)mOrder.getTravelSum()));
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnLeft:
+                if (mOrder == null) {
+                    createBortOrder();
+                } else if (mOrder.getStatus() == OrderStatus.ACCEPTED) {
+
+                } else if (mOrder.getStatus() == OrderStatus.WAITING) {
+
+                } else if (mOrder.getStatus() == OrderStatus.ONTHEWAY) {
+                    finishOrder();
+                } else if (mOrder.getStatus() == OrderStatus.PENDING) {
+                    finishOrder();
+                } else {
+
+                }
+                updateFooter();
+                break;
+            case R.id.btnCenter:
+                updateFooter();
+                break;
+            case R.id.btnRight:
+                updateFooter();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void updateOrderDetails(Location location) {
+        if (mOrder == null) return;
+        if (prevLocation != null) {
+            mOrder.setDistance(mOrder.getDistance() + location.distanceTo(prevLocation)/1000);
+    }
+
+        prevLocation = location;
+        updateCounterViews();
     }
 }
