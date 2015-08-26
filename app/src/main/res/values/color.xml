@@ -15,4 +15,20 @@
     <color name="TabsScrollColor">#3E3E3D</color>
 
     <color name="CardView">#45ED00</color>
+
+    <!-- MainSplashColor -->
+
+    <color name = "splashFirst"   >#121223</color>
+    <color name = "splashMiddle"  >#000000</color>
+    <color name = "startBtnFirst" >#EBD936</color>
+    <color name = "startBtnFinish">#AD9302</color>
+    <color name = "adressBar"     >#ECECEC</color>
+    <color name = "cancelFirst"   >#DF5B42</color>
+    <color name = "cancelFinish"  >#D13030</color>
+    <color name = "splashPStart"  >#8B7900</color>
+    <color name = "splashPFinish" >#FFEA00</color>
+    <color name = "line"          >#8e8e8e</color>
+    <color name = "main_button"   >#0e0e1c</color>
+    <color name = "locker"        >#70000000</color>
+    <color name = "locker_out"    >#00000000</color>
 </resources>

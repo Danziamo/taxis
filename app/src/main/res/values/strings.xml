@@ -53,6 +53,11 @@
     <string name="map">Карта</string>
     <string name="title_activity_new_orders">NewOrdersActivity</string>
 
+    <!-- MainSplashActivity -->
+
+    <string name="s_signin">Войти</string>
+    <string name="s_regist">Регистрация</string>
+
 
     <!-- MapsFragment -->
 

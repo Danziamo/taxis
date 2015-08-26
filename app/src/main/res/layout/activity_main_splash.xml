@@ -1,0 +1,120 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash_background"
+    tools:context="taxi.city.citytaxiclient.MainSplashActivity">
+
+    <RelativeLayout
+        android:id="@+id/main_animation_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_navigation_panel"
+        android:layout_alignParentTop="true">
+        <ProgressBar
+            android:id="@+id/splash_progress"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateDrawable="@drawable/splash_progress"/>
+        <ImageView
+            android:id="@+id/s_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/s_logo"
+            />
+
+        <ImageView
+            android:id="@+id/middle_point"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:visibility="invisible"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/s_logo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/s_logo_text"
+            android:layout_below="@+id/splash_progress"
+            android:layout_marginTop="10dp"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/main_navigation_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/bottom_mini_panel"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/splashPFinish"
+            android:layout_marginBottom="5dp"/>
+
+        <RelativeLayout
+            android:id="@+id/anim_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bottom_mini_panel"
+            android:background="@drawable/splash_navigation_background"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/middle_line"
+                android:layout_width="2dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@color/line"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_toLeftOf="@id/middle_line">
+
+                <TextView
+                    android:id="@+id/s_signin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/s_signin"
+                    android:gravity="center"
+                    android:textColor="@color/blacktext2"
+                    android:textSize="19dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_toRightOf="@id/middle_line">
+
+                <TextView
+                    android:id="@+id/s_regist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/s_regist"
+                    android:gravity="center"
+                    android:textColor="@color/blacktext2"
+                    android:textSize="19dp"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
