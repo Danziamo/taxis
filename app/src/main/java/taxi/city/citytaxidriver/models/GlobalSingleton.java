@@ -6,6 +6,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+import taxi.city.citytaxidriver.App;
+
 public class GlobalSingleton {
     Context context;
     private static GlobalSingleton instance;
@@ -20,6 +22,10 @@ public class GlobalSingleton {
         if(instance == null) instance = new GlobalSingleton(context);
         if(instance.context == null) instance.context = context;
         return instance;
+    }
+
+    public static GlobalSingleton getInstance(){
+        return getInstance(App.getContext());
     }
 
     private GlobalSingleton(Context context) {

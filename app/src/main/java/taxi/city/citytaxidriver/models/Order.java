@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.db.models.*;
 import taxi.city.citytaxidriver.utils.Constants;
 
@@ -21,6 +22,10 @@ public class Order implements Serializable{
     @Expose
     @SerializedName("client_phone")
     private String clientPhone;
+
+    @Expose
+    @SerializedName("order_time")
+    private String orderTime;
 
     @Expose
     private OrderStatus status;
@@ -86,8 +91,35 @@ public class Order implements Serializable{
     public Order () {}
 
     public Order(OrderModel orderModel){
-        //@TODO complate
-        this.setTariff(Tariff.getTariffById(orderModel.getId()));
+        id = orderModel.getOrderId();
+        clientPhone = orderModel.getClientPhone();
+        orderTime = orderModel.getOrderTime();
+        status = orderModel.getStatus();
+        startName = orderModel.getStartName();
+        stopName = orderModel.getStopName();
+        startPoint = orderModel.getStartPoint();
+        stopPoint = orderModel.getStopPoint();
+
+        waitTime = orderModel.getWaitTime();
+        waitTimePrice = orderModel.getWaitTimePrice();
+        fixedPrice = orderModel.getFixedPrice();
+
+        setTariff(Tariff.getTariffById(orderModel.getTariffId()));
+
+        int driverId = orderModel.getDriverId();
+        User currentUser = GlobalSingleton.getInstance(App.getContext()).currentUser;
+        if(driverId == 0 || driverId == currentUser.getId()){
+            driver = currentUser;
+        }else {
+            driver = new User();
+            driver.setId(driverId);
+        }
+
+        clientId = orderModel.getClientId();
+        description = orderModel.getDescription();
+        duration = orderModel.getDuration();
+        sum = orderModel.getSum();
+        distance = orderModel.getDistance();
     }
 
     public int getId() {
@@ -104,6 +136,14 @@ public class Order implements Serializable{
 
     public void setClientPhone(String clientPhone) {
         this.clientPhone = clientPhone;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
     }
 
     public OrderStatus getStatus() {

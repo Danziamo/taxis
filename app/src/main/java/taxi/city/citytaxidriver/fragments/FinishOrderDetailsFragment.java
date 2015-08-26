@@ -69,10 +69,9 @@ public class FinishOrderDetailsFragment extends Fragment {
     }
 
     private void finishOrder(Order order) {
-        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<Order>() {
+        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<OrderModel>() {
             @Override
-            public void success(Order order, Response response) {
-                GlobalSingleton.getInstance(getActivity()).currentOrder = null;
+            public void success(OrderModel order, Response response) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }

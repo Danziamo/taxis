@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.fragments;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -30,8 +31,10 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import taxi.city.citytaxidriver.BuildConfig;
 import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
@@ -164,8 +167,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         order.setTariff(tariff);
         RestClient.getOrderService().createOrder(new BOrder(order), new Callback<OrderModel>() {
             @Override
-            public void success(OrderModel nOrder, Response response) {
-                order.setId(nOrder.id);
+            public void success(OrderModel orderModel, Response response) {
+                order.setId(orderModel.getOrderId());
                 mOrder = order;
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
                 updateFooter();
@@ -179,22 +182,24 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     public void updateOrder() {
-        RestClient.getOrderService().update(mOrder.getId(), new OrderModel(mOrder), new Callback<Order>() {
+        RestClient.getOrderService().update(mOrder.getId(), new OrderModel(mOrder), new Callback<OrderModel>() {
             @Override
-            public void success(Order order, Response response) {
-                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
-                updateFooter();
+            public void success(OrderModel orderModel, Response response) {
+                //@TODO neet to test in release mode
+                if(BuildConfig.DEBUG) {
+                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Failure", Toast.LENGTH_SHORT).show();
-                if (mOrder.getStatus() == OrderStatus.FINISHED) {
-                    //TODO write to database
+                if(BuildConfig.DEBUG) {
+                    Toast.makeText(getActivity(), "Failure", Toast.LENGTH_SHORT).show();
                 }
-                updateFooter();
             }
         });
+
+        updateFooter();
     }
 
     private void finishOrder() {
@@ -217,11 +222,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         //TODO krutilka
         order.setDriver(mUser);
         order.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
-        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<Order>() {
+        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<OrderModel>() {
             @Override
-            public void success(Order order, Response response) {
-                mOrder = order;
-                GlobalSingleton.getInstance(getActivity()).currentOrder = order;
+            public void success(OrderModel orderModel, Response response) {
+                mOrder = new Order(orderModel);
+                GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
             }
 
             @Override
@@ -435,5 +440,23 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         prevLocation = location;
         updateCounterViews();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == Constants.FINISH_ORDER_KEY){
+            if(resultCode == Activity.RESULT_FIRST_USER){
+                OrderModel orderModel = new OrderModel(mOrder);
+                orderModel.save();
+            }
+            GlobalSingleton.getInstance().currentOrder = null;
+            mOrder = null;
+
+            updateCounterViews();
+            updateFooter();
+        }
+
     }
 }

@@ -36,10 +36,10 @@ public interface OrderApi {
 
     @FormUrlEncoded
     @PATCH("/orders/{orderId}/")
-    void updateStatus(@Path("orderId") int orderId, @Field("status") OrderStatus status, Callback<Order> cb);
+    void updateStatus(@Path("orderId") int orderId, @Field("status") OrderStatus status, Callback<OrderModel> cb);
 
     @PATCH("/orders/{orderId}/")
-    void update(@Path("orderId") int orderId, @Body OrderModel order, Callback<Order> cb);
+    void update(@Path("orderId") int orderId, @Body OrderModel order, Callback<OrderModel> cb);
 
     @GET("/tariffs/")
     void  getAllTariffs(Callback<List<Tariff>> cb);
