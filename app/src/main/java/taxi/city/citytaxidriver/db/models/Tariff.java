@@ -24,46 +24,57 @@ public class Tariff extends Model implements Serializable {
     private int tariffId;
 
     @Expose
+    @SerializedName("tariff_name")
     @Column(name = "tariff_name")
     private String tariffName;
 
     @Expose
+    @SerializedName("seat_in_car_price")
     @Column(name = "seat_in_car_price")
     private double startPrice;
 
     @Expose
+    @SerializedName("kilometer_price")
     @Column(name = "kilometer_price")
     private double ratio;
 
     @Expose
+    @SerializedName("waiting_between_point_price")
     @Column(name = "waiting_between_point_price")
     private double waitingRatio;
 
     @Expose
+    @SerializedName("waiting_to_order")
     @Column(name = "waiting_to_order")
     private long waitingToOrder;
 
     @Expose
+    @SerializedName("waiting_to_order_price")
     @Column(name = "waiting_to_order_price")
     private double waitingToOrderPrice;
 
     @Expose
+    @SerializedName("airport_price")
     @Column(name = "airport_price")
     private double airportPrice;
 
     @Expose
+    @SerializedName("animal_price")
     @Column(name = "animal_price")
     private double animalPrice;
 
     @Expose
+    @SerializedName("delivery_kilometer_price")
     @Column(name = "delivery_kilometer_price")
     private double deliveryKilometerPrice;
 
     @Expose
+    @SerializedName("delivery_price")
     @Column(name = "delivery_price")
     private double deliveryPrice;
 
     @Expose
+    @SerializedName("drunk_taxi_price")
     @Column(name = "drunk_taxi_price")
     private double drunkTaxiPrice;
 

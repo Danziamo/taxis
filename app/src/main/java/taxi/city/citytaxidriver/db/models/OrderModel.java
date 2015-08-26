@@ -81,7 +81,7 @@ public class OrderModel extends Model implements Serializable {
     @Column(name = "driver")
     private int driverId;
 
-    @Expose
+    //@Expose
     @SerializedName("client")
     @Column(name = "client")
     private int clientId;
@@ -139,7 +139,7 @@ public class OrderModel extends Model implements Serializable {
 
         clientId = order.getClientId();
         description = order.getDescription();
-        duration = order.getDuration();
+        duration = order.getOrderTravelTime();
         sum = order.getSum();
         distance = order.getDistance();
     }
@@ -290,11 +290,62 @@ public class OrderModel extends Model implements Serializable {
     }
     //End getter and setters
 
+    public long save(Order order){
+        orderId = order.getId();
+        clientPhone = order.getClientPhone();
+        orderTime = order.getOrderTime();
+        status = order.getStatus();
+        startName = order.getStartName();
+        stopName = order.getStopName();
+        startPoint = order.getStartPoint();
+        stopPoint = order.getStopPoint();
+        waitTime = order.getWaitTime();
+        waitTimePrice = order.getWaitTimePrice();
+        fixedPrice = order.getFixedPrice();
+
+        Tariff tariff = order.getTariff();
+        if(tariff == null){
+            tariffId = 1;
+        }else {
+            tariffId = tariff.getTariffId();
+        }
+
+        User driver = order.getDriver();
+        if(driver == null){
+            driverId = 0;
+        }else {
+            driverId = order.getDriver().getId();
+        }
+
+        clientId = order.getClientId();
+        description = order.getDescription();
+        duration = order.getOrderTravelTime();
+        sum = order.getSum();
+        distance = order.getDistance();
+        return super.save();
+    }
+
     public static List<OrderModel> getAllFinishedOrders(){
         return new Select()
                 .from(OrderModel.class)
-                .where("status = ?", OrderStatus.FINISHED)
+                .where("status = ?", OrderStatus.FINISHED.toString().toUpperCase())
                 .execute();
+    }
+
+    public static OrderModel getUserLastActiveOrder(int userId) {
+        return new Select()
+                .from(OrderModel.class)
+                .where("status != ?", OrderStatus.FINISHED.toString().toUpperCase())
+                .where("driver = ?", userId)
+                .orderBy("id DESC")
+                .executeSingle();
+    }
+
+    public static OrderModel getByOrderId(int orderId){
+        return new Select()
+                .from(OrderModel.class)
+                .where("order_id - ?")
+                .executeSingle();
     }
 
 }

@@ -34,8 +34,10 @@ import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.db.models.Setting;
 import taxi.city.citytaxidriver.enums.OStatus;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.networking.RestClient;
 

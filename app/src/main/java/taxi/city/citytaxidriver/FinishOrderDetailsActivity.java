@@ -1,12 +1,11 @@
 package taxi.city.citytaxidriver;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.fragments.FinishOrderDetailsFragment;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
 
 
 public class FinishOrderDetailsActivity extends AppCompatActivity {
@@ -14,7 +13,7 @@ public class FinishOrderDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (User.getInstance() == null || User.getInstance().id == 0) {
+        if (GlobalSingleton.getInstance().currentUser == null) {
             finish();
         }
         setContentView(R.layout.activity_finish_order_details);

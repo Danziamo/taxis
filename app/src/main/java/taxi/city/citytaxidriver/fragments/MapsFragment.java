@@ -71,6 +71,21 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     Order mOrder;
     User mUser;
     private Location prevLocation;
+    private long pauseStartTime;
+    private long timerStartTime;
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - timerStartTime;
+            double seconds = (double) (millis / 1000);
+            mOrder.setDuration((long)seconds);
+            updateCounterViews();
+            timerHandler.postDelayed(this, 1000);
+        }
+    };
 
     public MapsFragment() {
 
@@ -124,6 +139,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         getNewOrders();
         getSosOrders();
+
+        updateCounterViews();
+        updateFooter();
         return view;
     }
 
@@ -168,6 +186,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         RestClient.getOrderService().createOrder(new BOrder(order), new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
+                timerHandler.postDelayed(timerRunnable, 0);
                 order.setId(orderModel.getOrderId());
                 mOrder = order;
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
@@ -186,14 +205,14 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             @Override
             public void success(OrderModel orderModel, Response response) {
                 //@TODO neet to test in release mode
-                if(BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                if(BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     Toast.makeText(getActivity(), "Failure", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -207,6 +226,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
         updateOrder();*/
 
+        mOrder.setStatus(OrderStatus.FINISHED);
         Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
         intent.putExtra("DATA", mOrder);
         startActivityForResult(intent, Constants.FINISH_ORDER_KEY);
@@ -227,6 +247,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             public void success(OrderModel orderModel, Response response) {
                 mOrder = new Order(orderModel);
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
+                timerHandler.postDelayed(timerRunnable, 0);
             }
 
             @Override
@@ -256,6 +277,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     public void getNewOrders() {
+        if (mOrder != null) return;
         RestClient.getOrderService().getAllByDistance(OrderStatus.NEW, Constants.ORDER_SEARCH_RANGE, new Callback<ArrayList<Order>>() {
             @Override
             public void success(ArrayList<Order> orders, Response response) {
@@ -435,8 +457,17 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     public void updateOrderDetails(Location location) {
         if (mOrder == null) return;
         if (prevLocation != null) {
-            mOrder.setDistance(mOrder.getDistance() + location.distanceTo(prevLocation)/1000);
-    }
+            if(location.getTime() <= prevLocation.getTime()){
+                return;
+            }
+
+            long timeDifference = (location.getTime() - prevLocation.getTime()) / 1000;
+            float distance = location.distanceTo(prevLocation);
+            if(distance / timeDifference > Constants.GPS_MAX_SPEED){
+                return;
+            }
+            mOrder.setDistance(mOrder.getDistance() + distance/1000);
+        }
 
         prevLocation = location;
         updateCounterViews();
@@ -448,8 +479,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         if(requestCode == Constants.FINISH_ORDER_KEY){
             if(resultCode == Activity.RESULT_FIRST_USER){
-                OrderModel orderModel = new OrderModel(mOrder);
-                orderModel.save();
+                OrderModel orderModel = OrderModel.getByOrderId(mOrder.getId());
+                if(orderModel == null){
+                    orderModel = new OrderModel();
+                }
+                orderModel.save(mOrder);
             }
             GlobalSingleton.getInstance().currentOrder = null;
             mOrder = null;

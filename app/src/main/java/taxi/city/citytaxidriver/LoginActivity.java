@@ -37,6 +37,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Session;
 import taxi.city.citytaxidriver.networking.ApiService;

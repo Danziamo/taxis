@@ -64,16 +64,18 @@ public class Order implements Serializable{
     @Expose
     private User driver;
 
-    @Expose
+    //@Expose
     @SerializedName("client")
-    private int clientId;
+    private Integer clientId;
 
     @Expose
     private String description;
 
     @Expose
     @SerializedName("order_travel_time")
-    private String duration;
+    private String orderTravelTime;
+
+    private long duration;
 
     @Expose
     @SerializedName("order_sum")
@@ -117,7 +119,7 @@ public class Order implements Serializable{
 
         clientId = orderModel.getClientId();
         description = orderModel.getDescription();
-        duration = orderModel.getDuration();
+        orderTravelTime = orderModel.getDuration();
         sum = orderModel.getSum();
         distance = orderModel.getDistance();
     }
@@ -187,6 +189,7 @@ public class Order implements Serializable{
     }
 
     public String getWaitTime() {
+        if (waitTime == null) return "00:00:00";
         return waitTime;
     }
 
@@ -275,11 +278,26 @@ public class Order implements Serializable{
         this.description = description;
     }
 
-    public String getDuration() {
-        return duration;
+    public String getOrderTravelTime() {
+        int hr = (int)duration/3600;
+        int rem = (int)duration%3600;
+        int mn = rem/60;
+        int sec = rem%60;
+        String hrStr = (hr<10 ? "0" : "")+hr;
+        String mnStr = (mn<10 ? "0" : "")+mn;
+        String secStr = (sec<10 ? "0" : "")+sec;
+        return String.format("%s:%s:%s", hrStr, mnStr, secStr);
     }
 
-    public void setDuration(String duration) {
+    public void setOrderTravelTime(String orderTravelTime) {
+        this.orderTravelTime = orderTravelTime;
+    }
+
+    public long getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 
@@ -296,7 +314,7 @@ public class Order implements Serializable{
     }
 
     public void setDistance(double distance) {
-        this.distance = distance;
+        this.distance = (double)Math.round(distance*100)/100;
     }
 
     public boolean isActive() {

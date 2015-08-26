@@ -211,13 +211,31 @@ public class User implements Serializable {
     }
 
     public Order getActiveOrder() {
+        OrderModel localOrder = OrderModel.getUserLastActiveOrder(this.getId());
+        OrderModel firstOrderFromServer = null;
         if (hasActiveOrder()) {
             for (int i = this.activeOrders.size() - 1; i >= 0; i -= 1) {
                 OrderModel orderModel = activeOrders.get(i);
                 if (orderModel.getDriverId() == 0) continue;
                 if (orderModel.getDriverId() != this.id) continue;
-                return new Order(orderModel);
+                if (localOrder != null && orderModel.getOrderId() == localOrder.getOrderId()){
+                    if (orderModel.getSum() + orderModel.getWaitTimePrice() > localOrder.getSum() + localOrder.getWaitTimePrice()){
+                        localOrder.delete();
+                        return new Order(orderModel);
+                    } else {
+                        return new Order(localOrder);
+                    }
+                }
+                if(firstOrderFromServer == null){
+                    firstOrderFromServer = orderModel;
+                }
             }
+            if (localOrder != null) {
+                localOrder.delete();
+            }
+            return new Order(firstOrderFromServer);
+        }else if (localOrder != null){
+            localOrder.delete();
         }
         return null;
     }
