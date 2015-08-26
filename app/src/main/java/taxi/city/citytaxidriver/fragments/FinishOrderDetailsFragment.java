@@ -18,7 +18,7 @@ import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.networking.RestClient;
-import taxi.city.citytaxidriver.networking.model.NOrder;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 
 public class FinishOrderDetailsFragment extends Fragment {
 
@@ -69,7 +69,7 @@ public class FinishOrderDetailsFragment extends Fragment {
     }
 
     private void finishOrder(Order order) {
-        RestClient.getOrderService().update(order.getId(), new NOrder(order), new Callback<Order>() {
+        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<Order>() {
             @Override
             public void success(Order order, Response response) {
                 GlobalSingleton.getInstance(getActivity()).currentOrder = null;

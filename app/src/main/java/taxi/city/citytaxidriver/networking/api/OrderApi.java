@@ -16,7 +16,7 @@ import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.networking.model.BOrder;
-import taxi.city.citytaxidriver.networking.model.NOrder;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 
 public interface OrderApi {
     @GET("/info_orders/")
@@ -32,14 +32,14 @@ public interface OrderApi {
     void getById(@Path("orderId") int orderId, Callback<Order> cb);
 
     @POST("/orders/")
-    void createOrder(@Body BOrder order, Callback<NOrder> cb);
+    void createOrder(@Body BOrder order, Callback<OrderModel> cb);
 
     @FormUrlEncoded
     @PATCH("/orders/{orderId}/")
     void updateStatus(@Path("orderId") int orderId, @Field("status") OrderStatus status, Callback<Order> cb);
 
     @PATCH("/orders/{orderId}/")
-    void update(@Path("orderId") int orderId, @Body NOrder order, Callback<Order> cb);
+    void update(@Path("orderId") int orderId, @Body OrderModel order, Callback<Order> cb);
 
     @GET("/tariffs/")
     void  getAllTariffs(Callback<List<Tariff>> cb);

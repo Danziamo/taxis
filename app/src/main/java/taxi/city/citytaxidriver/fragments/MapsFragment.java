@@ -39,7 +39,7 @@ import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.BOrder;
-import taxi.city.citytaxidriver.networking.model.NOrder;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
 
@@ -162,9 +162,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         order.setStopPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
         order.setClientPhone(mUser.getPhone());
         order.setTariff(tariff);
-        RestClient.getOrderService().createOrder(new BOrder(order), new Callback<NOrder>() {
+        RestClient.getOrderService().createOrder(new BOrder(order), new Callback<OrderModel>() {
             @Override
-            public void success(NOrder nOrder, Response response) {
+            public void success(OrderModel nOrder, Response response) {
                 order.setId(nOrder.id);
                 mOrder = order;
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
@@ -179,7 +179,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     public void updateOrder() {
-        RestClient.getOrderService().update(mOrder.getId(), new NOrder(mOrder), new Callback<Order>() {
+        RestClient.getOrderService().update(mOrder.getId(), new OrderModel(mOrder), new Callback<Order>() {
             @Override
             public void success(Order order, Response response) {
                 Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         //TODO krutilka
         order.setDriver(mUser);
         order.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
-        RestClient.getOrderService().update(order.getId(), new NOrder(order), new Callback<Order>() {
+        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<Order>() {
             @Override
             public void success(Order order, Response response) {
                 mOrder = order;

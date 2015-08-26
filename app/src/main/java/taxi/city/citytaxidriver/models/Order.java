@@ -60,7 +60,8 @@ public class Order implements Serializable{
     private User driver;
 
     @Expose
-    private User client;
+    @SerializedName("client")
+    private int clientId;
 
     @Expose
     private String description;
@@ -81,6 +82,13 @@ public class Order implements Serializable{
 
     private double latitude;
     private double longitude;
+
+    public Order () {}
+
+    public Order(OrderModel orderModel){
+        //@TODO complate
+        this.setTariff(Tariff.getTariffById(orderModel.getId()));
+    }
 
     public int getId() {
         return id;
@@ -203,12 +211,20 @@ public class Order implements Serializable{
         this.driver = driver;
     }
 
-    public User getClient() {
-        return client;
+//    public User getClient() {
+//        return client;
+//    }
+//
+//    public void setClient(User client) {
+//        this.client = client;
+//    }
+
+    public int getClientId() {
+        return clientId;
     }
 
-    public void setClient(User client) {
-        this.client = client;
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 
     public String getDescription() {
@@ -282,5 +298,5 @@ public class Order implements Serializable{
         return new LatLng(latitude, longitude);
     }
 
-    public Order () {}
+
 }
