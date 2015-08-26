@@ -3,10 +3,12 @@ package taxi.city.citytaxidriver.db.models;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
@@ -286,4 +288,13 @@ public class OrderModel extends Model implements Serializable {
     public void setDistance(double distance) {
         this.distance = distance;
     }
+    //End getter and setters
+
+    public static List<OrderModel> getAllFinishedOrders(){
+        return new Select()
+                .from(OrderModel.class)
+                .where("status = ?", OrderStatus.FINISHED)
+                .execute();
+    }
+
 }

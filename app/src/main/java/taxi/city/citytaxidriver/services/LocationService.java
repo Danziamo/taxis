@@ -18,7 +18,16 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import taxi.city.citytaxidriver.App;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.networking.ApiService;
+import taxi.city.citytaxidriver.networking.RestClient;
+import taxi.city.citytaxidriver.networking.api.OrderApi;
 import taxi.city.citytaxidriver.utils.Helper;
 
 /**
@@ -49,8 +58,9 @@ public class LocationService extends Service {
             runnable = new Runnable() {
                 @Override
                 public void run() {
-                    sendHeartBeat();
+//                    sendHeartBeat();
                     sendLocation();
+                    sendFinishedOrders();
                     handler.postDelayed(this, 60*1000);
                 }
             };
@@ -113,6 +123,34 @@ public class LocationService extends Service {
             }
         }
     }
+
+    private void sendFinishedOrders(){
+
+        if( !Helper.isNetworkAvailable(App.getContext()) ){
+            return;
+        }
+
+        List<OrderModel> orders = OrderModel.getAllFinishedOrders();
+        int size = orders.size();
+
+        OrderApi api = RestClient.getOrderService();
+
+        for(int i = 0; i < size; i++){
+            final OrderModel order = orders.get(i);
+            api.update(order.getOrderId(), order, new Callback<OrderModel>() {
+                @Override
+                public void success(OrderModel orderModel, Response response) {
+                    order.delete();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
+    }
+
 
 
     @Nullable
