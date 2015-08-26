@@ -23,16 +23,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
-import taxi.city.citytaxidriver.models.Tariff;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.BOrder;
@@ -127,38 +128,50 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mMapView.onResume();
     }
 
-    public void createBortOrder() {
-        RestClient.getOrderService().getTariffById(Constants.DEFAULT_BORT_TARIFF, new Callback<Tariff>() {
-            @Override
-            public void success(Tariff tariff, Response response) {
-                final Order order = new Order();
-                order.setDriver(mUser);
-                order.setStatus(OrderStatus.ONTHEWAY);
-                order.setStartName("");
-                order.setStopName("");
-                order.setStartPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
-                order.setStopPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
-                order.setClientPhone(mUser.getPhone());
-                order.setTariff(tariff);
-                RestClient.getOrderService().createOrder(new BOrder(order), new Callback<NOrder>() {
-                    @Override
-                    public void success(NOrder nOrder, Response response) {
-                        order.setId(nOrder.id);
-                        mOrder = order;
-                        GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
-                        updateFooter();
-                    }
+    private void createBortOrder() {
+        if(Tariff.isTariffsUpToDate()){
+            Tariff tariff = Tariff.getTariffById(Constants.DEFAULT_BORT_TARIFF);
+            createBortOrder(tariff);
+        }else{
+            RestClient.getOrderService().getAllTariffs(new Callback<List<Tariff>>() {
+                @Override
+                public void success(List<Tariff> tariffs, Response response) {
+                    Tariff.upgradeTariffs(tariffs);
+                    Tariff tariff = Tariff.getTariffById(Constants.DEFAULT_BORT_TARIFF);
+                    createBortOrder(tariff);
+                }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Toast.makeText(getActivity(), "Failed to create order", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(getActivity(), "Failed to fetch tariff", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+    }
+
+    private void createBortOrder(Tariff tariff){
+        final Order order = new Order();
+        order.setDriver(mUser);
+        order.setStatus(OrderStatus.ONTHEWAY);
+        order.setStartName("");
+        order.setStopName("");
+        order.setStartPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
+        order.setStopPoint(Helper.getFormattedLatLng(GlobalSingleton.getInstance(getActivity()).curPosition));
+        order.setClientPhone(mUser.getPhone());
+        order.setTariff(tariff);
+        RestClient.getOrderService().createOrder(new BOrder(order), new Callback<NOrder>() {
+            @Override
+            public void success(NOrder nOrder, Response response) {
+                order.setId(nOrder.id);
+                mOrder = order;
+                GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
+                updateFooter();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Failed to fetch tariff", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to create order", Toast.LENGTH_SHORT).show();
             }
         });
     }

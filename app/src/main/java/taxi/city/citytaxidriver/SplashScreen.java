@@ -31,6 +31,7 @@ public class SplashScreen extends Activity {
 
         if(!phone.isEmpty() && !password.isEmpty()){
             goToLoginActivity();
+            //@TODO after autologin upgrade tariffs: Helper.upgradeTariffInBackgroud();
             /*new UserLoginTask(phone, password){
                 @Override
                 protected void onPostExecute(final Integer statusCode) {

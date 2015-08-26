@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,14 +25,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.core.Car;
 import taxi.city.citytaxidriver.core.Client;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.Tariff;
 import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.db.models.Setting;
 import taxi.city.citytaxidriver.enums.OStatus;
 import taxi.city.citytaxidriver.networking.ApiService;
+import taxi.city.citytaxidriver.networking.RestClient;
 
 /**
  * Created by Daniyar on 4/16/2015.
@@ -461,4 +468,28 @@ public static void clearOrderPreferences(Context context, int id) {
         InputMethodManager inputMethodManager =(InputMethodManager)ctx.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+
+    public static void upgradeTariffInBackgroud(){
+        if( !taxi.city.citytaxidriver.db.models.Tariff.isTariffsUpToDate()){
+            new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                    RestClient.getOrderService().getAllTariffs(new Callback<List<taxi.city.citytaxidriver.db.models.Tariff>>() {
+                        @Override
+                        public void success(List<taxi.city.citytaxidriver.db.models.Tariff> tariffs, Response response) {
+                            taxi.city.citytaxidriver.db.models.Tariff.upgradeTariffs(tariffs);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                    return null;
+                }
+            }.execute();
+        }
+    }
+
 }

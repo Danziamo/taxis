@@ -305,6 +305,9 @@ public class LoginActivity extends Activity{
                     GlobalSingleton.getInstance(LoginActivity.this).currentUser = user;
                     GlobalSingleton.getInstance(LoginActivity.this).token = user.getToken();
                     GlobalSingleton.getInstance(LoginActivity.this).currentOrder = user.getActiveOrder();
+
+                    Helper.upgradeTariffInBackgroud();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

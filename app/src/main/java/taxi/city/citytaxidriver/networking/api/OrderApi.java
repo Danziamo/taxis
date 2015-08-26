@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver.networking.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -11,9 +12,9 @@ import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
-import taxi.city.citytaxidriver.models.Tariff;
 import taxi.city.citytaxidriver.networking.model.BOrder;
 import taxi.city.citytaxidriver.networking.model.NOrder;
 
@@ -40,6 +41,6 @@ public interface OrderApi {
     @PATCH("/orders/{orderId}/")
     void update(@Path("orderId") int orderId, @Body NOrder order, Callback<Order> cb);
 
-    @GET("/tariffs/{tariffId}/")
-    void getTariffById(@Path("tariffId") int id, Callback<Tariff> cb);
+    @GET("/tariffs/")
+    void  getAllTariffs(Callback<List<Tariff>> cb);
 }

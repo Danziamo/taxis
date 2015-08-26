@@ -2,6 +2,8 @@ package taxi.city.citytaxidriver;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -27,6 +29,8 @@ public class App extends Application {
         tracker.enableAutoActivityTracking(true);
 
         mContext = this;
+
+        ActiveAndroid.initialize(this);
     }
 
     public static Tracker getDefaultTracker() {

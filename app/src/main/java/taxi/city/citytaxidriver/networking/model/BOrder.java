@@ -38,7 +38,7 @@ public class BOrder {
     public String clientPhone;
 
     public BOrder(Order order) {
-        tariff = order.getTariff().getId();
+        tariff = order.getTariff().getTariffId();
         status = order.getStatus();
         startName = order.getStartName();
         stopName = order.getStopName();

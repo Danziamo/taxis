@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import taxi.city.citytaxidriver.db.models.*;
 import taxi.city.citytaxidriver.utils.Constants;
-import taxi.city.citytaxidriver.utils.Helper;
 
 public class Order implements Serializable{
 
