@@ -25,4 +25,5 @@ public class Constants {
 
 
     public static final int NEW_ORDERS_KEY = 1;
+    public static final int FINISH_ORDER_KEY = 2;
 }

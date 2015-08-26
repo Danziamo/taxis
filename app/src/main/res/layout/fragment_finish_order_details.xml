@@ -4,344 +4,234 @@
 
     tools:context="taxi.city.citytaxidriver.FinishOrderDetailsActivity.FinishOrderDetailsFragment">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatEditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/main_background"
-        android:scaleType="centerCrop"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/etStartAddress"
+        android:gravity="center"
+        />
 
-    <ScrollView
+    <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayoutTopButtons"
-        android:id="@+id/scrollViewOrderInfo">
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPhoneLabel"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="Телефон"
+        android:layout_below="@id/etStartAddress"
+        />
 
-        <RelativeLayout
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPhone"
+        android:gravity="center"
+        android:layout_below="@id/tvPhoneLabel"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/llOrderInfo"
+        android:layout_above="@+id/btnSubmit"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/spacing_large"
+            android:layout_height="50dp"
+            android:weightSum="10"
+            android:id="@+id/linearLayoutWaitingTime"
             android:gravity="center">
 
-            <TextView
-                style="@style/TextTitle"
-                android:text="Адрес клиента:"
-                android:id="@+id/textViewStartAddress" />
-
-            <EditText
-                style="@style/mediumEditText"
-                android:id="@+id/editTextStartAddress"
-                android:gravity="center"
-                android:layout_below="@+id/textViewStartAddress"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Начислено:"
+                android:text="Ожидание:"
+                android:gravity="center|left"
+                android:layout_weight="5"
+                android:textColor="@color/lime"
+                android:textSize="@dimen/text_size_medium" />
 
-                android:textColor="@color/translucent_lime"
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="00:20"
+                android:layout_weight="3"
+                android:textSize="@dimen/text_size_large"
+                android:textColor="@color/white"
+                android:id="@+id/textViewWaitingTime" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="минут"
+                android:layout_weight="2"
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:weightSum="10"
+            android:id="@+id/linearLayoutWaitingSum">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Сумма за ожидание:"
+                android:layout_weight="5.0"
+                android:gravity="center|left"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/lime"
+                android:layout_gravity="bottom" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="40"
+                android:layout_weight="3"
+                android:textSize="@dimen/text_size_large"
+                android:textColor="@color/white"
+                android:id="@+id/textViewWaitingSum" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="сом"
+                android:layout_weight="2"
+                android:padding="2dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:weightSum="10"
+            android:id="@+id/linearLayoutDistance"
+            >
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Расстояние:"
+                android:gravity="left"
+                android:layout_weight="5"
+                android:textColor="@color/lime"
+                android:textSize="@dimen/text_size_medium"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:gravity="right"
+                android:layout_weight="3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large"
+                android:id="@+id/textViewDistance" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="км"
+                android:layout_weight="2"
+                android:padding="2dp"
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:weightSum="10"
+            android:id="@+id/linearLayoutSum"
+            android:gravity="center"
+            >
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Сумма:"
+                android:gravity="left"
+                android:layout_weight="5"
+                android:textColor="@color/lime"
+                android:textSize="@dimen/text_size_medium" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="200"
+                android:gravity="right"
+                android:layout_weight="3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large"
+                android:id="@+id/textViewSum" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="сом"
+                android:layout_weight="2"
+                android:padding="2dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/linearLayoutTotal"
+            >
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Итого:"
+                android:gravity="left"
+                android:layout_weight="4.5"
                 android:textSize="25sp"
-                android:id="@+id/textViewCharged"
-                android:layout_below="@+id/editTextStartAddress"
-                android:layout_alignLeft="@+id/textViewStartAddress"
-                android:layout_alignStart="@+id/textViewStartAddress"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="23dp" />
+                android:textColor="@color/lime"/>
 
-            <LinearLayout
-
-                android:orientation="horizontal"
-                android:layout_width="350dp"
-                android:layout_height="50dp"
-                android:weightSum="10"
-                android:id="@+id/linearLayoutWaitingTime"
-                android:layout_below="@+id/textViewCharged"
-                android:layout_marginLeft="10dp"
-                android:layout_centerHorizontal="true"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Ожидание:"
-                    android:gravity="center|left"
-                    android:layout_weight="5"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_medium" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="00:20"
-                    android:layout_weight="3"
-                    android:textSize="@dimen/text_size_large"
-                    android:textColor="@color/white"
-                    android:id="@+id/textViewWaitingTime" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="2dp"
-                    android:text="минут"
-                    android:layout_weight="2"
-                    android:textSize="@dimen/text_size"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="350dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:weightSum="10"
-                android:id="@+id/linearLayoutWaitingSum"
-                android:layout_below="@+id/linearLayoutWaitingTime"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Сумма за ожидание:"
-                    android:layout_weight="5.0"
-                    android:gravity="center|left"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textColor="@color/white"
-                    android:layout_gravity="bottom" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="40"
-                    android:layout_weight="3"
-                    android:textSize="@dimen/text_size_large"
-                    android:textColor="@color/white"
-                    android:id="@+id/textViewWaitingSum" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="сом"
-                    android:layout_weight="2"
-                    android:padding="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="350dp"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:weightSum="10"
-                android:id="@+id/linearLayoutDistance"
-                android:layout_marginLeft="10dp"
-                android:layout_below="@+id/linearLayoutWaitingSum"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Расстояние:"
-                    android:gravity="left"
-                    android:layout_weight="5"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_medium"
-                    />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:gravity="right"
-                    android:layout_weight="3"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_large"
-                    android:id="@+id/textViewDistance" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="км"
-                    android:layout_weight="2"
-                    android:padding="2dp"
-                    android:textSize="@dimen/text_size"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="350dp"
-                android:layout_height="50dp"
-                android:weightSum="10"
-                android:layout_marginLeft="10dp"
-                android:layout_below="@+id/linearLayoutDistance"
-                android:id="@+id/linearLayoutSum"
-                android:gravity="center"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Сумма:"
-                    android:gravity="left"
-                    android:layout_weight="5"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_medium" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="200"
-                    android:gravity="right"
-                    android:layout_weight="3"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_large"
-                    android:id="@+id/textViewSum" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="сом"
-                    android:layout_weight="2"
-                    android:padding="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size"/>
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/linearLayoutSum"
-                android:weightSum="10"
-                android:id="@+id/linearLayoutFixedPrice">
+                android:text="240"
+                android:gravity="right"
+                android:layout_weight="2.5"
+                android:textSize="35sp"
+                android:id="@+id/textViewTotalSum"
+                android:textColor="@color/white"
+                />
 
-                <TextView
-                    style="@style/FixedEditText"
-                    android:text="Фиксированная плата:"
-                    android:id="@+id/textViewFixedPriceLabel" />
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent" >
-                </View>
-
-                <TextView
-                    style="@style/SmallFixedEditText"
-                    android:id="@+id/textViewFixedPrice" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="350dp"
-                android:layout_height="40dp"
-                android:id="@+id/linearLayoutTotal"
-                android:layout_below="@+id/linearLayoutFixedPrice"
-                android:layout_marginLeft="10dp"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Итого:"
-                    android:gravity="left"
-                    android:layout_weight="4.5"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="24000"
-                    android:gravity="right"
-                    android:layout_weight="2.5"
-                    android:textSize="35sp"
-                    android:id="@+id/textViewTotalSum"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="80dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="сом"
-                    android:padding="2dp"
-                    android:layout_weight="3.5"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-
-            <TextView
-                style="@style/TextTitle"
-                android:text="Адрес назначения:"
-                android:id="@+id/textViewStopAddress"
-                android:layout_below="@+id/linearLayoutTotal" />
-
-
-            <EditText
-                style="@style/mediumEditText"
-                android:text="Адрес куда надо доставить:"
-                android:id="@+id/editTextStopAddress"
-                android:layout_below="@+id/textViewStopAddress" />
-
-        </RelativeLayout>
-
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutTopButtons"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:weightSum="2"
-        android:layout_margin="5dp"
-        android:visibility="gone"
-        android:layout_above="@+id/linearLayoutBottomButtons">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_shape_azure"
-            android:text="Ожидание"
-            android:id="@+id/buttonWait"
-            android:layout_weight="1"
-            android:layout_marginRight="10dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:layout_marginLeft="10dp"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="сом"
+                android:layout_weight="3.5"
+                android:textSize="25sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayoutBottomButtons"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:weightSum="2"
-        android:layout_margin="5dp"
-        android:layout_centerHorizontal="true">
-
-        <Button
-            style="@style/mediumButton.Blue"
-            android:background="@drawable/button_shape_azure"
-            android:text="Доставил"
-            android:layout_weight="1"
-            android:id="@+id/buttonFinish"
-            android:layout_marginRight="10dp"/>
-
-        <Button
-            style="@style/mediumButton.Blue"
-            android:background="@drawable/button_shape_azure"
-            android:text="На карте"
-            android:id="@+id/buttonMap"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp" />
-
-    </LinearLayout>
-
+        android:text="Завершить"
+        android:gravity="center"
+        android:id="@+id/btnSubmit"
+        />
 </RelativeLayout>

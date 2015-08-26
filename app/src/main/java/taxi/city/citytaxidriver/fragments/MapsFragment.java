@@ -2,6 +2,7 @@ package taxi.city.citytaxidriver.fragments;
 
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
@@ -196,9 +198,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     private void finishOrder() {
-        mOrder.setStatus(OrderStatus.FINISHED);
+        /*mOrder.setStatus(OrderStatus.FINISHED);
         mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
-        updateOrder();
+        updateOrder();*/
+
+        Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
+        intent.putExtra("DATA", mOrder);
+        startActivityForResult(intent, Constants.FINISH_ORDER_KEY);
     }
 
     private void cancelOrder() {
@@ -299,7 +305,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             public void run() {
                 showOrderInfoDialog(mNewOrderMarkerMap.get(marker));
             }
-        }, 1250);
+        }, 1150);
         return true;
     }
 

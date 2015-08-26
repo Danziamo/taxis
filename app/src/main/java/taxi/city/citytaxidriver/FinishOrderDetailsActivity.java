@@ -2,13 +2,14 @@ package taxi.city.citytaxidriver;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.fragments.FinishOrderDetailsFragment;
 
 
-public class FinishOrderDetailsActivity extends ActionBarActivity {
+public class FinishOrderDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
