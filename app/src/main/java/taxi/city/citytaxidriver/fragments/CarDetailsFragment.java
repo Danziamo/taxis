@@ -92,7 +92,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         carBrandSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarBrand);
         carModelSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarModel);
         etCarColor = (EditText) rootView.findViewById(R.id.spinnerCarColor);
-        etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
+       // etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
         //etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
         //etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
         etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);

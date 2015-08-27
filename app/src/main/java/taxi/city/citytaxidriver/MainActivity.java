@@ -34,8 +34,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.adapters.TabsPagerAdapter;
 import taxi.city.citytaxidriver.fragments.MapsFragment;
+import taxi.city.citytaxidriver.interfaces.ConfirmCallback;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.User;
@@ -119,11 +121,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void navigate(final int itemId) {
         // perform the actual navigation logic, updating the main content fragment etc
         switch (itemId) {
+            case R.id.carDetails:
+                performState(CarDetailsActivity.class);
             case R.id.exit:
-                logout();
+
+                showConfirmDialog(getString(R.string.logout_confirm_title), getString(R.string.logout_confirm_text), getString(R.string.logout_cancel_text), new ConfirmCallback() {
+                    @Override
+                    public void confirm() {
+                        logout();
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
                 break;
             default:
         }
+
+    }
+
+    private void performState(Class<?> activity){
+        Intent intent = new Intent(MainActivity.this, activity);
+        startActivity(intent);
     }
 
     @Override
@@ -344,5 +365,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment.displayOrderOnMap((Order)data.getSerializableExtra("DATA"));
             }
         }
+    }
+
+    public void showConfirmDialog(String titleText, String confirmText, String cancelText, final ConfirmCallback callback){
+        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pDialog .setTitleText(titleText)
+                .setConfirmText(confirmText)
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        callback.confirm();
+                        sDialog.dismissWithAnimation();
+
+                    }
+                })
+                .setCancelText(cancelText)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        callback.cancel();
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 }

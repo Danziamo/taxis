@@ -2,10 +2,31 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu"
+        android:checkableBehavior="single"
+        android:menuCategory="secondary">
         <item
             android:id="@+id/main"
-            android:title="Main"
+            android:title="@string/map"
+            />
+        <item
+            android:id="@+id/carDetails"
+            android:title="@string/car.details"
+            />
+        <item
+            android:id="@+id/accountInfo"
+            android:title="@string/accountInfo"
+            />
+    </group>
+
+    <group
+        android:id="@+id/system"
+        android:menuCategory="container"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/share"
+            android:title="@string/share"
             />
 
         <item
@@ -13,4 +34,5 @@
             android:title="@string/action_exit"
             />
     </group>
+
 </menu>

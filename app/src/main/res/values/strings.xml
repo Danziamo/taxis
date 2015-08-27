@@ -64,6 +64,27 @@
     <string name="alert_info_order">Инфо заказа</string>
     <string name="s_borta">С Борта</string>
 
+    <!-- CarDetails -->
+    <string name="color">Цвет автомобиля</string>
+    <string name="liceniesdriver">Серия и номер прав</string>
+    <string name="numberauto">Номер авто</string>
+
+
+    <!-- NavigationMenu -->
+    <string name="exit">Выход</string>
+    <string name="car.details">Инфо о машине</string>
+    <string name="map">Карта</string>
+    <string name="share">Поделиться</string>
+    <string name="accountInfo">Лицевой счёт</string>
+    <string name="about">О программе</string>
+    <string name="tariffInfo">О тарифах</string>
+
+    <!-- logout -->
+    <string name="logout.confirm_title">Вы хотите выйти?</string>
+    <string name="logout.confirm_text">Выйти</string>
+    <string name="logout.cancel_text">Отмена</string>
+
+
 
     <!-- Errors -->
     <string name="error_network_unavailable">Нету подключения к интернету</string>

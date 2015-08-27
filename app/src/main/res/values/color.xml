@@ -16,6 +16,8 @@
 
     <color name="CardView">#45ED00</color>
 
+    <color name="backgroundphonenumber">#3b3d45</color>
+
     <!-- MainSplashColor -->
 
     <color name = "splashFirst"   >#121223</color>
