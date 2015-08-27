@@ -116,6 +116,10 @@ public class User implements Serializable {
         return onlineStatus;
     }
 
+    public boolean isOnline(){
+        return onlineStatus == OnlineStatus.ONLINE;
+    }
+
     public void setOnlineStatus(OnlineStatus onlineStatus) {
         this.onlineStatus = onlineStatus;
     }

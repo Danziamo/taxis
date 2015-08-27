@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -37,6 +38,7 @@ import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.OnlineStatus;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.models.User;
@@ -400,7 +402,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         if (mOrderModel == null) {
             btnLeft.setText(getString(R.string.s_borta));
             btnRight.setText(getString(R.string.orders));
-            btnCenter.setText("ОНЛАЙН");
+            if(mUser.isOnline()) {
+                btnCenter.setText("ОФФЛАЙН");
+                tvStatus.setText(getString(R.string.you_are_online));
+            }else{
+                btnCenter.setText("ОНЛАЙН");
+                tvStatus.setText(getString(R.string.you_are_offline));
+            }
         } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
             btnLeft.setText("На месте");
             btnRight.setText("Отказ");
@@ -425,7 +433,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         } else {
             btnLeft.setText(getString(R.string.s_borta));
             btnRight.setText(getString(R.string.orders));
-            btnCenter.setText("ОНЛАЙН");
+            if(mUser.isOnline()) {
+                btnCenter.setText("ОФФЛАЙН");
+                tvStatus.setText(getString(R.string.you_are_online));
+            }else{
+                btnCenter.setText("ОНЛАЙН");
+                tvStatus.setText(getString(R.string.you_are_offline));
+            }
         }
     }
 
@@ -463,6 +477,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 updateFooter();
                 break;
             case R.id.btnCenter:
+                if(mOrderModel == null){
+                    changeUserOnlineStatus();
+                }
                 updateFooter();
                 break;
             case R.id.btnRight:
@@ -490,6 +507,33 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         prevLocation = location;
         updateCounterViews();
+    }
+
+    public void changeUserOnlineStatus(){
+
+        if (!Helper.isNetworkAvailable(getActivity())) {
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final OnlineStatus newStatus = (mUser.isOnline())?OnlineStatus.OFFLINE:OnlineStatus.ONLINE;
+
+        RestClient.getUserService().updateStatus(mUser.getId(), newStatus, new Callback<Object>() {
+            @Override
+            public void success(Object o, Response response) {
+                mUser.setOnlineStatus(newStatus);
+                GlobalSingleton.getInstance().currentUser = mUser;
+                updateFooter();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_LONG).show();
+                Crashlytics.logException(error);
+            }
+        });
+
+
     }
 
     @Override

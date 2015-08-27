@@ -63,4 +63,13 @@
 
     <string name="alert_info_order">Инфо заказа</string>
     <string name="s_borta">С Борта</string>
+
+
+    <!-- Errors -->
+    <string name="error_network_unavailable">Нету подключения к интернету</string>
+    <string name="error_an_error_has_occurred_try_again">Произошла ошибка, попробуйте еще раз</string>
+    <!-- End Errors -->
+
+    <string name="you_are_online">Вы сейчас онлайн</string>
+    <string name="you_are_offline">Вы сейчас оффлайн</string>
 </resources>
