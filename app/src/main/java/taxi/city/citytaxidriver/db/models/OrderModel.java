@@ -4,15 +4,21 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.models.User;
+import taxi.city.citytaxidriver.utils.Constants;
+import taxi.city.citytaxidriver.utils.Helper;
 
 @Table(name="orders")
 public class OrderModel extends Model implements Serializable {
@@ -94,7 +100,9 @@ public class OrderModel extends Model implements Serializable {
     @Expose
     @SerializedName("order_travel_time")
     @Column(name = "order_travel_time")
-    private String duration;
+    private String orderTravelTime;
+
+    private long duration;
 
     @Expose
     @SerializedName("order_sum")
@@ -139,7 +147,8 @@ public class OrderModel extends Model implements Serializable {
 
         clientId = order.getClientId();
         description = order.getDescription();
-        duration = order.getOrderTravelTime();
+        orderTravelTime = order.getOrderTravelTime();
+        duration = order.getDuration();
         sum = order.getSum();
         distance = order.getDistance();
     }
@@ -265,12 +274,22 @@ public class OrderModel extends Model implements Serializable {
         this.description = description;
     }
 
-    public String getDuration() {
+    public String getOrderTravelTime() {
+        return orderTravelTime;
+    }
+
+    public void setOrderTravelTime(String orderTravelTime) {
+        this.orderTravelTime = orderTravelTime;
+        this.duration = Helper.getLongFromString(orderTravelTime);
+    }
+
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
+        this.orderTravelTime = Helper.getTimeFromLong(duration);
     }
 
     public double getSum() {
@@ -290,6 +309,49 @@ public class OrderModel extends Model implements Serializable {
     }
     //End getter and setters
 
+    //Helper methods
+    public Tariff getTariff(){
+        return Tariff.getTariffById(tariffId);
+    }
+    public double getTotalSum() {
+        if (isFixedPrice()){
+            return this.fixedPrice;
+        }
+        return this.getTravelSum() + this.getWaitTimePrice();
+    }
+
+    public double getTravelSum() {
+        if (isFixedPrice()){
+            return fixedPrice;
+        }
+        Tariff tariff = getTariff();
+        return tariff.getStartPrice() + tariff.getRatio() * distance;
+    }
+
+    public boolean isFixedPrice () {
+        return this.fixedPrice > Constants.FIXED_PRICE;
+    }
+
+    public LatLng getStartPointPosition() {
+        String s = this.startPoint;
+        String regexPattern = "\\d+\\.?\\d*";
+        if (s == null || s.equals("null"))
+            return null;
+        List<String> geo = new ArrayList<>();
+        Matcher m = Pattern.compile(regexPattern).matcher(s);
+        while(m.find()) {
+            geo.add(m.group());
+        }
+        if (geo.size() != 2)
+            return null;
+        double latitude = Double.valueOf(geo.get(0).trim());
+        double longitude = Double.valueOf(geo.get(1).trim());
+        return new LatLng(latitude, longitude);
+    }
+    //End Helper methods
+
+
+    //DB functions
     public long save(Order order){
         orderId = order.getId();
         clientPhone = order.getClientPhone();
@@ -319,7 +381,8 @@ public class OrderModel extends Model implements Serializable {
 
         clientId = order.getClientId();
         description = order.getDescription();
-        duration = order.getOrderTravelTime();
+        orderTravelTime = order.getOrderTravelTime();
+        duration = order.getDuration();
         sum = order.getSum();
         distance = order.getDistance();
         return super.save();
@@ -347,5 +410,7 @@ public class OrderModel extends Model implements Serializable {
                 .where("order_id = ?", orderId)
                 .executeSingle();
     }
+
+    //End DB functions
 
 }

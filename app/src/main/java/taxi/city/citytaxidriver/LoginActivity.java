@@ -305,7 +305,7 @@ public class LoginActivity extends Activity{
                     showProgress(false);
                     GlobalSingleton.getInstance(LoginActivity.this).currentUser = user;
                     GlobalSingleton.getInstance(LoginActivity.this).token = user.getToken();
-                    GlobalSingleton.getInstance(LoginActivity.this).currentOrder = user.getActiveOrder();
+                    GlobalSingleton.getInstance(LoginActivity.this).currentOrderModel = user.getActiveOrder();
 
                     Helper.upgradeTariffInBackgroud();
                     SessionHelper helper = new SessionHelper();

@@ -23,8 +23,7 @@ import taxi.city.citytaxidriver.db.models.OrderModel;
 
 public class FinishOrderDetailsFragment extends Fragment {
 
-    private Button btnSubmit;
-    private Order mOrder;
+    private OrderModel mOrderModel;
 
     public FinishOrderDetailsFragment() {
     }
@@ -35,7 +34,7 @@ public class FinishOrderDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_finish_order_details, container, false);
 
         Intent intent = getActivity().getIntent();
-        mOrder = (Order)intent.getExtras().getSerializable("DATA");
+        mOrderModel = (OrderModel)intent.getExtras().getSerializable("DATA");
 
         EditText etAddressStart = (EditText)rootView.findViewById(R.id.etStartAddress);
         TextView tvPhone = (TextView)rootView.findViewById(R.id.tvPhone);
@@ -46,23 +45,23 @@ public class FinishOrderDetailsFragment extends Fragment {
         TextView tvTotalSum = (TextView)rootView.findViewById(R.id.textViewTotalSum);
         Button btnSubmit = (Button)rootView.findViewById(R.id.btnSubmit);
 
-        String waitTime = mOrder.getWaitTime();
+        String waitTime = mOrderModel.getWaitTime();
         if (waitTime.length() > 5) {
             waitTime = waitTime.substring(0, waitTime.length() - 3);
         }
 
-        etAddressStart.setText(mOrder.getStartName());
+        etAddressStart.setText(mOrderModel.getStartName());
         tvWaitTime.setText(waitTime);
-        tvWaitSum.setText(String.valueOf((int) mOrder.getWaitTimePrice()));
-        tvDistance.setText(String.valueOf(mOrder.getDistance()));
-        tvSum.setText(String.valueOf((int) mOrder.getTravelSum()));
-        tvTotalSum.setText(String.valueOf((int) mOrder.getTotalSum()));
+        tvWaitSum.setText(String.valueOf((int) mOrderModel.getWaitTimePrice()));
+        tvDistance.setText(String.valueOf(mOrderModel.getDistance()));
+        tvSum.setText(String.valueOf((int) mOrderModel.getTravelSum()));
+        tvTotalSum.setText(String.valueOf((int) mOrderModel.getTotalSum()));
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOrder.setStatus(OrderStatus.FINISHED);
-                finishOrder(mOrder);
+                mOrderModel.setStatus(OrderStatus.FINISHED);
+                finishOrder(mOrderModel);
             }
         });
 
@@ -70,8 +69,8 @@ public class FinishOrderDetailsFragment extends Fragment {
         return rootView;
     }
 
-    private void finishOrder(Order order) {
-        RestClient.getOrderService().update(order.getId(), new OrderModel(order), new Callback<OrderModel>() {
+    private void finishOrder(OrderModel order) {
+        RestClient.getOrderService().update(order.getOrderId(), order, new Callback<OrderModel>() {
             @Override
             public void success(OrderModel order, Response response) {
                 getActivity().setResult(Activity.RESULT_OK);
@@ -80,6 +79,7 @@ public class FinishOrderDetailsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                mOrderModel.save();
                 getActivity().setResult(Activity.RESULT_FIRST_USER);
                 getActivity().finish();
             }

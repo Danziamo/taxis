@@ -210,7 +210,7 @@ public class User implements Serializable {
         return this.activeOrders != null && this.activeOrders.size() > 0;
     }
 
-    public Order getActiveOrder() {
+    public OrderModel getActiveOrder() {
         OrderModel localOrder = OrderModel.getUserLastActiveOrder(this.getId());
         OrderModel firstOrderFromServer = null;
         if (hasActiveOrder()) {
@@ -221,9 +221,9 @@ public class User implements Serializable {
                 if (localOrder != null && orderModel.getOrderId() == localOrder.getOrderId()){
                     if (orderModel.getSum() + orderModel.getWaitTimePrice() > localOrder.getSum() + localOrder.getWaitTimePrice()){
                         localOrder.delete();
-                        return new Order(orderModel);
+                        return orderModel;
                     } else {
-                        return new Order(localOrder);
+                        return localOrder;
                     }
                 }
                 if(firstOrderFromServer == null){
@@ -233,7 +233,7 @@ public class User implements Serializable {
             if (localOrder != null) {
                 localOrder.delete();
             }
-            return new Order(firstOrderFromServer);
+            return firstOrderFromServer;
         }else if (localOrder != null){
             localOrder.delete();
         }

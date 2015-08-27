@@ -22,11 +22,11 @@ public interface OrderApi {
     @GET("/info_orders/")
     void getAllByStatusAndDriver(@Query("driver") int userId, @Query("status") OrderStatus status, @Query("ordering") String sortBy, @Query("limit") int limit, Callback<ArrayList<Order>> cb);
 
-    @GET("/info_orders/")
-    void getAllByDistance(@Query("status") OrderStatus status, @Query("dist") double dist, Callback<ArrayList<Order>> cb);
+    @GET("/orders/")
+    void getAllByDistance(@Query("status") OrderStatus status, @Query("dist") double dist, Callback<ArrayList<OrderModel>> cb);
 
-    @GET("/info_orders/")
-    void getAllByStatus(@Query("status") OrderStatus status, Callback<ArrayList<Order>> cb);
+    @GET("/info_orders/?status=sos")
+    void getSosOrders(Callback<ArrayList<Order>> cb);
 
     @GET("/info_orders/{orderId}/")
     void getById(@Path("orderId") int orderId, Callback<Order> cb);

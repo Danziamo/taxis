@@ -125,7 +125,7 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                 saveSessionPreferencesNew(user);
 
                 if (user.hasActiveOrder() && user.getActiveOrder() != null) {
-                    GlobalSingleton.getInstance(MainSplashActivity.this).currentOrder = user.getActiveOrder();
+                    GlobalSingleton.getInstance(MainSplashActivity.this).currentOrderModel = user.getActiveOrder();
                 }
 
                 UserStatus userStatus = new UserStatus();

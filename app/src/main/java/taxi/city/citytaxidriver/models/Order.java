@@ -120,7 +120,7 @@ public class Order implements Serializable{
 
         clientId = orderModel.getClientId();
         description = orderModel.getDescription();
-        setOrderTravelTime(orderModel.getDuration());
+        setOrderTravelTime(orderModel.getOrderTravelTime());
         sum = orderModel.getSum();
         distance = orderModel.getDistance();
     }

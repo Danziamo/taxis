@@ -3,6 +3,7 @@ package taxi.city.citytaxidriver.networking.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.utils.Constants;
@@ -45,6 +46,17 @@ public class BOrder {
         startPoint = order.getStartPoint();
         stopPoint = order.getStopPoint();
         driver = order.getDriver().getId();
+        clientPhone = order.getClientPhone();
+    }
+
+    public BOrder(OrderModel order) {
+        tariff = order.getTariffId();
+        status = order.getStatus();
+        startName = order.getStartName();
+        stopName = order.getStopName();
+        startPoint = order.getStartPoint();
+        stopPoint = order.getStopPoint();
+        driver = order.getDriverId();
         clientPhone = order.getClientPhone();
     }
 }
