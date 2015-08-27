@@ -240,8 +240,8 @@ public class LoginActivity extends Activity{
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mPhoneExtraView.getText().toString() + mPhoneView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String phone = mPhoneExtraView.getText().toString() + mPhoneView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -297,8 +297,8 @@ public class LoginActivity extends Activity{
             };
             mAuthTask.execute((Void) null);*/
             Session session = new Session();
-            session.setPhone(mPhoneExtraView.getText().toString() + mPhoneView.getText().toString());
-            session.setPassword(mPasswordView.getText().toString());
+            session.setPhone(phone);
+            session.setPassword(password);
             RestClient.getSessionService().login(session, new Callback<taxi.city.citytaxidriver.models.User>() {
                 @Override
                 public void success(taxi.city.citytaxidriver.models.User user, Response response) {
@@ -308,6 +308,9 @@ public class LoginActivity extends Activity{
                     GlobalSingleton.getInstance(LoginActivity.this).currentOrder = user.getActiveOrder();
 
                     Helper.upgradeTariffInBackgroud();
+                    SessionHelper helper = new SessionHelper();
+                    user.setPassword(password);
+                    helper.save(user);
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.db.models.*;
 import taxi.city.citytaxidriver.utils.Constants;
+import taxi.city.citytaxidriver.utils.Helper;
 
 public class Order implements Serializable{
 
@@ -119,7 +120,7 @@ public class Order implements Serializable{
 
         clientId = orderModel.getClientId();
         description = orderModel.getDescription();
-        orderTravelTime = orderModel.getDuration();
+        setOrderTravelTime(orderModel.getDuration());
         sum = orderModel.getSum();
         distance = orderModel.getDistance();
     }
@@ -291,6 +292,7 @@ public class Order implements Serializable{
 
     public void setOrderTravelTime(String orderTravelTime) {
         this.orderTravelTime = orderTravelTime;
+        this.duration = Helper.getLongFromString(orderTravelTime);
     }
 
     public long getDuration() {
@@ -298,6 +300,7 @@ public class Order implements Serializable{
     }
 
     public void setDuration(long duration) {
+        this.orderTravelTime = Helper.getTimeFromLong(duration);
         this.duration = duration;
     }
 

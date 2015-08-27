@@ -344,7 +344,7 @@ public class OrderModel extends Model implements Serializable {
     public static OrderModel getByOrderId(int orderId){
         return new Select()
                 .from(OrderModel.class)
-                .where("order_id - ?")
+                .where("order_id = ?", orderId)
                 .executeSingle();
     }
 

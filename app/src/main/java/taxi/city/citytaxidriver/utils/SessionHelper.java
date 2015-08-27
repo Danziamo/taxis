@@ -107,4 +107,11 @@ public class SessionHelper {
         setId(user.id);
         setToken(user.getToken());
     }
+
+    public void save(taxi.city.citytaxidriver.models.User user) {
+        setPhone(user.getPhone());
+        setPassword(user.getPassword());
+        setId(user.getId());
+        setToken(user.getToken());
+    }
 }

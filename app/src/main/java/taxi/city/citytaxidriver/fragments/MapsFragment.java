@@ -34,7 +34,7 @@ import retrofit.client.Response;
 import taxi.city.citytaxidriver.BuildConfig;
 import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.core.GlobalParameters;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.db.models.Tariff;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
@@ -42,7 +42,6 @@ import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.BOrder;
-import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
 
@@ -79,10 +78,19 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         @Override
         public void run() {
+            if (mOrder == null) {
+                timerHandler.removeCallbacks(timerRunnable);
+                return;
+            }
             long millis = System.currentTimeMillis() - timerStartTime;
             double seconds = (double) (millis / 1000);
             mOrder.setDuration((long)seconds);
             updateCounterViews();
+
+            if ((int)seconds % 10 < 1 && mOrder != null) {
+                OrderModel order = new OrderModel(mOrder);
+                order.save();
+            }
             timerHandler.postDelayed(this, 1000);
         }
     };
@@ -140,6 +148,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         getNewOrders();
         getSosOrders();
 
+        if (mOrder != null) {
+            timerHandler.post(timerRunnable);
+        }
         updateCounterViews();
         updateFooter();
         return view;
@@ -173,6 +184,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
     }
 
+    private void startTimer(long shift) {
+        timerStartTime = System.currentTimeMillis() - shift;
+        timerHandler.postDelayed(timerRunnable, 0);
+    }
+
     private void createBortOrder(Tariff tariff){
         final Order order = new Order();
         order.setDriver(mUser);
@@ -186,7 +202,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         RestClient.getOrderService().createOrder(new BOrder(order), new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
-                timerHandler.postDelayed(timerRunnable, 0);
+                startTimer(0);
                 order.setId(orderModel.getOrderId());
                 mOrder = order;
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
@@ -226,7 +242,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
         updateOrder();*/
 
-        mOrder.setStatus(OrderStatus.FINISHED);
         Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
         intent.putExtra("DATA", mOrder);
         startActivityForResult(intent, Constants.FINISH_ORDER_KEY);
@@ -247,7 +262,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             public void success(OrderModel orderModel, Response response) {
                 mOrder = new Order(orderModel);
                 GlobalSingleton.getInstance(getActivity()).currentOrder = mOrder;
-                timerHandler.postDelayed(timerRunnable, 0);
+                startTimer(0);
             }
 
             @Override
@@ -405,6 +420,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             btnRight.setText("Доп. инфо");
             btnCenter.setText("Продолжить");
             tvStatus.setText("Ожидание");
+        } else if (mOrder.getStatus() == OrderStatus.FINISHED) {
+
         } else {
             btnLeft.setText(getString(R.string.s_borta));
             btnRight.setText(getString(R.string.orders));
@@ -478,19 +495,19 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == Constants.FINISH_ORDER_KEY){
-            if(resultCode == Activity.RESULT_FIRST_USER){
-                OrderModel orderModel = OrderModel.getByOrderId(mOrder.getId());
-                if(orderModel == null){
-                    orderModel = new OrderModel();
+            if (resultCode != Activity.RESULT_CANCELED) {
+                if(resultCode == Activity.RESULT_FIRST_USER){
+                    OrderModel orderModel = OrderModel.getByOrderId(mOrder.getId());
+                    if(orderModel == null){
+                        orderModel = new OrderModel();
+                    }
+                    orderModel.save(mOrder);
                 }
-                orderModel.save(mOrder);
+                GlobalSingleton.getInstance().currentOrder = null;
+                mOrder = null;
             }
-            GlobalSingleton.getInstance().currentOrder = null;
-            mOrder = null;
-
             updateCounterViews();
             updateFooter();
         }
-
     }
 }

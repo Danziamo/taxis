@@ -17,6 +17,7 @@ import retrofit.client.Response;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
+import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.db.models.OrderModel;
 
@@ -60,6 +61,7 @@ public class FinishOrderDetailsFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mOrder.setStatus(OrderStatus.FINISHED);
                 finishOrder(mOrder);
             }
         });
