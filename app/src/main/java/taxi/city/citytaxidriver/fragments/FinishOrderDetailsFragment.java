@@ -24,7 +24,7 @@ import taxi.city.citytaxidriver.db.models.OrderModel;
 public class FinishOrderDetailsFragment extends Fragment {
 
     private OrderModel mOrderModel;
-    private int id;
+    private long id;
 
     public FinishOrderDetailsFragment() {
     }
@@ -35,7 +35,7 @@ public class FinishOrderDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_finish_order_details, container, false);
 
         Intent intent = getActivity().getIntent();
-        id = intent.getExtras().getInt("DATA");
+        id = intent.getExtras().getLong("DATA", 0);
 
         mOrderModel = OrderModel.getById(id);
 

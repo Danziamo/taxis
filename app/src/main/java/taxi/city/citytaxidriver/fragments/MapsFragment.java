@@ -448,9 +448,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 if (mOrderModel == null) {
                     createBortOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
-
+                    mOrderModel.setStatus(OrderStatus.WAITING);
+                    updateOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.WAITING) {
-
+                    mOrderModel.setStatus(OrderStatus.ONTHEWAY);
+                    updateOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.ONTHEWAY) {
                     finishOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.PENDING) {
