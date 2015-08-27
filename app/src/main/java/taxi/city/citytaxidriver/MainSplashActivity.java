@@ -18,22 +18,20 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
-import taxi.city.citytaxiclient.fragments.LoginFragment;
-import taxi.city.citytaxiclient.models.GlobalSingleton;
-import taxi.city.citytaxiclient.models.OnlineStatus;
-import taxi.city.citytaxiclient.models.Role;
-import taxi.city.citytaxiclient.models.Session;
-import taxi.city.citytaxiclient.networking.RestClient;
-import taxi.city.citytaxiclient.networking.model.UserStatus;
-import taxi.city.citytaxiclient.service.ApiService;
-import taxi.city.citytaxiclient.utils.SessionHelper;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.OnlineStatus;
+import taxi.city.citytaxidriver.models.Role;
+import taxi.city.citytaxidriver.models.Session;
+import taxi.city.citytaxidriver.networking.RestClient;
+import taxi.city.citytaxidriver.networking.model.UserStatus;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 import taxi.city.citytaxidriver.fragments.MapsFragment;
 
 public class MainSplashActivity extends BaseActivity implements View.OnClickListener {
 
+    private YoYo.YoYoString animation;
     View animContainer;
     View bottomMiniPanel;
-    private YoYo.YoYoString animation;
 
     private static int SPLASH_TIME_OUT = 1000;
     private static int MIN_TIME_OUT    = 1;
@@ -84,7 +82,7 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
         sessionHelper.setPhone(user.getPhone());
         sessionHelper.setId(user.getId());
         sessionHelper.setToken(user.getToken());
-        ApiService.getInstance().setToken(user.getToken());
+        /*ApiService.getInstance().setToken(user.getToken());*/
     }
 
     private void openAnimation(){
@@ -112,7 +110,6 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
         bottomMiniPanel.setVisibility(View.VISIBLE);
         animation = YoYo.with(Techniques.SlideInUp)
                 .duration(800)
-                .startPoint(0)
                 .playOn(animContainer);
     }
 
@@ -195,9 +192,9 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                 break;
 
             case R.id.s_regist:
-                intent = new Intent(MainSplashActivity.this, SignupActivity.class);
+                /*intent = new Intent(MainSplashActivity.this, SignupActivity.class);
                 startActivity(intent);
-                setTitle("Регистрация");
+                setTitle("Регистрация");*/
                 break;
         }
     }
@@ -205,14 +202,14 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
     private void updateTitleAndDrawer (Fragment fragment){
         String fragClassName = fragment.getClass().getName();
 
-        if (fragClassName.equals(LoginFragment.class.getName())){
+        /*if (fragClassName.equals(LoginFragment.class.getName())){
             setTitle ("Войти");
             //set selected item position, etc
         }
         else if (fragClassName.equals(SignupActivity.class.getName())){
             setTitle ("Регистрация");
             //set selected item position, etc
-        }
+        }*/
         /*else if (fragClassName.equals(C.class.getName())){
             setTitle ("C");
             //set selected item position, etc
