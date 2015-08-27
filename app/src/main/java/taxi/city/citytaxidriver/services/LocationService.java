@@ -3,20 +3,16 @@ package taxi.city.citytaxidriver.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -25,10 +21,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.App;
 import taxi.city.citytaxidriver.db.models.OrderModel;
-import taxi.city.citytaxidriver.networking.ApiService;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.api.OrderApi;
 import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 
 /**
  * Created by mbt on 8/20/15.
@@ -40,7 +37,6 @@ public class LocationService extends Service {
     private LocationManager locationManager;
     private Criteria criteria;
 
-    private SharedPreferences sharedPreferences;
 
     private Handler handler;
     private Runnable runnable;
@@ -53,7 +49,6 @@ public class LocationService extends Service {
             context = getApplicationContext();
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             criteria = new Criteria();
-            sharedPreferences = context.getSharedPreferences(Helper.USER_PREFS, 0);
             handler = new Handler();
             runnable = new Runnable() {
                 @Override
@@ -87,24 +82,22 @@ public class LocationService extends Service {
         long currentTime = System.currentTimeMillis();
         if (location != null && location.getTime() >= (currentTime - 15*60*1000))
         {
-            final int userId = sharedPreferences.getInt("id", 0);
-            final String token = sharedPreferences.getString("token", null);
+            SessionHelper sh = new SessionHelper();
+            final int userId = sh.getId();
+            final String token = sh.getToken();
+            GlobalSingleton.getInstance(App.getContext()).token = token;
 
             if(userId != 0 && token != null) {
                 sendHeartBeat();
-                new AsyncTask<Void, Void, Void>() {
+                RestClient.getUserService().updatePosition(userId, Helper.getFormattedLatLng(new LatLng(location.getLatitude(), location.getLongitude())), new Callback<Object>() {
                     @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            JSONObject data = new JSONObject();
-                            data.put("cur_position", Helper.getFormattedLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-                            ApiService.getInstance().patchRequest(data, "users/" + userId + "/", token);
-                        } catch (Exception e) {
-                            //silent
-                        }
-                        return null;
+                    public void success(Object o, Response response) {
                     }
-                }.execute();
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
             }else{
                 stopSelf();
             }

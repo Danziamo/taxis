@@ -57,7 +57,7 @@ public interface UserApi {
 
     @FormUrlEncoded
     @PATCH("/users/{userId}/")
-    void updatePosition(@Field("cur_position") String position, Callback<Object> cb);
+    void updatePosition(@Path("userId") int userId, @Field("cur_position") String position, Callback<Object> cb);
 
     @FormUrlEncoded
     @PATCH("/users/{userId}/")

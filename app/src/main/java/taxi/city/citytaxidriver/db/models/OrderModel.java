@@ -219,6 +219,9 @@ public class OrderModel extends Model implements Serializable {
     }
 
     public String getWaitTime() {
+        if (waitTime == null) {
+            return "00:00:00";
+        }
         return waitTime;
     }
 
@@ -305,7 +308,7 @@ public class OrderModel extends Model implements Serializable {
     }
 
     public void setDistance(double distance) {
-        this.distance = distance;
+        this.distance = (double)Math.round(distance*100)/100;
     }
     //End getter and setters
 
@@ -408,6 +411,13 @@ public class OrderModel extends Model implements Serializable {
         return new Select()
                 .from(OrderModel.class)
                 .where("order_id = ?", orderId)
+                .executeSingle();
+    }
+
+    public static OrderModel getById(int id){
+        return new Select()
+                .from(OrderModel.class)
+                .where("id = ?", id)
                 .executeSingle();
     }
 

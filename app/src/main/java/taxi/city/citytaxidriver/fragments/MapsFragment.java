@@ -149,7 +149,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         getSosOrders();
 
         if (mOrderModel != null) {
-            timerHandler.post(timerRunnable);
+            startTimer(Helper.getLongFromString(mOrderModel.getOrderTravelTime()));
         }
         updateCounterViews();
         updateFooter();
@@ -185,7 +185,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     private void startTimer(long shift) {
-        timerStartTime = System.currentTimeMillis() - shift;
+        timerStartTime = System.currentTimeMillis() - shift*1000;
         timerHandler.postDelayed(timerRunnable, 0);
     }
 
@@ -241,9 +241,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         /*mOrder.setStatus(OrderStatus.FINISHED);
         mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
         updateOrder();*/
-
+        mOrderModel.save();
         Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
-        intent.putExtra("DATA", mOrderModel);
+        intent.putExtra("DATA", mOrderModel.getId());
         startActivityForResult(intent, Constants.FINISH_ORDER_KEY);
     }
 
@@ -254,9 +254,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     private void takeOrder(OrderModel order) {
-        //TODO krutilka
         order.setDriverId(mUser.getId());
         order.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
+        order.setStatus(OrderStatus.ACCEPTED);
         RestClient.getOrderService().update(order.getOrderId(), order, new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
@@ -496,9 +496,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         if(requestCode == Constants.FINISH_ORDER_KEY){
             if (resultCode != Activity.RESULT_CANCELED) {
-                if(resultCode == Activity.RESULT_FIRST_USER){
-                    mOrderModel.save();
-                }
                 GlobalSingleton.getInstance().currentOrderModel = null;
                 mOrderModel = null;
             }

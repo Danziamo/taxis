@@ -24,6 +24,7 @@ import taxi.city.citytaxidriver.db.models.OrderModel;
 public class FinishOrderDetailsFragment extends Fragment {
 
     private OrderModel mOrderModel;
+    private int id;
 
     public FinishOrderDetailsFragment() {
     }
@@ -34,9 +35,11 @@ public class FinishOrderDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_finish_order_details, container, false);
 
         Intent intent = getActivity().getIntent();
-        mOrderModel = (OrderModel)intent.getExtras().getSerializable("DATA");
+        id = intent.getExtras().getInt("DATA");
 
-        EditText etAddressStart = (EditText)rootView.findViewById(R.id.etStartAddress);
+        mOrderModel = OrderModel.getById(id);
+
+        TextView etAddressStart = (TextView)rootView.findViewById(R.id.etStartAddress);
         TextView tvPhone = (TextView)rootView.findViewById(R.id.tvPhone);
         TextView tvWaitTime = (TextView)rootView.findViewById(R.id.textViewWaitingTime);
         TextView tvWaitSum = (TextView)rootView.findViewById(R.id.textViewWaitingSum);
@@ -51,6 +54,7 @@ public class FinishOrderDetailsFragment extends Fragment {
         }
 
         etAddressStart.setText(mOrderModel.getStartName());
+        tvPhone.setText(mOrderModel.getClientPhone());
         tvWaitTime.setText(waitTime);
         tvWaitSum.setText(String.valueOf((int) mOrderModel.getWaitTimePrice()));
         tvDistance.setText(String.valueOf(mOrderModel.getDistance()));

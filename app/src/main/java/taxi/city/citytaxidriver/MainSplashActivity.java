@@ -131,7 +131,7 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                 UserStatus userStatus = new UserStatus();
                 userStatus.iosToken = null;
                 userStatus.onlineStatus = OnlineStatus.ONLINE;
-                userStatus.role = Role.USER;
+                userStatus.role = Role.DRIVER;
                 RestClient.getUserService().updateStatus(user.getId(), userStatus, new Callback<taxi.city.citytaxidriver.models.User>() {
                     @Override
                     public void success(taxi.city.citytaxidriver.models.User user, Response response) {
