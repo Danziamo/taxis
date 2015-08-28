@@ -137,4 +137,10 @@
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
     <string name="action_sign_in_short">Войти</string>
+
+    <string name="adress">Адрес</string>
+    <string name="counter">По счётчику</string>
+    <string name="description">Доп. инфо</string>
+    <string name="fixedprice">Фиксированная</string>
+    <string name="stopadress">Куда доставить</string>
 </resources>

@@ -1,31 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginRight="30dp"
+    android:layout_marginLeft="30dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/tvAddress"
-        />
-
-    <android.support.v7.widget.AppCompatTextView
+        android:clickable="true"
+        android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:met_baseColor="@color/white"
+        app:met_textColorHint="@color/white"
+        android:hint="@string/adress"
+        app:met_primaryColor="@color/white"
+        android:textColor="@color/white"
+        app:met_floatingLabel="highlight"
+        android:gravity="center"
+        />
+
+
+    <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
         android:id="@+id/tvPhone"
-        />
-
-    <android.support.v7.widget.AppCompatTextView
+        android:clickable="true"
+        android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:met_baseColor="@color/white"
+        android:textColorHint="@color/white"
+        android:hint="@string/phone"
+        app:met_primaryColor="@color/white"
+        android:textColor="@color/white"
+        app:met_floatingLabel="highlight"
+        android:gravity="center"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="@string/description"
         android:id="@+id/tvDescription"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        app:met_baseColor="@color/white"
+        app:met_floatingLabel="highlight"
+        android:gravity="center"
         />
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Счетчик"
-        android:id="@+id/counterView"/>
+        android:text="@string/counter"
+        android:textColor="@color/white"
+        android:id="@+id/counterView"
+        android:layout_marginLeft="40dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,24 +67,34 @@
         android:id="@+id/llFixedPrice"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Фиксированная"
-            />
-
-        <android.support.v7.widget.AppCompatTextView
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tvFixedPrice"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="@string/fixedprice"
+            android:textColor="@color/white"
+            app:met_baseColor="@color/white"
+            app:met_floatingLabel="highlight"
+            android:textColorHint="@color/white"
+            android:gravity="center"
         />
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvStopAddress"
+        android:clickable="true"
+        android:focusable="false"
+        android:textColorHint="@color/white"
+        android:hint="@string/stopadress"
+        android:textColor="@color/white"
+        app:met_baseColor="@color/white"
+        app:met_floatingLabel="highlight"
+        android:gravity="center"
         />
 
     <LinearLayout
@@ -63,6 +106,11 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_shape_yellow"
+            android:textColor="@color/ColorPrimary"
+            android:layout_gravity="left"
+            android:layout_margin="25dp"
+            android:layout_weight="1"
             android:text="Отмена"
             android:id="@+id/btnCancel"
             />
@@ -71,6 +119,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Взять"
+            android:layout_margin="25dp"
+            android:background="@drawable/button_shape_yellow"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:textColor="@color/ColorPrimary"
             android:id="@+id/btnSubmit"/>
     </LinearLayout>
 
