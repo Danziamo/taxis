@@ -43,7 +43,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 public void onClick(View view) {
                     Order order = (Order) v.getTag();
                     Intent intent = new Intent(mContext, FinishOrderDetailsActivity.class);
-                    intent.putExtra("DATA", order);
+                    intent.putExtra("ORDER", order);
                     mContext.startActivity(intent);
                 }
             });

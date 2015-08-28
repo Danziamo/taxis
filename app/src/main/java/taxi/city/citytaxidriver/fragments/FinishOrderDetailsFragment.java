@@ -20,6 +20,7 @@ import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.db.models.OrderModel;
+import taxi.city.citytaxidriver.utils.Constants;
 
 public class FinishOrderDetailsFragment extends Fragment {
 
@@ -37,7 +38,11 @@ public class FinishOrderDetailsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         id = intent.getExtras().getLong("DATA", 0);
 
-        mOrderModel = OrderModel.getById(id);
+        if (id != 0) {
+            mOrderModel = OrderModel.getById(id);
+        } else {
+            mOrderModel = new OrderModel((Order)intent.getSerializableExtra("ORDER"));
+        }
 
         TextView etAddressStart = (TextView)rootView.findViewById(R.id.etStartAddress);
         TextView tvPhone = (TextView)rootView.findViewById(R.id.tvPhone);
@@ -48,12 +53,18 @@ public class FinishOrderDetailsFragment extends Fragment {
         TextView tvTotalSum = (TextView)rootView.findViewById(R.id.textViewTotalSum);
         Button btnSubmit = (Button)rootView.findViewById(R.id.btnSubmit);
 
+        if (id == 0) btnSubmit.setVisibility(View.INVISIBLE);
+
         String waitTime = mOrderModel.getWaitTime();
         if (waitTime.length() > 5) {
             waitTime = waitTime.substring(0, waitTime.length() - 3);
         }
 
-        etAddressStart.setText(mOrderModel.getStartName());
+        if (mOrderModel.getTariffId() != Constants.DEFAULT_BORT_TARIFF) {
+            etAddressStart.setText(mOrderModel.getStartName());
+        } else {
+            etAddressStart.setText("С борта");
+        }
         tvPhone.setText(mOrderModel.getClientPhone());
         tvWaitTime.setText(waitTime);
         tvWaitSum.setText(String.valueOf((int) mOrderModel.getWaitTimePrice()));

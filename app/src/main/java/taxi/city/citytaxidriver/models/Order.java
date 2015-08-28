@@ -67,7 +67,7 @@ public class Order implements Serializable{
 
     //@Expose
     @SerializedName("client")
-    private Integer clientId;
+    private int clientId;
 
     @Expose
     private String description;
@@ -158,7 +158,11 @@ public class Order implements Serializable{
     }
 
     public String getStartName() {
-        return startName;
+        if (this.tariff.getTariffId() == Constants.DEFAULT_BORT_TARIFF) {
+            return "С борта";
+        } else {
+            return this.startName;
+        }
     }
 
     public void setStartName(String startName) {

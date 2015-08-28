@@ -76,6 +76,17 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     private long pauseStartTime;
     private long timerStartTime;
 
+    Handler globalTimerHandler = new Handler();
+    Runnable globalTimerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            getNewOrders();
+            getSosOrders();
+            globalTimerHandler.postDelayed(this, 30 * 1000);
+        }
+    };
+
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
@@ -85,13 +96,22 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 timerHandler.removeCallbacks(timerRunnable);
                 return;
             }
-            long millis = System.currentTimeMillis() - timerStartTime;
+            long currentTimeMillis = System.currentTimeMillis();
+            long millis = currentTimeMillis - timerStartTime;
             double seconds = (double) (millis / 1000);
             mOrderModel.setDuration((long) seconds);
+
+            if (mOrderModel.getStatus() == OrderStatus.WAITING || mOrderModel.getStatus() == OrderStatus.PENDING) {
+                long pauseMillis = currentTimeMillis - pauseStartTime;
+                double pauseSeconds = (double)(pauseMillis/1000);
+                mOrderModel.setPauseDuration((long)pauseSeconds);
+                pauseStartTime = currentTimeMillis;
+            }
             updateCounterViews();
 
             if ((int)seconds % 10 < 1 && mOrderModel != null) {
                 mOrderModel.save();
+                updateOrder();
             }
             timerHandler.postDelayed(this, 1000);
         }
@@ -147,11 +167,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         btnRight.setOnClickListener(this);
         btnCenter.setOnClickListener(this);
 
-        getNewOrders();
-        getSosOrders();
+        globalTimerHandler.postDelayed(globalTimerRunnable, 0);
 
         if (mOrderModel != null) {
             startTimer(Helper.getLongFromString(mOrderModel.getOrderTravelTime()));
+            startPauseTimer(0);
         }
         updateCounterViews();
         updateFooter();
@@ -191,6 +211,10 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         timerHandler.postDelayed(timerRunnable, 0);
     }
 
+    private void startPauseTimer(long shift) {
+        pauseStartTime = System.currentTimeMillis() - shift*1000;
+    }
+
     private void createBortOrder(Tariff tariff){
         //@TODO try send query with OrderModel
         final OrderModel order = new OrderModel();
@@ -205,6 +229,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         RestClient.getOrderService().createOrder(new BOrder(order), new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
+                clearMapFromNewOrders();
                 startTimer(0);
                 mOrderModel = orderModel;
                 GlobalSingleton.getInstance(getActivity()).currentOrderModel = mOrderModel;
@@ -262,9 +287,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         RestClient.getOrderService().update(order.getOrderId(), order, new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
+                clearMapFromNewOrders();
                 mOrderModel = orderModel;
                 GlobalSingleton.getInstance(getActivity()).currentOrderModel = mOrderModel;
                 startTimer(0);
+                updateFooter();
             }
 
             @Override
@@ -462,6 +489,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 if (mOrderModel == null) {
                     createBortOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
+                    startPauseTimer(0);
                     mOrderModel.setStatus(OrderStatus.WAITING);
                     updateOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.WAITING) {
@@ -479,7 +507,16 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             case R.id.btnCenter:
                 if(mOrderModel == null){
                     changeUserOnlineStatus();
+                } else if (mOrderModel.getStatus() == OrderStatus.ONTHEWAY) {
+                    startPauseTimer(0);
+                    mOrderModel.setStatus(OrderStatus.PENDING);
+                    updateOrder();
+                } else if (mOrderModel.getStatus() == OrderStatus.PENDING) {
+                    pauseStartTime = 0;
+                    mOrderModel.setStatus(OrderStatus.ONTHEWAY);
+                    updateOrder();
                 }
+                
                 updateFooter();
                 break;
             case R.id.btnRight:
@@ -492,7 +529,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
     public void updateOrderDetails(Location location) {
         if (mOrderModel == null) return;
-        if (prevLocation != null) {
+        if (prevLocation != null && mOrderModel.getStatus() == OrderStatus.ONTHEWAY) {
             if(location.getTime() <= prevLocation.getTime()){
                 return;
             }

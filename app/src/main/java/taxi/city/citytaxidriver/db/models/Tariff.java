@@ -46,7 +46,7 @@ public class Tariff extends Model implements Serializable {
     @Expose
     @SerializedName("waiting_to_order")
     @Column(name = "waiting_to_order")
-    private long waitingToOrder;
+    private String waitingToOrder;
 
     @Expose
     @SerializedName("waiting_to_order_price")
@@ -118,11 +118,11 @@ public class Tariff extends Model implements Serializable {
         this.waitingRatio = waitingRatio;
     }
 
-    public long getWaitingToOrder() {
+    public String getWaitingToOrder() {
         return waitingToOrder;
     }
 
-    public void setWaitingToOrder(long waitingToOrder) {
+    public void setWaitingToOrder(String waitingToOrder) {
         this.waitingToOrder = waitingToOrder;
     }
 

@@ -103,6 +103,7 @@ public class OrderModel extends Model implements Serializable {
     private String orderTravelTime;
 
     private long duration;
+    private long pauseDuration;
 
     @Expose
     @SerializedName("order_sum")
@@ -149,6 +150,7 @@ public class OrderModel extends Model implements Serializable {
         description = order.getDescription();
         orderTravelTime = order.getOrderTravelTime();
         duration = order.getDuration();
+        pauseDuration = order.getDuration();
         sum = order.getSum();
         distance = order.getDistance();
     }
@@ -187,7 +189,11 @@ public class OrderModel extends Model implements Serializable {
     }
 
     public String getStartName() {
-        return startName;
+        if (this.getTariffId() == Constants.DEFAULT_BORT_TARIFF) {
+            return "С борта";
+        } else {
+            return this.startName;
+        }
     }
 
     public void setStartName(String startName) {
@@ -227,10 +233,15 @@ public class OrderModel extends Model implements Serializable {
 
     public void setWaitTime(String waitTime) {
         this.waitTime = waitTime;
+        this.pauseDuration = Helper.getLongFromString(waitTime);
     }
 
     public double getWaitTimePrice() {
-        return waitTimePrice;
+        if (this.fixedPrice >= Constants.FIXED_PRICE) return 0;
+        //return (double)Math.round(100*getTariff().getWaitingRatio() * (double)this.pauseDuration/60)/100;
+        Tariff tariff = getTariff();
+        long waitingToOrder = Helper.getLongFromString(tariff.getWaitingToOrder());
+        return Helper.getWaitSumFromOrder(getPauseDuration(), waitingToOrder, tariff.getWaitingRatio());
     }
 
     public void setWaitTimePrice(double waitTimePrice) {
@@ -293,6 +304,18 @@ public class OrderModel extends Model implements Serializable {
     public void setDuration(long duration) {
         this.duration = duration;
         this.orderTravelTime = Helper.getTimeFromLong(duration);
+    }
+
+    public long getPauseDuration() {
+        if(pauseDuration == 0){
+            return Helper.getLongFromString(waitTime);
+        }
+        return pauseDuration;
+    }
+
+    public void setPauseDuration(long pauseDuration) {
+        this.pauseDuration = this.getPauseDuration() + pauseDuration;
+        this.waitTime = Helper.getTimeFromLong(this.pauseDuration);
     }
 
     public double getSum() {

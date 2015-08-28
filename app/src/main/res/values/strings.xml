@@ -73,7 +73,6 @@
     <!-- NavigationMenu -->
     <string name="exit">Выход</string>
     <string name="car.details">Инфо о машине</string>
-    <string name="map">Карта</string>
     <string name="share">Поделиться</string>
     <string name="accountInfo">Лицевой счёт</string>
     <string name="about">О программе</string>

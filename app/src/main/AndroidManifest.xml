@@ -58,16 +58,16 @@
         <service android:name=".services.GcmIntentService" />
 
         <activity android:name=".MainSplashActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MapsActivity"
@@ -197,7 +197,9 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTop"
+            >
         </activity>
         <activity
             android:name=".NewOrdersActivity"
@@ -210,7 +212,7 @@
 
         <!-- ActiveAndroid -->
         <meta-data android:name="AA_DB_NAME" android:value="EasyTaxiDriver.db"/>
-        <meta-data android:name="AA_DB_VERSION" android:value="2"/>
+        <meta-data android:name="AA_DB_VERSION" android:value="3"/>
         <meta-data android:name="AA_MODELS" android:value="taxi.city.citytaxidriver.db.models"/>
         <!-- End ActiveAndroid -->
 
