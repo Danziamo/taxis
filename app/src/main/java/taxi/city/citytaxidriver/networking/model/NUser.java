@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class NUser {
     @Expose
+    public String phone;
+
+    @Expose
     @SerializedName("first_name")
     public String firstName;
 

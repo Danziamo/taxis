@@ -51,7 +51,8 @@
 
 
         <TextView
-            style="@style/TextSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_above="@+id/ratingBar"
             android:text="Рейтинг"/>
@@ -69,7 +70,6 @@
         <TextView
             android:id="@+id/textViewRating"
             android:layout_gravity="center"
-            style="@style/TextSubTitle"
             android:textColor="@color/lime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -21,6 +21,8 @@ public class Constants {
 
     public static final long DRAWER_CLOSE_DELAY_MS = 250;
 
+    public final static String[] PHONE_PREFIXES = {"+996", "+7", "+998"};
+
 
 
 

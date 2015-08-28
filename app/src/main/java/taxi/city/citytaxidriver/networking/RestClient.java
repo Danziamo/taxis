@@ -56,5 +56,5 @@ public class RestClient {
 
     public static CarApi getCarService() { return createService(CarApi.class); }
 
-    public static AccountRestoreApi getAccountApi() { return createService(AccountRestoreApi.class); }
+    public static AccountRestoreApi getAccountService() { return createService(AccountRestoreApi.class); }
 }

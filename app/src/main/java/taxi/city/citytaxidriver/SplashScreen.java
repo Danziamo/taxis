@@ -74,12 +74,12 @@ public class SplashScreen extends Activity {
     }
 
     private void goToActivation() {
-        SessionHelper sessionHelper = new SessionHelper();
+        /*SessionHelper sessionHelper = new SessionHelper();
         Intent intent = new Intent(SplashScreen.this, ConfirmSignUpActivity.class);
         intent.putExtra(ConfirmSignUpActivity.PHONE_KEY, sessionHelper.getPhone());
         intent.putExtra(ConfirmSignUpActivity.PASSWORD_KEY, sessionHelper.getPassword());
         startActivity(intent);
-        finish();
+        finish();*/
     }
 
     private void goToLoginActivity(){

@@ -48,6 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp"
             android:weightSum="10">
 
             <android.support.v7.widget.AppCompatTextView
@@ -78,7 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_weight="5"
@@ -109,7 +113,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_weight="5"
@@ -139,7 +145,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_weight="5"
@@ -183,64 +191,84 @@
             android:background="@color/red"
             />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:orientation="horizontal">
+            android:background="@color/ColorPrimary">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_large"
                 android:id="@+id/tvAddress"
-                android:layout_gravity="left"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
                 />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_large"
                 android:id="@+id/tvStatus"
+                android:layout_centerInParent="true"
+                android:gravity="center"
                 android:layout_gravity="center"
                 />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_large"
                 android:id="@+id/tvPrice"
-                android:layout_gravity="right"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
                 />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:gravity="center"
+            android:background="@drawable/button_shape_yellow">
 
-            <android.support.v7.widget.AppCompatButton
-                android:layout_width="0dp"
-                android:layout_height="48dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textColor="@color/splashFirst"
                 android:id="@+id/btnLeft"
-                android:layout_weight="4"
+                android:layout_weight="5"
                 android:gravity="center"
                 android:text="С БОРТА"
+                android:textSize="@dimen/font_large"
                 />
 
-            <android.support.v7.widget.AppCompatButton
-                android:layout_width="0dp"
-                android:layout_height="48dp"
+                <android.support.v7.widget.AppCompatButton
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/btnCenter"
-                android:layout_weight="2"
                 android:gravity="center"
-                android:text="online"
+                android:background="@drawable/button_round"
+                android:text="ОФФЛАЙН"
+                android:textSize="13sp"
+                android:textColor="@color/green_text"
                 />
 
-            <android.support.v7.widget.AppCompatButton
-                android:layout_width="0dp"
-                android:layout_height="48dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/btnRight"
-                android:layout_weight="4"
+                android:textColor="@color/splashFirst"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textSize="@dimen/font_large"
                 android:text="ЗАКАЗЫ"
                 />
 

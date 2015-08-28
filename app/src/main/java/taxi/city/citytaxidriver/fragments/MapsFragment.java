@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ import taxi.city.citytaxidriver.networking.model.BOrder;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener {
+public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener {
 
     private MapView mMapView;
     private GoogleMap mGoogleMap;
@@ -56,14 +57,15 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     TextView tvPrice;
     TextView tvStatus;
 
+    RelativeLayout lockerLayout;
     LinearLayout llOrderDetails;
     TextView tvWaitTime;
     TextView tvWaitSum;
     TextView tvDistance;
     TextView tvTravelSum;
 
-    Button btnLeft;
-    Button btnRight;
+    TextView btnLeft;
+    TextView btnRight;
     Button btnCenter;
 
     private HashMap<Marker, OrderModel> mNewOrderMarkerMap;
@@ -122,6 +124,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_maps, container, false);
+        lockerLayout = (RelativeLayout)view.findViewById(R.id.locker);
 
         mNewOrderMarkerMap = new HashMap<>();
         mSosOrderMarkerMap = new HashMap<>();
@@ -155,8 +158,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         tvDistance = (TextView)view.findViewById(R.id.tvDistance);
         tvTravelSum = (TextView)view.findViewById(R.id.tvTravelSum);
 
-        btnLeft = (Button)view.findViewById(R.id.btnLeft);
-        btnRight = (Button)view.findViewById(R.id.btnRight);
+        btnLeft = (TextView)view.findViewById(R.id.btnLeft);
+        btnRight = (TextView)view.findViewById(R.id.btnRight);
         btnCenter = (Button)view.findViewById(R.id.btnCenter);
 
         btnLeft.setOnClickListener(this);
@@ -256,9 +259,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
     private void finishOrder() {
-        /*mOrder.setStatus(OrderStatus.FINISHED);
-        mOrder.setStopPoint(GlobalSingleton.getInstance(getActivity()).getPosition());
-        updateOrder();*/
         mOrderModel.save();
         Intent intent = new Intent(getActivity(), FinishOrderDetailsActivity.class);
         intent.putExtra("DATA", mOrderModel.getId());
@@ -420,44 +420,54 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         if (mOrderModel == null) {
             btnLeft.setText(getString(R.string.s_borta));
             btnRight.setText(getString(R.string.orders));
-            if(mUser.isOnline()) {
-                btnCenter.setText("ОФФЛАЙН");
-                tvStatus.setText(getString(R.string.you_are_online));
-            }else{
-                btnCenter.setText("ОНЛАЙН");
-                tvStatus.setText(getString(R.string.you_are_offline));
-            }
+            updateUserOnlineStatusView();
         } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
-            btnLeft.setText("На месте");
-            btnRight.setText("Отказ");
+            btnLeft.setText("НА МЕСТЕ");
+            btnRight.setText("ОТКАЗ");
             tvStatus.setText(mOrderModel.getStartName());
         } else if (mOrderModel.getStatus() == OrderStatus.WAITING) {
-            btnLeft.setText("На борту");
-            btnRight.setText("Отказ");
+            btnLeft.setText("НА БОРТУ");
+            btnRight.setText("ОТКАЗ");
             tvStatus.setText("Ожидание");
         } else if (mOrderModel.getStatus() == OrderStatus.ONTHEWAY) {
-            btnLeft.setText("Доставил");
-            btnCenter.setText("Ожидание");
+            btnLeft.setText("ДОСТАВИЛ");
+            btnCenter.setText("Ждать");
             tvStatus.setText("В пути");
             //TODO подумать
             btnRight.setText("Доп. инфо");
         } else if (mOrderModel.getStatus() == OrderStatus.PENDING) {
-            btnLeft.setText("Доставил");
+            btnLeft.setText("ДОСТАВИЛ");
             btnRight.setText("Доп. инфо");
-            btnCenter.setText("Продолжить");
+            btnCenter.setText("В путь");
             tvStatus.setText("Ожидание");
         } else if (mOrderModel.getStatus() == OrderStatus.FINISHED) {
 
         } else {
             btnLeft.setText(getString(R.string.s_borta));
             btnRight.setText(getString(R.string.orders));
-            if(mUser.isOnline()) {
-                btnCenter.setText("ОФФЛАЙН");
-                tvStatus.setText(getString(R.string.you_are_online));
-            }else{
-                btnCenter.setText("ОНЛАЙН");
-                tvStatus.setText(getString(R.string.you_are_offline));
-            }
+            updateUserOnlineStatusView();
+        }
+    }
+
+    private void updateUserOnlineStatusView() {
+        if(mUser.isOnline()) {
+            btnCenter.setText("ОФФЛАЙН");
+            tvStatus.setText(getString(R.string.you_are_online));
+        }else{
+            btnCenter.setText("ОНЛАЙН");
+            tvStatus.setText(getString(R.string.you_are_offline));
+        }
+    }
+
+    private void blockScreenAccordingToStatus(OnlineStatus status) {
+        if (status != OnlineStatus.ONLINE) {
+            lockerLayout.setVisibility(View.VISIBLE);
+            btnLeft.setEnabled(true);
+            btnRight.setEnabled(true);
+        } else {
+            btnLeft.setEnabled(false);
+            btnRight.setEnabled(false);
+            lockerLayout.setVisibility(View.GONE);
         }
     }
 
@@ -543,16 +553,20 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         final OnlineStatus newStatus = (mUser.isOnline())?OnlineStatus.OFFLINE:OnlineStatus.ONLINE;
 
+        showProgress("Обновление");
         RestClient.getUserService().updateStatus(mUser.getId(), newStatus, new Callback<Object>() {
             @Override
             public void success(Object o, Response response) {
+                hideProgress();
                 mUser.setOnlineStatus(newStatus);
+                blockScreenAccordingToStatus(newStatus);
                 GlobalSingleton.getInstance().currentUser = mUser;
                 updateFooter();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                hideProgress();
                 Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_LONG).show();
                 Crashlytics.logException(error);
             }
@@ -572,6 +586,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             }
             updateCounterViews();
             updateFooter();
+            getNewOrders();
         }
     }
 }

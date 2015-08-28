@@ -1,57 +1,60 @@
 package taxi.city.citytaxidriver;
 
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
 
-import taxi.city.citytaxidriver.core.Order;
-import taxi.city.citytaxidriver.core.User;
-import taxi.city.citytaxidriver.networking.ApiService;
-import taxi.city.citytaxidriver.utils.Helper;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import taxi.city.citytaxidriver.interfaces.ConfirmCallback;
 
 /**
- * Created by Daniyar on 5/20/2015.
+ * Created by mbt on 8/24/15.
  */
-public abstract class BaseActivity extends ActionBarActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (User.getInstance() == null || User.getInstance().id == 0) {
-            Helper.getUserPreferences(this);
-            Helper.getOrderPreferences(this, User.getInstance().id);
-            ApiService.getInstance().setToken(User.getInstance().getToken());
+public class BaseActivity extends AppCompatActivity {
+
+
+    private SweetAlertDialog pDialog;
+
+
+    public void showProgress(String msg){
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper()
+                .setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText(msg);
+        pDialog.setCancelable(false);
+        pDialog.show();
+    }
+
+    public void hideProgress(){
+        if(pDialog != null){
+            pDialog.dismissWithAnimation();
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void showConfirmDialog(String titleText, String confirmText, String cancelText, final ConfirmCallback callback){
+        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pDialog .setTitleText(titleText)
+                .setConfirmText(confirmText)
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        callback.confirm();
+                        sDialog.dismissWithAnimation();
+
+                    }
+                })
+                .setCancelText(cancelText)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        callback.cancel();
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Helper.saveUserPreferences(this, User.getInstance());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (User.getInstance() == null || User.getInstance().id == 0) {
-            Helper.getUserPreferences(this);
-            ApiService.getInstance().setToken(User.getInstance().getToken());
-        }
-        if (Order.getInstance() == null || Order.getInstance().id == 0) {
-            Helper.getOrderPreferences(this, User.getInstance().id);
-        }
-    }
 }

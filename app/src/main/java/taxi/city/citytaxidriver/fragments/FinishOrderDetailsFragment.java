@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,9 @@ public class FinishOrderDetailsFragment extends Fragment {
 
         if (id != 0) {
             mOrderModel = OrderModel.getById(id);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Счет");
         } else {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("История");
             mOrderModel = new OrderModel((Order)intent.getSerializableExtra("ORDER"));
         }
 

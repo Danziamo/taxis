@@ -58,7 +58,6 @@ import taxi.city.citytaxidriver.core.GlobalParameters;
 import taxi.city.citytaxidriver.core.Order;
 import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.enums.OStatus;
-import taxi.city.citytaxidriver.fragments.OrderDetailsFragment;
 import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.services.LocationService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
@@ -829,7 +828,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void createSosDialog() {
-        sosDialog = new Dialog(this);
+        /*sosDialog = new Dialog(this);
         sosDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         sosDialog.setContentView(R.layout.fragment_sos);
         sosDialog.setCancelable(false);
@@ -839,7 +838,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.dimAmount = 0.7f;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        window.setAttributes(wlp);
+        window.setAttributes(wlp);*/
     }
 
     private void makeSos() {
@@ -875,15 +874,15 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void goToSettings() {
-        checkPreviousOrder();
+        /*checkPreviousOrder();
         Intent intent = new Intent(this, GarajActivity.class);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private void goToOrderDetails() {
-        Intent intent = new Intent(this, OrderDetailsActivity.class);
+        /*Intent intent = new Intent(this, OrderDetailsActivity.class);
         intent.putExtra(OrderDetailsFragment.CLIENT_KEY, new Client(order, user.id, true));
-        startActivityForResult(intent, ORDER_DETAILS_ID);
+        startActivityForResult(intent, ORDER_DETAILS_ID);*/
     }
 
     private void goToFinishOrderDetails() {
@@ -934,11 +933,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
         if (requestCode == MAKE_ORDER_ID) {
             if(resultCode == RESULT_CODE_SHOW_ON_THE_MAP){
                 if(data != null) {
-                    Client client = (Client) data.getSerializableExtra(OrderDetailsFragment.CLIENT_EXTRA_KEY);
+                    /*Client client = (Client) data.getSerializableExtra(OrderDetailsFragment.CLIENT_EXTRA_KEY);
                     LatLng latLng = Helper.getLatLng(client.startPoint);
                     if(latLng != null) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    }
+                    }*/
                 }
             }else if (data != null && data.getBooleanExtra("returnCode", false)) {
                 if (order.status == OStatus.ONTHEWAY) {
@@ -989,9 +988,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void OpenOrder() {
-        checkPreviousOrder();
+        /*checkPreviousOrder();
         Intent intent = new Intent(this, OrderActivity.class);
-        startActivityForResult(intent, MAKE_ORDER_ID);
+        startActivityForResult(intent, MAKE_ORDER_ID);*/
     }
 
     @Override
@@ -1048,10 +1047,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.Connec
                     })
                     .show();
         } else {
-            Intent intent = new Intent(this, OrderDetailsActivity.class);
+            /*Intent intent = new Intent(this, OrderDetailsActivity.class);
             intent.putExtra(OrderDetailsFragment.CLIENT_KEY, client);
             intent.putExtra(OrderDetailsFragment.IS_ACTIVE_ORDER_KEY, false);
-            startActivityForResult(intent, ORDER_DETAILS_ID);
+            startActivityForResult(intent, ORDER_DETAILS_ID);*/
         }
 
     }

@@ -2,7 +2,6 @@ package taxi.city.citytaxidriver.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,9 +32,8 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import taxi.city.citytaxidriver.App;
-import taxi.city.citytaxidriver.ConfirmSignUpActivity;
-import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.R;
+import taxi.city.citytaxidriver.core.User;
 import taxi.city.citytaxidriver.networking.ApiService;
 import taxi.city.citytaxidriver.tasks.UpdateUserTask;
 import taxi.city.citytaxidriver.utils.Helper;
@@ -347,12 +345,12 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             } catch (JSONException ignored) {
                 Crashlytics.logException(ignored);
             }
-            Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
+            /*Intent intent = new Intent(getActivity(), ConfirmSignUpActivity.class);
             intent.putExtra(ConfirmSignUpActivity.SIGNUP_KEY, true);
             intent.putExtra(ConfirmSignUpActivity.PHONE_KEY, user.phone);
             intent.putExtra(ConfirmSignUpActivity.PASSWORD_KEY, user.password);
             startActivity(intent);
-            getActivity().finish();
+            getActivity().finish();*/
         }
     }
 

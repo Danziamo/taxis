@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -14,13 +15,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +33,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import taxi.city.citytaxidriver.adapters.TabsPagerAdapter;
 import taxi.city.citytaxidriver.fragments.MapsFragment;
 import taxi.city.citytaxidriver.interfaces.ConfirmCallback;
@@ -44,9 +45,9 @@ import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.services.LocationService;
 import taxi.city.citytaxidriver.utils.Constants;
-import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.utils.SessionHelper;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     User user;
     private GoogleApiClient mGoogleApiClient;
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (itemId) {
             case R.id.carDetails:
                 performState(CarDetailsActivity.class);
+                break;
             case R.id.exit:
 
                 showConfirmDialog(getString(R.string.logout_confirm_title), getString(R.string.logout_confirm_text), getString(R.string.logout_cancel_text), new ConfirmCallback() {
@@ -132,9 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
                 break;
             default:
@@ -353,7 +353,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logout() {
+        RestClient.getSessionService().logout(null, new Callback<Object>() {
+            @Override
+            public void success(Object o, Response response) {
+                SessionHelper sh = new SessionHelper();
+                sh.setPassword(null);
+                sh.setToken(null);
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
+                SessionHelper sh = new SessionHelper();
+                sh.setPassword(null);
+                sh.setToken(null);
+            }
+        });
     }
 
     @Override

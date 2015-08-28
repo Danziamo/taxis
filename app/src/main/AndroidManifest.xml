@@ -30,14 +30,13 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:configChanges="keyboardHidden|orientation|screenSize"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:logo="@mipmap/ic_launcher"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan"
-        tools:replace="android:icon,android:theme" >
+        tools:replace="android:icon,android:theme"
+        >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -45,24 +44,10 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <receiver
-            android:name=".services.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <activity android:name=".MainSplashActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
 
-                <category android:name="com.example.gcm" />
-            </intent-filter>
-        </receiver>
-
-        <service android:name=".services.GcmIntentService" />
-
-        <activity android:name=".MainSplashActivity" >
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -70,84 +55,70 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapsActivity"
-            android:launchMode="singleTop"
+            android:name=".LoginActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/MainTheme" >
+            android:parentActivityName=".MainSplashActivity">
         </activity>
         <activity
-            android:name=".OrderActivity"
-            android:label="@string/orders"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs"
-            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name=".ConfirmSignUpActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name=".GarajActivity"
-            android:label="@string/title_activity_garaj"
-            android:parentActivityName=".MapsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs"
-            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="taxi.city.citytaxidriver.MapsActivity" />
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:parentActivityName=".MainSplashActivity"
+            >
         </activity>
         <activity
             android:name=".CarDetailsActivity"
             android:label="@string/title_car_details"
             android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".UserDetailsActivity"
             android:label="@string/title_user_details"
             android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".FinishOrderDetailsActivity"
             android:label="@string/title_activity_finish_order_details"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeActionBar"
-            android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name=".OrderDetailsActivity"
-            android:label="@string/new_order"
-            android:parentActivityName=".MapsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs"
             android:windowSoftInputMode="stateUnchanged|stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
-            android:parentActivityName=".GarajActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs" >
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="taxi.city.citytaxidriver.GarajActivity" />
+                android:value="taxi.city.citytaxidriver.MainActivity" />
         </activity>
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".GarajActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyActionBarTabs" >
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="taxi.city.citytaxidriver.GarajActivity" />
+                android:value="taxi.city.citytaxidriver.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
+            >
+        </activity>
+        <activity
+            android:name=".NewOrdersActivity"
+            android:label="@string/title_activity_new_orders"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="taxi.city.citytaxidriver.MainActivity" />
         </activity>
 
         <meta-data
@@ -195,20 +166,17 @@
 
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:launchMode="singleTop"
-            >
-        </activity>
-        <activity
-            android:name=".NewOrdersActivity"
-            android:label="@string/title_activity_new_orders"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="taxi.city.citytaxidriver.MainActivity" />
-        </activity>
+        <receiver
+            android:name=".services.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".services.GcmIntentService" />
 
         <!-- ActiveAndroid -->
         <meta-data android:name="AA_DB_NAME" android:value="EasyTaxiDriver.db"/>

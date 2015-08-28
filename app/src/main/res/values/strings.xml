@@ -6,6 +6,10 @@
     <string name="login_car_color">Цвет автомобиля</string>
     <string name="login_passport_info">Пасспортные данные</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="phone">Номер телефона</string>
+    <string name="phone.number">(555) 123-456</string>
+    <string name="btn.next">Далее</string>
+    <string name="authorization">Вам будет выслано смс с кодом\n подтверждения вашего номера.\n Введите его в поле ниже </string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -22,7 +26,7 @@
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="title_activity_finish_order_details">Детали заказа</string>
     <string name="new_order">Заказ</string>
-    <string name="orders">Заказы</string>
+    <string name="orders">ЗАКАЗЫ</string>
     <string name="title_activity_order_details_activity2">OrderDetailsActivity2</string>
     <string name="title_activity_account">AccountActivity</string>
     <string name="title_activity_sos">SosActivity</string>
@@ -42,6 +46,12 @@
     <string name="tariff_line6">Если клиент выбрал фиксированную плату,\n оплачивается только данная сумма.</string>
     <string name="tariff_line7">Доплата за выезд за пределы города Бишкек,\n  + 40 сом к общей сумме</string>
     <string name="info_version">EasyTaxi Водитель  для Андроид\n Версия %1$s.</string>
+    <string name="forgot.password">Забыли пароль?</string>
+    <string name="btn.authorization">Авторизация</string>
+    <string name="new.sms">Отправить смс заново</string>
+    <string name="met.code">Код смс:</string>
+    <string name="password.hint">******</string>
+    <string name="password">Пароль</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -62,7 +72,7 @@
     <!-- MapsFragment -->
 
     <string name="alert_info_order">Инфо заказа</string>
-    <string name="s_borta">С Борта</string>
+    <string name="s_borta">С БОРТА</string>
 
     <!-- CarDetails -->
     <string name="color">Цвет автомобиля</string>
@@ -87,9 +97,39 @@
 
     <!-- Errors -->
     <string name="error_network_unavailable">Нету подключения к интернету</string>
+    <string name="error_invalid_phone">Это поле не правильно заполнено</string>
+    <string name="error_invalid_password">Пароль слишком корткий</string>
+    <string name="error_incorrect_password">Телефон или пароль указаны неверно</string>
+    <string name="error_field_required">Это поле обязяательное</string>
+    <string name="error_phone_must_be_unique">Пользователь с таким номером уже существует</string>
     <string name="error_an_error_has_occurred_try_again">Произошла ошибка, попробуйте еще раз</string>
+    <string name="error_could_not_connect_to_server">Не удалось подключится к серверу</string>
+    <string name="error_invalid_phone_format">Телефон должен состоять из 13 символов</string>
+    <string name="error_phone_not_registered">Пользователь с таким номером не зарегистрирован</string>
+    <string name="error_could_not_activate">Не удалось активировать</string>
+    <string name="error_invalid_activation_code">Неверный код активации</string>
+    <string name="title_fragment_forgot_password">Забыли пароль?</string>
+    <string name="title_activity_signup">Регистрация</string>
+
+
+    <string name="wait_please">Пожалуйста, подождите</string>
+    <string name="sms_sent">СМС выслан</string>
+    <string name="new_password">Новый пароль:</string>
+    <string name="password_changed">Пароль изменен</string>
     <!-- End Errors -->
+
+    <!-- Sign up -->
+    <string name="signup.submit">Подтвердить</string>
+    <string name="signin">Войти</string>
+    <string name="signup.default_first_name">Имя</string>
+    <string name="signup.default_last_name">Фамилия</string>
 
     <string name="you_are_online">Вы сейчас онлайн</string>
     <string name="you_are_offline">Вы сейчас оффлайн</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_phone_number">Телефон</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_in_short">Войти</string>
 </resources>

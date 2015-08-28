@@ -12,26 +12,26 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.maps.MapFragment;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+import taxi.city.citytaxidriver.fragments.LoginFragment;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.OnlineStatus;
 import taxi.city.citytaxidriver.models.Role;
 import taxi.city.citytaxidriver.models.Session;
+import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.UserStatus;
 import taxi.city.citytaxidriver.utils.SessionHelper;
-import taxi.city.citytaxidriver.fragments.MapsFragment;
 
 public class MainSplashActivity extends BaseActivity implements View.OnClickListener {
 
-    private YoYo.YoYoString animation;
     View animContainer;
     View bottomMiniPanel;
+    private YoYo.YoYoString animation;
 
     private static int SPLASH_TIME_OUT = 1000;
     private static int MIN_TIME_OUT    = 1;
@@ -82,7 +82,6 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
         sessionHelper.setPhone(user.getPhone());
         sessionHelper.setId(user.getId());
         sessionHelper.setToken(user.getToken());
-        /*ApiService.getInstance().setToken(user.getToken());*/
     }
 
     private void openAnimation(){
@@ -110,6 +109,7 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
         bottomMiniPanel.setVisibility(View.VISIBLE);
         animation = YoYo.with(Techniques.SlideInUp)
                 .duration(800)
+                .startPoint(0)
                 .playOn(animContainer);
     }
 
@@ -117,7 +117,7 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
         Session session = new Session();
         session.setPhone(phone);
         session.setPassword(password);
-        RestClient.getSessionService().login(session, new Callback<taxi.city.citytaxidriver.models.User>() {
+        RestClient.getSessionService().login(session, new Callback<User>() {
             @Override
             public void success(taxi.city.citytaxidriver.models.User user, Response response) {
                 GlobalSingleton.getInstance(MainSplashActivity.this).token = user.getToken();
@@ -132,14 +132,14 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                 userStatus.iosToken = null;
                 userStatus.onlineStatus = OnlineStatus.ONLINE;
                 userStatus.role = Role.DRIVER;
-                RestClient.getUserService().updateStatus(user.getId(), userStatus, new Callback<taxi.city.citytaxidriver.models.User>() {
+                RestClient.getUserService().updateStatus(user.getId(), userStatus, new Callback<User>() {
                     @Override
-                    public void success(taxi.city.citytaxidriver.models.User user, Response response) {
+                    public void success(User user, Response response) {
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Intent intent = new Intent(MainSplashActivity.this, MapFragment.class);
+                                Intent intent = new Intent(MainSplashActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -149,13 +149,13 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void failure(RetrofitError error) {
                         Toast.makeText(MainSplashActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainSplashActivity.this, MapsFragment.class);
+                        Intent intent = new Intent(MainSplashActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                         Crashlytics.logException(error);
                     }
                 });
-             //   Toast.makeText(MainSplashActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                //   Toast.makeText(MainSplashActivity.this, "Success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -192,9 +192,9 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
                 break;
 
             case R.id.s_regist:
-                /*intent = new Intent(MainSplashActivity.this, SignupActivity.class);
+                intent = new Intent(MainSplashActivity.this, SignupActivity.class);
                 startActivity(intent);
-                setTitle("Регистрация");*/
+                setTitle("Регистрация");
                 break;
         }
     }
@@ -202,14 +202,14 @@ public class MainSplashActivity extends BaseActivity implements View.OnClickList
     private void updateTitleAndDrawer (Fragment fragment){
         String fragClassName = fragment.getClass().getName();
 
-        /*if (fragClassName.equals(LoginFragment.class.getName())){
+        if (fragClassName.equals(LoginFragment.class.getName())){
             setTitle ("Войти");
             //set selected item position, etc
         }
         else if (fragClassName.equals(SignupActivity.class.getName())){
             setTitle ("Регистрация");
             //set selected item position, etc
-        }*/
+        }
         /*else if (fragClassName.equals(C.class.getName())){
             setTitle ("C");
             //set selected item position, etc

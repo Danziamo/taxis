@@ -24,7 +24,7 @@ import taxi.city.citytaxidriver.networking.model.UserStatus;
 
 public interface UserApi {
     @POST("/users")
-    void add(@Body User user, Callback<User> cb);
+    void add(@Body NUser user, Callback<User> cb);
 
     @GET("/users/{userId}")
     void getById(@Path("userId") int id, Callback<User> cb);

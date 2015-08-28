@@ -1,9 +1,5 @@
 package taxi.city.citytaxidriver.services;
 
-/**
- * Created by Daniyar on 4/25/2015.
- */
-
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,10 +11,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import taxi.city.citytaxidriver.MapsActivity;
-import taxi.city.citytaxidriver.OrderActivity;
+import taxi.city.citytaxidriver.MainActivity;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.core.User;
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
@@ -75,8 +69,7 @@ public class GcmIntentService extends IntentService {
 
         if (msg == null || msg.length() == 0) return;
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, msg.toLowerCase().contains("новый") && User.getInstance().onlineStatus.equals("online")
-                        ? OrderActivity.class : MapsActivity.class), 0);
+                new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

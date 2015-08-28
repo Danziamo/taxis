@@ -23,7 +23,8 @@
         android:layout_centerHorizontal="true">
 
         <EditText
-            style="@style/mediumEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:hint="Фамилия"
             android:imeOptions="actionNext"
             android:id="@+id/editTextLastName"
@@ -31,7 +32,8 @@
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText
-            style="@style/mediumEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:hint="Имя"
             android:id="@+id/editTextFirstName"
@@ -39,7 +41,8 @@
             android:layout_marginTop="@dimen/spacing_tiny"/>
 
         <EditText
-            style="@style/mediumEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:hint="e-mail"
             android:id="@+id/editTextEmail"
             android:inputType="textEmailAddress"
@@ -48,7 +51,8 @@
             android:layout_marginTop="@dimen/spacing_tiny" />
 
         <EditText
-            style="@style/mediumEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:hint="Дата рождения"
             android:imeOptions="actionNext"
             android:id="@+id/editTextDoB"
@@ -65,7 +69,8 @@
             android:weightSum="10">
 
             <EditText
-                style="@style/SmallEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:hint="+996"
                 android:text="+996"
                 android:gravity="center"
@@ -73,7 +78,8 @@
                 android:inputType="phone" />
 
             <EditText
-                style="@style/ShortEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:hint="Телефон"
                 android:imeOptions="actionNext"
                 android:id="@+id/textViewPhone"
@@ -88,7 +94,8 @@
             android:layout_height="wrap_content">
 
             <EditText
-                style="@style/mediumEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:hint="Пароль"
                 android:imeOptions="actionDone"
                 android:layout_marginTop="0dp"
