@@ -314,8 +314,8 @@ public class OrderModel extends Model implements Serializable {
     }
 
     public void setPauseDuration(long pauseDuration) {
-        this.pauseDuration = this.getPauseDuration() + pauseDuration;
-        this.waitTime = Helper.getTimeFromLong(this.pauseDuration);
+        this.pauseDuration = pauseDuration;
+        this.waitTime = Helper.getTimeFromLong(pauseDuration);
     }
 
     public double getSum() {

@@ -73,7 +73,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
     User mUser;
     private Location prevLocation;
-    private long pauseStartTime;
     private long timerStartTime;
 
     Handler globalTimerHandler = new Handler();
@@ -102,10 +101,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             mOrderModel.setDuration((long) seconds);
 
             if (mOrderModel.getStatus() == OrderStatus.WAITING || mOrderModel.getStatus() == OrderStatus.PENDING) {
-                long pauseMillis = currentTimeMillis - pauseStartTime;
-                double pauseSeconds = (double)(pauseMillis/1000);
-                mOrderModel.setPauseDuration((long)pauseSeconds);
-                pauseStartTime = currentTimeMillis;
+                mOrderModel.setPauseDuration(mOrderModel.getPauseDuration() + 1);
             }
             updateCounterViews();
 
@@ -171,7 +167,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         if (mOrderModel != null) {
             startTimer(Helper.getLongFromString(mOrderModel.getOrderTravelTime()));
-            startPauseTimer(0);
         }
         updateCounterViews();
         updateFooter();
@@ -209,10 +204,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     private void startTimer(long shift) {
         timerStartTime = System.currentTimeMillis() - shift*1000;
         timerHandler.postDelayed(timerRunnable, 0);
-    }
-
-    private void startPauseTimer(long shift) {
-        pauseStartTime = System.currentTimeMillis() - shift*1000;
     }
 
     private void createBortOrder(Tariff tariff){
@@ -489,7 +480,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 if (mOrderModel == null) {
                     createBortOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
-                    startPauseTimer(0);
                     mOrderModel.setStatus(OrderStatus.WAITING);
                     updateOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.WAITING) {
@@ -508,11 +498,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 if(mOrderModel == null){
                     changeUserOnlineStatus();
                 } else if (mOrderModel.getStatus() == OrderStatus.ONTHEWAY) {
-                    startPauseTimer(0);
                     mOrderModel.setStatus(OrderStatus.PENDING);
                     updateOrder();
                 } else if (mOrderModel.getStatus() == OrderStatus.PENDING) {
-                    pauseStartTime = 0;
                     mOrderModel.setStatus(OrderStatus.ONTHEWAY);
                     updateOrder();
                 }
