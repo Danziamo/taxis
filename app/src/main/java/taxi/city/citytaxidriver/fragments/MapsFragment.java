@@ -3,6 +3,7 @@ package taxi.city.citytaxidriver.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.BuildConfig;
 import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
+import taxi.city.citytaxidriver.NewOrdersActivity;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.db.models.Tariff;
@@ -47,6 +49,7 @@ import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.BOrder;
 import taxi.city.citytaxidriver.utils.Constants;
 import taxi.city.citytaxidriver.utils.Helper;
+import taxi.city.citytaxidriver.views.OrderInfoDialog;
 
 public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener {
 
@@ -76,6 +79,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
     User mUser;
     private Location prevLocation;
     private long timerStartTime;
+
+    private OrderInfoDialog orderInfoDialog;
 
     Handler globalTimerHandler = new Handler();
     Runnable globalTimerRunnable = new Runnable() {
@@ -173,6 +178,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
         }
         updateCounterViews();
         updateFooter();
+
+        orderInfoDialog = new OrderInfoDialog(getActivity());
         return view;
     }
 
@@ -317,14 +324,7 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
             @Override
             public void success(ArrayList<OrderModel> orders, Response response) {
                 GlobalSingleton.getInstance(getActivity()).newOrders = orders;
-                clearMapFromNewOrders();
-                for (int i = orders.size() - 1; i >= 0; i -= 1) {
-                    OrderModel order = orders.get(i);
-                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                            .position(order.getStartPointPosition())
-                            .title(order.getStartName()));
-                    mNewOrderMarkerMap.put(marker, order);
-                }
+                updateNewOrderMarkers();
             }
 
             @Override
@@ -332,6 +332,18 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                 Toast.makeText(getActivity(), "Error fetching new orders", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateNewOrderMarkers(){
+        ArrayList<OrderModel> orders = GlobalSingleton.getInstance().newOrders;
+        clearMapFromNewOrders();
+        for (int i = orders.size() - 1; i >= 0; i -= 1) {
+            OrderModel order = orders.get(i);
+            Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                    .position(order.getStartPointPosition())
+                    .title(order.getStartName()));
+            mNewOrderMarkerMap.put(marker, order);
+        }
     }
 
     public void getSosOrders() {
@@ -361,6 +373,10 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        if(orderInfoDialog.isShowCalled()){
+            return true;
+        }
+        orderInfoDialog.setShowCalled(true);
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17), 1000, null);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -372,48 +388,18 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
     }
 
     private void showOrderInfoDialog(final OrderModel order) {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setTitle(getString(R.string.alert_info_order));
-        dialog.setContentView(R.layout.dialog_order_info);
-
-        TextView tvAddress = (TextView)dialog.findViewById(R.id.tvAddress);
-        TextView tvClientPhone = (TextView)dialog.findViewById(R.id.tvPhone);
-        TextView tvDescription = (TextView)dialog.findViewById(R.id.tvDescription);
-        TextView tvFixedPrice = (TextView)dialog.findViewById(R.id.tvFixedPrice);
-        TextView tvStopAddress = (TextView)dialog.findViewById(R.id.tvStopAddress);
-        LinearLayout llFixedPrice = (LinearLayout)dialog.findViewById(R.id.llFixedPrice);
-        TextView tvCounter = (TextView)dialog.findViewById(R.id.counterView);
-
-        Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);
-        Button btnSubmit = (Button)dialog.findViewById(R.id.btnSubmit);
-
-        tvAddress.setText(order.getStartName());
-        tvClientPhone.setText(order.getClientPhone());
-        tvDescription.setText(order.getDescription());
-        if (order.isFixedPrice()) {
-            tvCounter.setVisibility(View.GONE);
-            tvFixedPrice.setText(String.valueOf((int)order.getFixedPrice()));
-            tvStopAddress.setText(order.getStopName());
-        } else {
-            llFixedPrice.setVisibility(View.GONE);
-        }
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        orderInfoDialog.setOrder(order, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.getStartPointPosition(), 14));
-                dialog.dismiss();
+                if (v.getId() == R.id.btnCancel) {
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(order.getStartPointPosition(), 14));
+                    orderInfoDialog.dismiss();
+                } else {
+                    takeOrder(order);
+                    orderInfoDialog.dismiss();
+                }
             }
         });
-
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takeOrder(order);
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 
     private void updateFooter() {
@@ -518,6 +504,13 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                 updateFooter();
                 break;
             case R.id.btnRight:
+                if(mOrderModel == null){
+                    if(orderInfoDialog.isShowCalled()){
+                        orderInfoDialog.dismiss();
+                    }
+                    Intent intent = new Intent(getActivity(), NewOrdersActivity.class);
+                    startActivityForResult(intent, Constants.NEW_ORDERS_KEY);
+                }
                 updateFooter();
                 break;
             default:
@@ -587,6 +580,24 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
             updateCounterViews();
             updateFooter();
             getNewOrders();
+        }else if(requestCode == Constants.NEW_ORDERS_KEY){
+            if(orderInfoDialog.isShowCalled() || orderInfoDialog.isShowing()){
+                orderInfoDialog.dismiss();
+            }
+            if(resultCode == Activity.RESULT_OK){
+                updateNewOrderMarkers();
+                OrderModel orderModel = (OrderModel) data.getSerializableExtra("DATA");
+                if(orderModel != null){
+                    for(Map.Entry<Marker, OrderModel> entry : mNewOrderMarkerMap.entrySet()){
+                        Marker marker  = entry.getKey();
+                        OrderModel order = entry.getValue();
+                        if(order.getOrderId() == orderModel.getOrderId()){
+                            onMarkerClick(marker);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

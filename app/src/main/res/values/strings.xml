@@ -25,6 +25,8 @@
     <string name="title_activity_car_details">CarDetailsActivity</string>
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="title_activity_finish_order_details">Детали заказа</string>
+    <string name="title_activity_new_orders">Заказы</string>
+
     <string name="new_order">Заказ</string>
     <string name="orders">ЗАКАЗЫ</string>
     <string name="title_activity_order_details_activity2">OrderDetailsActivity2</string>
@@ -60,8 +62,10 @@
     <string name="meter_currency">сом</string>
     <string name="meter_distance">км</string>
     <string name="meter_time">мин</string>
+    <string name="order_id_prefix">№</string>
+
     <string name="map">Карта</string>
-    <string name="title_activity_new_orders">NewOrdersActivity</string>
+
 
     <!-- MainSplashActivity -->
 
@@ -103,6 +107,7 @@
     <string name="error_field_required">Это поле обязяательное</string>
     <string name="error_phone_must_be_unique">Пользователь с таким номером уже существует</string>
     <string name="error_an_error_has_occurred_try_again">Произошла ошибка, попробуйте еще раз</string>
+    <string name="error_unable_to_get_data_from_the_server">Не удалось получить данные с сервера</string>
     <string name="error_could_not_connect_to_server">Не удалось подключится к серверу</string>
     <string name="error_invalid_phone_format">Телефон должен состоять из 13 символов</string>
     <string name="error_phone_not_registered">Пользователь с таким номером не зарегистрирован</string>

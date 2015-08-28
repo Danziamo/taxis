@@ -1,8 +1,7 @@
 package taxi.city.citytaxidriver.fragments;
 
-import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,31 +17,31 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.adapters.OrderAdapter;
+import taxi.city.citytaxidriver.adapters.NewOrderAdapter;
+import taxi.city.citytaxidriver.db.models.OrderModel;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
 import taxi.city.citytaxidriver.models.OrderStatus;
-import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
+import taxi.city.citytaxidriver.utils.Constants;
 
-public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+/**
+ * A placeholder fragment containing a simple view.
+ */
+public class NewOrdersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout swipeLayout;
-    private User user;
-
     RecyclerView rvOrders;
-    OrderAdapter orderAdapter;
-    private int limit = 15;
 
-    public HistoryFragment() {
+    NewOrderAdapter newOrderAdapter;
+
+    public NewOrdersFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_history, container, false);
-        user = GlobalSingleton.getInstance(getActivity()).currentUser;
-        limit = 15;
 
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
@@ -54,25 +53,29 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         rvOrders = (RecyclerView)view.findViewById(R.id.rvOrders);
         rvOrders.setHasFixedSize(true);
 
-        orderAdapter = new OrderAdapter(new ArrayList<Order>(), R.layout.cardview_order, getActivity());
+        newOrderAdapter = new NewOrderAdapter(new ArrayList<OrderModel>(), R.layout.cardview_order, getActivity());
 
-        rvOrders.setAdapter(orderAdapter);
+        rvOrders.setAdapter(newOrderAdapter);
         rvOrders.setItemAnimator(new DefaultItemAnimator());
         rvOrders.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        fetchOrders();
+        newOrderAdapter.setDataset(GlobalSingleton.getInstance().newOrders);
+
         return view;
     }
 
-    private void fetchOrders() {
-        RestClient.getOrderService().getAllByStatusAndDriver(user.getId(), OrderStatus.FINISHED, "-id", limit, new Callback<ArrayList<Order>>() {
+    private void fetchNewOrders() {
+        RestClient.getOrderService().getAllByDistance(OrderStatus.NEW, Constants.ORDER_SEARCH_RANGE, new Callback<ArrayList<OrderModel>>() {
             @Override
-            public void success(ArrayList<Order> orders, Response response) {
-                orderAdapter.setDataset(orders);
+            public void success(ArrayList<OrderModel> orders, Response response) {
+                newOrderAdapter.setDataset(orders);
+                GlobalSingleton.getInstance().newOrders = (orders);
+                swipeLayout.setRefreshing(false);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                swipeLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), getString(R.string.error_unable_to_get_data_from_the_server), Toast.LENGTH_SHORT).show();
             }
         });
@@ -80,12 +83,6 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                limit += 5;
-                fetchOrders();
-                swipeLayout.setRefreshing(false);
-            }
-        }, 1000);
+        fetchNewOrders();
     }
 }
