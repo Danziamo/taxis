@@ -228,6 +228,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                                         }
                                     })
                                     .show();
+                            mOrderModel = null;
+                            GlobalSingleton.getInstance(getActivity()).currentOrderModel = null;
                         }
                     }
                 }
@@ -307,6 +309,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                                     }
                                 })
                                 .show();
+                        mOrderModel = null;
+                        GlobalSingleton.getInstance(getActivity()).currentOrderModel = null;
                     }
                 }
             }
@@ -326,7 +330,7 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
         mOrderModel.setStatus(OrderStatus.NEW);
         mOrderModel.setStopPoint(null);
         showProgress("Обновление");
-        RestClient.getOrderService().updateStatus(mOrderModel.getOrderId(), OrderStatus.NEW, new Callback<OrderModel>() {
+        RestClient.getOrderService().cancelOrder(mOrderModel.getOrderId(), OrderStatus.NEW, mUser.getId(), new Callback<OrderModel>() {
             @Override
             public void success(OrderModel orderModel, Response response) {
                 hideProgress();
@@ -381,6 +385,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                                     }
                                 })
                                 .show();
+                        mOrderModel = null;
+                        GlobalSingleton.getInstance(getActivity()).currentOrderModel = null;
                     }
                 }
             }
