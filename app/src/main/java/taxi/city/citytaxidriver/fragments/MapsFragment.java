@@ -26,14 +26,17 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 import taxi.city.citytaxidriver.BuildConfig;
 import taxi.city.citytaxidriver.FinishOrderDetailsActivity;
 import taxi.city.citytaxidriver.NewOrdersActivity;
@@ -205,6 +208,28 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                 @Override
                 public void failure(RetrofitError error) {
                     Toast.makeText(getActivity(), "Failed to fetch tariff", Toast.LENGTH_SHORT).show();
+                    if (error.getKind() == RetrofitError.Kind.HTTP) {
+                        if (error.getResponse().getStatus() != HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                            String detail = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                            String displayMessage = "Заказ отменён или занят";
+                            if (detail.toLowerCase().contains("user have not enough money")) {
+                                displayMessage = "Не достатончно денег на балансе";
+                            } else if (detail.toLowerCase().contains("canceled")) {
+                                displayMessage = "Заказ отменен клиентом";
+                            }
+                            new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(displayMessage)
+                                    .setContentText("")
+                                    .setConfirmText("Ок")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismissWithAnimation();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
                 }
             });
         }
@@ -249,6 +274,7 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
             @Override
             public void success(OrderModel orderModel, Response response) {
                 //@TODO neet to test in release mode
+                hideProgress();
                 if (BuildConfig.DEBUG) {
                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                 }
@@ -256,8 +282,32 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
 
             @Override
             public void failure(RetrofitError error) {
+                hideProgress();
                 if (BuildConfig.DEBUG) {
                     Toast.makeText(getActivity(), "Failure", Toast.LENGTH_SHORT).show();
+                }
+
+                if (error.getKind() == RetrofitError.Kind.HTTP) {
+                    if (error.getResponse().getStatus() != HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                        String detail = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                        String displayMessage = "Заказ отменён или занят";
+                        if (detail.toLowerCase().contains("user have not enough money")) {
+                            displayMessage = "Не достатончно денег на балансе";
+                        } else if (detail.toLowerCase().contains("canceled")) {
+                            displayMessage = "Заказ отменен клиентом";
+                        }
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(displayMessage)
+                                .setContentText("")
+                                .setConfirmText("Ок")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .show();
+                    }
                 }
             }
         });
@@ -275,7 +325,23 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
     private void cancelOrder() {
         mOrderModel.setStatus(OrderStatus.NEW);
         mOrderModel.setStopPoint(null);
-        updateOrder();
+        showProgress("Обновление");
+        RestClient.getOrderService().updateStatus(mOrderModel.getOrderId(), OrderStatus.NEW, new Callback<OrderModel>() {
+            @Override
+            public void success(OrderModel orderModel, Response response) {
+                hideProgress();
+                mOrderModel = null;
+                GlobalSingleton.getInstance(getActivity()).currentOrderModel = null;
+                updateFooter();
+                updateCounterViews();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                hideProgress();
+                Toast.makeText(getActivity(), "FAILED TO CANCEL ORDER", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void takeOrder(OrderModel order) {
@@ -295,6 +361,28 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
             @Override
             public void failure(RetrofitError error) {
                 Toast.makeText(getActivity(), "Cannot take order", Toast.LENGTH_SHORT).show();
+                if (error.getKind() == RetrofitError.Kind.HTTP) {
+                    if (error.getResponse().getStatus() != HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                        String detail = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                        String displayMessage = "Заказ отменён или занят";
+                        if (detail.toLowerCase().contains("user have not enough money")) {
+                            displayMessage = "Не достатончно денег на балансе";
+                        } else if (detail.toLowerCase().contains("canceled")) {
+                            displayMessage = "Заказ отменен клиентом";
+                        }
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(displayMessage)
+                                .setContentText("")
+                                .setConfirmText("Ок")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .show();
+                    }
+                }
             }
         });
     }
@@ -510,6 +598,8 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                     }
                     Intent intent = new Intent(getActivity(), NewOrdersActivity.class);
                     startActivityForResult(intent, Constants.NEW_ORDERS_KEY);
+                } else if (mOrderModel.getStatus() == OrderStatus.ACCEPTED) {
+                    cancelOrder();
                 }
                 updateFooter();
                 break;
@@ -564,8 +654,6 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
                 Crashlytics.logException(error);
             }
         });
-
-
     }
 
     @Override
