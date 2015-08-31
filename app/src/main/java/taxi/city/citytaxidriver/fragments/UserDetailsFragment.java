@@ -76,11 +76,11 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
         user = User.getInstance();
 
-        etLastName = (EditText)rootView.findViewById(R.id.editTextLastName);
-        etFirstName = (EditText)rootView.findViewById(R.id.editTextFirstName);
+        etLastName = (EditText)rootView.findViewById(R.id.metLastName);
+        etFirstName = (EditText)rootView.findViewById(R.id.metFirstName);
         //etEmail = (EditText)rootView.findViewById(R.id.editTextEmail);
-        etPhone = (EditText) rootView.findViewById(R.id.textViewPhone);
-        etPassword = (EditText) rootView.findViewById(R.id.editTextPassword);
+        etPhone = (EditText) rootView.findViewById(R.id.metPhone);
+        etPassword = (EditText) rootView.findViewById(R.id.metPassword);
         etPhoneExtra = (EditText) rootView.findViewById(R.id.textViewExtra);
         //tvTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
         etDoB = (EditText) rootView.findViewById(R.id.editTextDoB);
@@ -107,7 +107,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             }
         });
 
-        if (!isNew) {
+        /*if (!isNew) {
             etLastName.setText(user.lastName);
             etFirstName.setText(user.firstName);
             etPassword.setText(user.password);
@@ -119,7 +119,7 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
             etPhoneExtra.setText(extra);
             etPhone.setEnabled(false);
             etPhoneExtra.setEnabled(false);
-        }
+        }*/
 
         etDoB.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -215,17 +215,18 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
 
 
-        if (firstName.length() < 2) {
-            etFirstName.setError("Имя неправильно задано");
-            etFirstName.requestFocus();
-            createSignupErrorAnalyticsError("Имя неправильно задано");
-            return;
-        }
+
 
         if (lastName.length() < 2) {
-            etLastName.setError("Фамилия неправильно задано");
+            etLastName.setError("Пожалуйста, заполните это поле");
             etLastName.requestFocus();
             createSignupErrorAnalyticsError("Фамилия неправильно задано");
+            return;
+        }
+        if (firstName.length() < 2) {
+            etFirstName.setError("Пожалуйста, заполните это поле");
+            etFirstName.requestFocus();
+            createSignupErrorAnalyticsError("Имя неправильно задано");
             return;
         }
 

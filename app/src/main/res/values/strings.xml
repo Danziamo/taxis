@@ -1,5 +1,6 @@
 <resources>
-    <string name="login_full_name">ФИО водителя</string>
+    <string name="login_last_name">Фамилия</string>
+    <string name="login_first_name">Имя</string>
     <string name="login_phone_number">Номер телефона</string>
     <string name="login_car_type">Марка автомобиля</string>
     <string name="login_car_model">Модель автомобиля</string>

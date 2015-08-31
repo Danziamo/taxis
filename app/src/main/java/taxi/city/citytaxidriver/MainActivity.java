@@ -38,6 +38,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import taxi.city.citytaxidriver.adapters.TabsPagerAdapter;
 import taxi.city.citytaxidriver.fragments.MapsFragment;
+import taxi.city.citytaxidriver.fragments.UserDetailsFragment;
 import taxi.city.citytaxidriver.interfaces.ConfirmCallback;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.Order;
@@ -125,6 +126,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.carDetails:
                 performState(CarDetailsActivity.class);
                 break;
+
+            case R.id.accountInfo:
+                performState(UserDetailsActivity.class);
+                break;
+
             case R.id.exit:
 
                 showConfirmDialog(getString(R.string.logout_confirm_title), getString(R.string.logout_confirm_text), getString(R.string.logout_cancel_text), new ConfirmCallback() {

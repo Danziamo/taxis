@@ -2,18 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/splash_background"
     android:id="@+id/userContainer"
     tools:context="taxi.city.citytaxidriver.UserDetailsActivity.UserDetailsFragment">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/main_background"
-        android:scaleType="centerCrop"/>
-    <!--<TextView
-        style="@style/TextTitle"
-        android:text="Настройки водителя"
-        android:id="@+id/textViewTitle" />-->
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,23 +15,43 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true">
 
-        <EditText
-            android:layout_width="wrap_content"
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/metLastName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Фамилия"
+            app:met_baseColor="@color/white"
+            app:met_maxCharacters="20"
+            app:met_floatingLabel="highlight"
+            android:maxLength="20"
+            app:met_primaryColor="@color/white"
+            android:hint="@string/login_last_name"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/white"
             android:imeOptions="actionNext"
-            android:id="@+id/editTextLastName"
             android:inputType="textCapSentences"
-            android:layout_marginTop="@dimen/spacing_tiny"/>
+            />
 
-        <EditText
-            android:layout_width="wrap_content"
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/metFirstName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:met_baseColor="@color/white"
+            app:met_maxCharacters="20"
+            app:met_floatingLabel="highlight"
+            android:maxLength="20"
+            app:met_primaryColor="@color/white"
+            android:hint="@string/login_first_name"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/white"
             android:imeOptions="actionNext"
-            android:hint="Имя"
-            android:id="@+id/editTextFirstName"
             android:inputType="textCapSentences"
-            android:layout_marginTop="@dimen/spacing_tiny"/>
+            />
 
         <EditText
             android:layout_width="wrap_content"
@@ -57,16 +70,17 @@
             android:imeOptions="actionNext"
             android:id="@+id/editTextDoB"
             android:inputType="date"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/spacing_tiny"
             android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing_tiny"
-            android:weightSum="10">
+            android:layout_centerHorizontal="true"
+            >
 
             <EditText
                 android:layout_width="wrap_content"
@@ -75,15 +89,29 @@
                 android:text="+996"
                 android:gravity="center"
                 android:id="@+id/textViewExtra"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:visibility="gone"/>
 
-            <EditText
-                android:layout_width="wrap_content"
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/metPhone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Телефон"
+                app:met_baseColor="@color/white"
+                app:met_maxCharacters="14"
+                app:met_floatingLabel="highlight"
+                android:maxLength="16"
+                app:met_primaryColor="@color/white"
+                android:hint="@string/phone"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
                 android:imeOptions="actionNext"
-                android:id="@+id/textViewPhone"
-                android:inputType="number"/>
+                android:inputType="number"
+                android:visibility="gone"
+                />
+
         </LinearLayout>
 
         <RelativeLayout
@@ -93,33 +121,42 @@
             android:id="@+id/relativeLayoutPassword"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="wrap_content"
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/metPassword"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Пароль"
+                app:met_baseColor="@color/white"
+                app:met_maxCharacters="16"
+                app:met_floatingLabel="highlight"
+                android:maxLength="16"
+                app:met_primaryColor="@color/white"
+                android:hint="@string/password"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
                 android:imeOptions="actionDone"
-                android:layout_marginTop="0dp"
-                android:id="@+id/editTextPassword"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                />
 
             <ImageButton
                 android:id="@+id/imageButtonShowPassword"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
-                android:layout_alignRight="@+id/editTextPassword"
-                android:layout_alignEnd="@+id/editTextPassword"
+                android:layout_alignRight="@+id/metPassword"
+                android:layout_alignEnd="@+id/metPassword"
                 android:background="#00ffffff"/>
 
             <ImageButton
                 android:id="@+id/imageButtonShowPasswordIcon"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
-                android:layout_width="20dp"
-                android:layout_height="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:clickable="false"
-                android:layout_alignRight="@+id/editTextPassword"
-                android:layout_alignEnd="@+id/editTextPassword"
-                android:background="@drawable/password_eye"/>
+                android:background="@drawable/ic_eye"
+                android:layout_centerVertical="true"
+                android:layout_alignRight="@+id/metPassword"
+                android:layout_alignEnd="@+id/metPassword" />
 
         </RelativeLayout>
 
@@ -138,7 +175,8 @@
             style="@style/mediumButton.Yellow"
             android:text="Назад"
             android:id="@+id/buttonBack"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
 
         <Button
             style="@style/mediumButton.Yellow"
