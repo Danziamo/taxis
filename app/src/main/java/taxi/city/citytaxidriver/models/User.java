@@ -56,6 +56,10 @@ public class User implements Serializable {
     private Rating rating;
 
     @Expose
+    @SerializedName("driver_license_number")
+    private String driverLicenseNumber;
+
+    @Expose
     private ArrayList<Car> cars;
 
     @Expose
@@ -173,12 +177,25 @@ public class User implements Serializable {
         this.rating = rating;
     }
 
+    public String getDriverLicenseNumber() {
+        return driverLicenseNumber;
+    }
+
+    public void setDriverLicenseNumber(String driverLicenseNumber) {
+        this.driverLicenseNumber = driverLicenseNumber;
+    }
+
     public ArrayList<Car> getCars() {
         return cars;
     }
 
     public void setCars(ArrayList<Car> cars) {
         this.cars = cars;
+    }
+
+    public Car getCar(){
+        ArrayList<Car> cars = getCars();
+        return (cars.size() > 0) ? cars.get(0) : null;
     }
 
     public String getCurPosition() {

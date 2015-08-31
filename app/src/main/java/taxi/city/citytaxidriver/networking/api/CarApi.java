@@ -9,8 +9,8 @@ import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import taxi.city.citytaxidriver.models.Brand;
-import taxi.city.citytaxidriver.models.BrandModel;
+import taxi.city.citytaxidriver.db.models.Brand;
+import taxi.city.citytaxidriver.db.models.BrandModel;
 import taxi.city.citytaxidriver.networking.model.NCar;
 
 public interface CarApi {
@@ -18,10 +18,10 @@ public interface CarApi {
     void getCarById(@Path("carId") int id, Callback<NCar> cb);
 
     @POST("/usercars/")
-    void addCar(@Body NCar car, Callback<Object> cb);
+    void addCar(@Body NCar car, Callback<NCar> cb);
 
     @PATCH("/usercars/{carId}")
-    void updateCar(@Body NCar car, Callback<Object> cb);
+    void updateCar(@Path("carId") int carId, @Body NCar car, Callback<NCar> cb);
 
     @GET("/cars/carbrands/")
     void getAllCarBrands(Callback<ArrayList<Brand>> cb);
@@ -33,5 +33,5 @@ public interface CarApi {
     void getCarModelById(@Path("modelId") int id, Callback<BrandModel> cb);
 
     @GET("/cars/carbrandmodels/")
-    void getCarModelByBrandId(@Query("brand_id") int brandId, Callback<ArrayList<BrandModel>> cb);
+    void getCarModelByBrandId(@Query("car_brand") int brandId, Callback<ArrayList<BrandModel>> cb);
 }

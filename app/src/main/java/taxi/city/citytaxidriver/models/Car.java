@@ -4,8 +4,18 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import taxi.city.citytaxidriver.db.models.Brand;
+import taxi.city.citytaxidriver.db.models.BrandModel;
+import taxi.city.citytaxidriver.networking.model.NCar;
 
 public class Car implements Serializable {
+
+    @Expose
+    private int id;
+
+    @Expose
+    @SerializedName("driver")
+    private int driverId;
 
     @Expose
     private Brand brand;
@@ -26,6 +36,48 @@ public class Car implements Serializable {
 
     @Expose
     private String photo;
+
+    public Car() {
+    }
+
+    public Car(NCar nCar){
+        id = nCar.id;
+        driverId = nCar.driver;
+        Brand brand = Brand.getByBrandId(nCar.brand);
+        if(brand == null){
+            brand = new Brand();
+            brand.setBrandId(nCar.brand);
+        }
+        this.brand = brand;
+
+        BrandModel brandModel = BrandModel.getByBrandModelId(nCar.model);
+        if(brandModel == null){
+            brandModel = new BrandModel();
+            brandModel.setBrandModelId(nCar.model);
+        }
+        this.model = brandModel;
+
+        this.color = nCar.color;
+        this.year = nCar.year;
+        this.number = nCar.number;
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(int driverId) {
+        this.driverId = driverId;
+    }
 
     public Brand getBrand() {
         return brand;

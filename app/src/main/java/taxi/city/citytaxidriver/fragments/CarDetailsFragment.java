@@ -3,10 +3,7 @@ package taxi.city.citytaxidriver.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,56 +14,47 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import taxi.city.citytaxidriver.App;
-import taxi.city.citytaxidriver.MapsActivity;
-import taxi.city.citytaxidriver.core.Car;
-import taxi.city.citytaxidriver.core.CarEntity;
-import taxi.city.citytaxidriver.core.User;
+import taxi.city.citytaxidriver.MainActivity;
 import taxi.city.citytaxidriver.R;
-import taxi.city.citytaxidriver.networking.ApiService;
+import taxi.city.citytaxidriver.db.models.Brand;
+import taxi.city.citytaxidriver.db.models.BrandModel;
+import taxi.city.citytaxidriver.models.Car;
+import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.User;
+import taxi.city.citytaxidriver.networking.RestClient;
+import taxi.city.citytaxidriver.networking.model.NCar;
 import taxi.city.citytaxidriver.utils.Helper;
 
-public class CarDetailsFragment extends Fragment implements View.OnClickListener{
+public class CarDetailsFragment extends BaseFragment implements View.OnClickListener{
 
     private static CarDetailsFragment mInstance = null;
-    private CarUpdateTask mUpdateTask = null;
-    private FetchCarBrandTask mFetchTask = null;
     private boolean isNew = true;
     private User mUser;
-    private int mBrandId = 0;
-    private int mBrandModelId = 0;
+    private Car mCar;
 
     Spinner carBrandSpinner;
     Spinner carModelSpinner;
-    Spinner carColorSpinner;
+
+    ArrayAdapter<Brand> brandArrayAdapter;
+    ArrayAdapter<BrandModel> brandModelArrayAdapter;
+
     EditText etCarColor;
     EditText etCarYear;
-    //EditText etTechPassport;
     EditText etCarNumber;
-    //EditText etPassportNumber;
-    //EditText etDriverLicense;
-    TextView tvTitle;
+    EditText etDriverLicense;
 
-    SweetAlertDialog pDialog;
-
-    Button btnBack;
     Button btnSave;
-
-    int userCarId = 0;
 
     public static CarDetailsFragment newInstance() {
         return new CarDetailsFragment();
@@ -88,38 +76,28 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         View rootView = inflater.inflate(R.layout.fragment_car_details, container, false);
 
         isNew = getActivity().getIntent().getBooleanExtra("NEW", false);
-        mUser = User.getInstance();
+
+        mUser = GlobalSingleton.getInstance().currentUser;
+        mCar = mUser.getCar();
+
         carBrandSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarBrand);
         carModelSpinner = (Spinner) rootView.findViewById(R.id.spinnerCarModel);
+        etCarYear = (EditText) rootView.findViewById(R.id.etCarYear);
         etCarColor = (EditText) rootView.findViewById(R.id.spinnerCarColor);
-       // etCarYear = (EditText) rootView.findViewById(R.id.editTextCarYear);
-        //etTechPassport = (EditText) rootView.findViewById(R.id.editTextTechPassport);
-        //etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
+        etDriverLicense = (EditText) rootView.findViewById(R.id.editTextDriverLicenseNumber);
         etCarNumber = (EditText) rootView.findViewById(R.id.editTextCarNumber);
-        //etPassportNumber = (EditText)rootView.findViewById(R.id.editTextPassportNumber);
 
         btnSave = (Button)rootView.findViewById(R.id.buttonSave);
-        btnBack = (Button)rootView.findViewById(R.id.buttonBack);
-
-        btnBack.setOnClickListener(this);
-        btnBack.setVisibility(isNew ? View.VISIBLE : View.GONE);
         btnSave.setOnClickListener(this);
 
-        String driverLicense = mUser.driverLicenseNumber;
-        String passport = mUser.passportNumber;
+        String driverLicense = mUser.getDriverLicenseNumber();
+        etDriverLicense.setText(driverLicense);
 
-        //etDriverLicense.setText(driverLicense);
-        //etPassportNumber.setText(passport);
-        if (!isNew && mUser.car != null) {
-            etCarColor.setText(mUser.car.color);
-            etCarNumber.setText(mUser.car.number);
-            etCarYear.setText(mUser.car.year);
-            //etTechPassport.setText(mUser.car.technicalCertificate);
-            mBrandId = mUser.car.brandId;
-            mBrandModelId = mUser.car.modelId;
-            userCarId = mUser.car.id;
+        if (!isNew && mCar != null) {
+            etCarColor.setText(mCar.getColor());
+            etCarNumber.setText(mCar.getNumber());
+            etCarYear.setText(String.valueOf(mCar.getYear()));
         }
-        fillCarBrands();
 
         rootView.findViewById(R.id.carContainer).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -128,6 +106,15 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
                 return false;
             }
         });
+
+        brandArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, new ArrayList<Brand>());
+        brandArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carBrandSpinner.setAdapter(brandArrayAdapter);
+
+
+        brandModelArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, new ArrayList<BrandModel>());
+        brandModelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carModelSpinner.setAdapter(brandModelArrayAdapter);
 
         carBrandSpinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -152,6 +139,12 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchBrands(true);
+    }
+
     private void hideKeyboard() {
         // Check if no view has focus:
         View view = getActivity().getCurrentFocus();
@@ -159,113 +152,6 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
             InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-    private void updateTask(){
-        if (mUpdateTask != null)
-            return;
-
-        if (isNew){
-            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
-                    .setCategory("car_create")
-                    .setAction("car_create")
-                    .setLabel("Car save button pressed")
-                    .build());
-        }
-
-        JSONObject carJSON = new JSONObject();
-        JSONObject userJSON = new JSONObject();
-
-        CarEntity carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
-        CarEntity carBrandModel = (CarEntity)carModelSpinner.getSelectedItem();
-
-        if (carBrand == null || carBrand.id == 0) {
-            carBrandSpinner.requestFocus();
-            Toast.makeText(getActivity(), "Выберите машину", Toast.LENGTH_LONG).show();
-            createCarCreateAnalyticsEvent("Выберите машину");
-            return;
-        }
-
-
-       /* String passportNumber =  etPassportNumber.getText().toString();
-
-        String driverLicense = etDriverLicense.getText().toString();
-        String techPassport = etTechPassport.getText().toString();*/
-        String carNumber =etCarNumber.getText().toString();
-        String color = etCarColor.getText().toString();
-        String year = etCarYear.getText().toString();
-
-
-       /* if (passportNumber.length() < 6) {
-            etPassportNumber.setError("Минимально 6 символа");
-            etPassportNumber.requestFocus();
-            createCarCreateAnalyticsEvent("Серия и номер паспортных данных: Минимально 6 символа");
-            return;
-        }
-
-
-        if (driverLicense.length() < 6) {
-            etDriverLicense.setError("Минимально 6 символа");
-            etDriverLicense.requestFocus();
-            createCarCreateAnalyticsEvent("Серия и номер прав: Минимально 6 символа");
-            return;
-        }*/
-
-
-        if (carNumber.length() < 6 || carNumber.length() > 10) {
-            etCarNumber.setError("Неверно задано");
-            etCarNumber.requestFocus();
-            createCarCreateAnalyticsEvent("Номер автомобиля: Неверно задано");
-            return;
-        }
-
-        if (!Helper.isYearValid(year)) {
-            etCarYear.setError("Неверно задано");
-            etCarYear.requestFocus();
-            createCarCreateAnalyticsEvent("Год машины: Неверно задано");
-            return;
-        }
-
-        if (color.length() < 3){
-            etCarColor.setError("Не менее 3 символов");
-            etCarColor.requestFocus();
-            createCarCreateAnalyticsEvent("Цвет: Не менее 3 символов");
-            return;
-        }
-
-        if (color.length() > 20) {
-            etCarColor.setError("Не более 20 символов");
-            etCarColor.requestFocus();
-            createCarCreateAnalyticsEvent("Цвет: Не более 20 символов");
-            return;
-        }
-
-     /*   if(techPassport.length() > 10){
-            etTechPassport.setError("Не более 10 символов");
-            etTechPassport.requestFocus();
-            createCarCreateAnalyticsEvent("Серия и номер тех паспорта: Не более 10 символов");
-            return;
-        }*/
-
-        try {
-            carJSON.put("driver", mUser.id);
-            carJSON.put("brand", carBrand.id);
-            carJSON.put("brand_model", carBrandModel.id);
-            carJSON.put("car_number", carNumber);
-            carJSON.put("year", year);
-            carJSON.put("color", color);
-           /* carJSON.put("technical_certificate", techPassport);
-            userJSON.put("passport_number", passportNumber);
-            userJSON.put("driver_license_number", driverLicense);*/
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-            e.printStackTrace();
-            return;
-        }
-
-        showProgress(true, "Сохранение");
-        mUpdateTask = new CarUpdateTask(carJSON, userJSON);
-        mUpdateTask.execute((Void) null);
     }
 
     private void createCarCreateAnalyticsEvent(String msg){
@@ -282,7 +168,7 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonSave:
-                updateTask();
+                updateCar();
                 break;
             default:
                 getActivity().finish();
@@ -290,230 +176,254 @@ public class CarDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private class CarUpdateTask extends AsyncTask<Void, Void, JSONObject> {
-        private JSONObject carJson = new JSONObject();
-        private JSONObject userJson = new JSONObject();
-
-        CarUpdateTask(JSONObject car, JSONObject user) {
-            carJson = car;
-            userJson = user;
+    private void updateCar(){
+        if (isNew){
+            App.getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("car_create")
+                    .setAction("car_create")
+                    .setLabel("Car save button pressed")
+                    .build());
         }
 
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            JSONObject result = new JSONObject();
-            if (isNew) {
-                //result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
-                result = ApiService.getInstance().createCar(carJson, "usercars/");
-                return result;
-            } else {
-                //result = ApiService.getInstance().patchRequest(userJson, "users/" + mUser.id + "/");
-                result = ApiService.getInstance().patchRequest(carJson, "usercars/" + userCarId + "/");
-                return result;
-            }
+        Brand brand = (Brand) carBrandSpinner.getSelectedItem();
+        BrandModel brandModel = (BrandModel) carModelSpinner.getSelectedItem();
+
+        if (brand == null || brand.getBrandId() == 0) {
+            carBrandSpinner.requestFocus();
+            Toast.makeText(getActivity(), "Выберите марку", Toast.LENGTH_LONG).show();
+            createCarCreateAnalyticsEvent("Выберите марку");
+            return;
         }
 
-        @Override
-        protected void onPostExecute(final JSONObject result) {
-            showProgress(false, null);
-            mUpdateTask = null;
-            int statusCode = -1;
-            try {
-                if(Helper.isSuccess(result)) {
-                    statusCode = result.getInt("status_code");
-                } else {
-                    Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
+        if(brandModel == null || brandModel.getBrandModelId() == 0){
+            carBrandSpinner.requestFocus();
+            Toast.makeText(getActivity(), "Выберите модель", Toast.LENGTH_LONG).show();
+            createCarCreateAnalyticsEvent("Выберите модель");
+            return;
+        }
+
+        NCar newCar;
+        if(isNew){
+            newCar = new NCar();
+            newCar.driver = mUser.getId();
+        } else{
+            newCar = new NCar(mCar);
+        }
+        newCar.brand = brand.getBrandId();
+        newCar.model = brandModel.getBrandModelId();
+        newCar.color = etCarColor.getText().toString();
+
+        newCar.number = etCarNumber.getText().toString();
+
+        final String driverLicense = etDriverLicense.getText().toString();
+        String year = etCarYear.getText().toString();
+
+        if (driverLicense.length() < 6) {
+            etDriverLicense.setError("Минимально 6 символа");
+            etDriverLicense.requestFocus();
+            createCarCreateAnalyticsEvent("Серия и номер прав: Минимально 6 символа");
+            return;
+        }
+
+
+        if (newCar.number.length() < 6 || newCar.number.length() > 10) {
+            etCarNumber.setError("Неверно задано");
+            etCarNumber.requestFocus();
+            createCarCreateAnalyticsEvent("Номер автомобиля: Неверно задано");
+            return;
+        }
+
+        if (!Helper.isYearValid(year)) {
+            etCarYear.setError("Неверно задано");
+            etCarYear.requestFocus();
+            createCarCreateAnalyticsEvent("Год машины: Неверно задано");
+            return;
+        }
+
+        newCar.year = Integer.parseInt(etCarYear.getText().toString());
+
+        if (newCar.color.length() < 3){
+            etCarColor.setError("Не менее 3 символов");
+            etCarColor.requestFocus();
+            createCarCreateAnalyticsEvent("Цвет: Не менее 3 символов");
+            return;
+        }
+
+        if (newCar.color.length() > 20) {
+            etCarColor.setError("Не более 20 символов");
+            etCarColor.requestFocus();
+            createCarCreateAnalyticsEvent("Цвет: Не более 20 символов");
+            return;
+        }
+
+        showProgress("Сохранение");
+
+        Callback<NCar> callback = new Callback<NCar>() {
+            @Override
+            public void success(NCar nCar, Response response) {
+                updateCurrentUserCar(nCar);
+                if( !mUser.getDriverLicenseNumber().equals(driverLicense) ){
+                    updateDriverLicense(driverLicense);
+                }else {
+                    hideProgress();
+                    finishUpdate();
                 }
-                if (Helper.isSuccess(statusCode)) {
-                    finishUpdate(result.getInt("id"));
-                    if (isNew){
-                        App.getDefaultTracker().send(new HitBuilders.EventBuilder()
-                                .setCategory("car_create")
-                                .setAction("car_create")
-                                .setLabel("Car create success")
-                                .build());
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Сервис недоступен", Toast.LENGTH_LONG).show();
-                }
-            } catch (JSONException e) {
-                Crashlytics.logException(e);
-                e.printStackTrace();
             }
+
+            @Override
+            public void failure(RetrofitError error) {
+                hideProgress();
+                if (error.getKind() == RetrofitError.Kind.HTTP) {
+                    Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getActivity(), getString(R.string.error_could_not_connect_to_server), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        if(isNew){
+            RestClient.getCarService().addCar(newCar, callback);
+        }else{
+            RestClient.getCarService().updateCar(newCar.id, newCar, callback);
         }
 
-        @Override
-        protected void onCancelled() {
-            mUpdateTask = null;
-        }
     }
 
-    private void finishUpdate(int carId) {
-       // mUser.driverLicenseNumber =  etDriverLicense.getText().toString();
-       // mUser.passportNumber =  etPassportNumber.getText().toString();
-        //if (!isNew) {
-        Car car = new Car();
-        CarEntity mBrand = (CarEntity)carBrandSpinner.getSelectedItem();
-        car.brandId = mBrand.id;
-        car.id = carId;
-        car.brandName = mBrand.name;
-        CarEntity mModel = (CarEntity)carModelSpinner.getSelectedItem();
-        car.modelId = mModel.id;
-        car.modelName = mModel.name;
-        car.color = etCarColor.getText().toString();
-        car.number = etCarNumber.getText().toString();
-        //car.technicalCertificate = etTechPassport.getText().toString();
-        car.year = etCarYear.getText().toString();
-        mUser.car = car;
-        //}
-        if (isNew) {
-            Intent intent = new Intent(getActivity(), MapsActivity.class);
+    private void updateCurrentUserCar(NCar nCar){
+        mCar = new Car(nCar);
+        ArrayList<Car> cars = new ArrayList<>();
+        cars.add(mCar);
+        mUser.setCars(cars);
+        GlobalSingleton.getInstance().currentUser = mUser;
+    }
+
+    private void updateDriverLicense(String driverLicense){
+        mUser.setDriverLicenseNumber(driverLicense);
+        RestClient.getUserService().save(mUser.getId(), mUser, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                mUser = user;
+                GlobalSingleton.getInstance().currentUser = mUser;
+                hideProgress();
+                finishUpdate();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getKind() == RetrofitError.Kind.HTTP) {
+                    Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getActivity(), getString(R.string.error_could_not_connect_to_server), Toast.LENGTH_SHORT).show();
+                }
+                hideProgress();
+            }
+        });
+    }
+
+    private void finishUpdate(){
+        if(isNew){
+            Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("finish", true);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
             startActivity(intent);
             getActivity().finish();
+        }else{
+            Toast.makeText(getActivity(), "Сохранено", Toast.LENGTH_LONG).show();
         }
     }
 
-    private class FetchCarBrandTask extends AsyncTask<Void, Void, JSONArray> {
-        String api;
-        CarEntity carBrand;
-        boolean isModel;
-
-        FetchCarBrandTask(boolean isModel) {
-            this.isModel = isModel;
-            if (isModel) {
-                carBrand = (CarEntity)carBrandSpinner.getSelectedItem();
-                api = "cars/carbrandmodels/?limit=200&car_brand=" + carBrand.id;
-            } else {
-                api = "cars/carbrands/?limit=200&ordering=brand_name";
-            }
-        }
-
-        @Override
-        protected JSONArray doInBackground(Void... params) {
-            return ApiService.getInstance().fetchCarBrand(api);
-        }
-
-        @Override
-        protected void onPostExecute(final JSONArray result) {
-            mFetchTask = null;
-            showProgress(false, null);
-            if (result != null) {
-                if (isModel) {
-                    FillBrandCarModelSpinnerArray(result);
-                } else {
-                    FillBrandSpinnerArray(result);
+    private void fetchBrands(final boolean setSelection){
+        showProgress("Загрузка");
+        if(Brand.isBrandsUpToDate()){
+            fillBrandSpinner(Brand.getAll(), setSelection);
+        }else {
+            RestClient.getCarService().getAllCarBrands(new Callback<ArrayList<Brand>>() {
+                @Override
+                public void success(ArrayList<Brand> brands, Response response) {
+                    Brand.upgradeBrands(brands);
+                    fillBrandSpinner(brands, setSelection);
                 }
-            } else {
-                Toast.makeText(getActivity(), "Не удалось оторбразить список машин", Toast.LENGTH_LONG).show();
-            }
-        }
 
-        @Override
-        protected void onCancelled() {
-            mFetchTask = null;
+                @Override
+                public void failure(RetrofitError error) {
+                    if (error.getKind() == RetrofitError.Kind.HTTP) {
+                        Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getActivity(), getString(R.string.error_could_not_connect_to_server), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
-    private void fillCarBrands() {
-        if (mFetchTask != null || User.getInstance() == null || User.getInstance().id == 0) {
-            return;
-        }
+    private void fillBrandSpinner(ArrayList<Brand> brands, boolean setSelection){
+        brandArrayAdapter.clear();
+        brandArrayAdapter.addAll(brands);
+        brandArrayAdapter.notifyDataSetChanged();
 
-        showProgress(true, "Загрузка");
-        mFetchTask = new FetchCarBrandTask(false);
-        mFetchTask.execute((Void) null);
+        if (setSelection && mCar != null) {
+            Brand brand = mCar.getBrand();
+            if (brand != null) {
+                int position = brandArrayAdapter.getPosition(brand);
+                carBrandSpinner.setSelection(position, false);
+
+                fetchBrandModels(true);
+                carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        fetchBrandModels(false);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+            }
+        }else{
+            fetchBrandModels(false);
+        }
+        hideProgress();
     }
 
-    private void FillCarBrandsModels() {
-        if (mFetchTask != null) {
-            return;
-        }
+    private void fetchBrandModels(final boolean setSelection){
+        showProgress("Загрузка");
+        Brand selectedBrand = (Brand) carBrandSpinner.getSelectedItem();
+        final Brand dbBrand = Brand.getByBrandId(selectedBrand.getBrandId());
 
-        showProgress(true, "Загрузка");
-        mFetchTask = new FetchCarBrandTask(true);
-        mFetchTask.execute((Void) null);
+        if(dbBrand.isBrandModelsUpToDate()){
+            fillBrandModelSpinner(dbBrand.getBrandModels(), setSelection);
+        }else {
+            RestClient.getCarService().getCarModelByBrandId(selectedBrand.getBrandId(), new Callback<ArrayList<BrandModel>>() {
+                @Override
+                public void success(ArrayList<BrandModel> brandModels, Response response) {
+                    dbBrand.upgradeBrandModels(brandModels);
+                    fillBrandModelSpinner(brandModels, setSelection);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    if (error.getKind() == RetrofitError.Kind.HTTP) {
+                        Toast.makeText(getActivity(), getString(R.string.error_an_error_has_occurred_try_again), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getActivity(), getString(R.string.error_could_not_connect_to_server), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
-    private void FillBrandCarModelSpinnerArray(JSONArray array) {
-        List<CarEntity> list = new ArrayList<>();
+    private void fillBrandModelSpinner(ArrayList<BrandModel> brandModels, boolean setSelection){
+        brandModelArrayAdapter.clear();
+        brandModelArrayAdapter.addAll(brandModels);
+        brandModelArrayAdapter.notifyDataSetChanged();
 
-        try {
-            for (int i = 0; i < array.length(); ++i) {
-                JSONObject row = array.getJSONObject(i);
-                list.add(new CarEntity(row.getInt("id"), row.getString("brand_model_name")));
+        if (setSelection && mCar != null) {
+            BrandModel brandModel = mCar.getModel();
+            if (brandModel != null) {
+                int position = brandModelArrayAdapter.getPosition(brandModel);
+                carModelSpinner.setSelection(position);
             }
-        } catch (JSONException e) {
-            Crashlytics.logException(e);
-            e.printStackTrace();
         }
-
-        ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        CarEntity tempEntity = new CarEntity(mBrandModelId, "");
-        int position = adapter.getPosition(tempEntity);
-
-        carModelSpinner.setAdapter(adapter);
-        carModelSpinner.setSelection(position);
-        carModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
-    private void FillBrandSpinnerArray(JSONArray array) {
-        List<CarEntity> list = new ArrayList<>();
-        try {
-            for (int i = 0; i < array.length(); ++i) {
-                JSONObject row = array.getJSONObject(i);
-                list.add(new CarEntity(row.getInt("id"), row.getString("brand_name")));
-            }
-        } catch (JSONException e) {
-            Crashlytics.logException(e);
-            e.printStackTrace();
-        }
-
-        if (getActivity() == null || list == null) return;
-        ArrayAdapter<CarEntity> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        CarEntity tempEntity = new CarEntity(mBrandId, "");
-        int position = adapter.getPosition(tempEntity);
-
-        carBrandSpinner.setAdapter(adapter);
-        carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                FillCarBrandsModels();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        carBrandSpinner.setSelection(position);
-    }
-
-    public void showProgress(final boolean show, String message) {
-        if (show) {
-            pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-            pDialog.getProgressHelper()
-                    .setBarColor(Color.parseColor("#A5DC86"));
-            pDialog.setTitleText(message);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        } else {
-            if (pDialog != null) pDialog.dismissWithAnimation();
-        }
+        hideProgress();
     }
 }

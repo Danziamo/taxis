@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import taxi.city.citytaxidriver.fragments.CarDetailsFragment;
 
 
-public class CarDetailsActivity extends AppCompatActivity {
+public class CarDetailsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

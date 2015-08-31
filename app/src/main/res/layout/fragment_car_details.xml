@@ -91,6 +91,23 @@
                 />
 
             <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/etCarYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Год машины"
+                android:paddingLeft="10dp"
+                android:imeOptions="actionNext"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:inputType="numberDecimal"
+                app:met_baseColor="@color/white"
+                app:met_maxCharacters="6"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@color/white"
+                />
+            <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/editTextDriverLicenseNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,78 +144,6 @@
                 />
 
         </LinearLayout>
-
-       <!-- <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/textViewCarSettings"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:id="@+id/linearLayout8">
-
-            <Spinner
-                style="@style/spinnerItemStyle"
-                android:id="@+id/spinnerCarBrand"
-                android:layout_marginTop="10dp" />
-
-            <Spinner
-                style="@style/spinnerItemStyle"
-                android:id="@+id/spinnerCarModel" />
-
-            <EditText
-                style="@style/mediumEditText"
-                android:id="@+id/spinnerCarColor"
-                android:hint="Цвет"
-                android:imeOptions="actionNext"
-                android:textSize="16sp"
-                android:inputType="text" />
-
-            <EditText
-                style="@style/mediumEditText"
-                android:id="@+id/editTextCarYear"
-                android:hint="Год машины"
-                android:imeOptions="actionNext"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:inputType="number" />-->
-
-          <!--  <EditText
-                style="@style/mediumEditText"
-                android:hint="Серия и номер тех паспорта"
-                android:imeOptions="actionNext"
-                android:id="@+id/editTextTechPassport"
-                android:textSize="16sp"
-                android:inputType="text" />-->
-<!--
-
-            <EditText
-                style="@style/mediumEditText"
-                android:hint="Номер автомобиля"
-                android:id="@+id/editTextCarNumber"
-                android:imeOptions="actionDone"
-                android:textSize="16sp"
-                android:inputType="text" />
--->
-
-          <!--  <EditText
-                style="@style/mediumEditText"
-                android:hint="Серия и номер прав"
-                android:id="@+id/editTextDriverLicenseNumber"
-                android:imeOptions="actionNext"
-                android:textSize="16sp"
-                android:inputType="text" />-->
-
-          <!--  <EditText
-                style="@style/mediumEditText"
-                android:hint="Серия и номер паспортных данных"
-                android:id="@+id/editTextPassportNumber"
-                android:imeOptions="actionDone"
-                android:textSize="16sp"
-                android:inputType="text" />-->
-
-       <!-- </LinearLayout>-->
-
     </ScrollView>
 
     <LinearLayout
@@ -209,13 +154,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/linearLayoutBackExitGroup">
-
-        <Button
-            style="@style/mediumButton.Yellow"
-            android:text="Назад"
-            android:id="@+id/buttonBack"
-            android:layout_margin="10dp"
-            android:visibility="gone"/>
 
         <Button
             style="@style/mediumButton.Yellow"

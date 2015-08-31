@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 public class Setting extends Model {
 
     public static final String TARIFFS_LAST_UPDATE_TIME_NAME = "tariffs_last_update_time";
+    public static final String BRANDS_LAST_UPDATE_TIME_NAME = "brands_last_update_time";
+    public static final String BRAND_MODELS_LAST_UPDATE_TIME_NAME_PREFIX = "brand_models_last_update_time_";
 
     @Column(name = "name")
     private String name;
@@ -68,7 +70,10 @@ public class Setting extends Model {
     }
 
     public static void saveValue(String name, String value){
-        Setting setting = new Setting();
+        Setting setting = get(name);
+        if(setting == null){
+            setting = new Setting();
+        }
         setting.setName(name);
         setting.setValue(value);
         setting.save();

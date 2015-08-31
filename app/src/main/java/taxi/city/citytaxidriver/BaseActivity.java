@@ -16,6 +16,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
     public void showProgress(String msg){
+        hideProgress(); //close dialog if exists
         pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper()
                 .setBarColor(Color.parseColor("#A5DC86"));
@@ -27,6 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     public void hideProgress(){
         if(pDialog != null){
             pDialog.dismissWithAnimation();
+            pDialog = null;
         }
     }
 
