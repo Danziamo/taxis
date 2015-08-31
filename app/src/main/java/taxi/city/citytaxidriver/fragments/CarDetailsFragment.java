@@ -20,7 +20,6 @@ import com.google.android.gms.analytics.HitBuilders;
 
 import java.util.ArrayList;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,6 +33,7 @@ import taxi.city.citytaxidriver.models.GlobalSingleton;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.NCar;
+import taxi.city.citytaxidriver.networking.model.NUser;
 import taxi.city.citytaxidriver.utils.Helper;
 
 public class CarDetailsFragment extends BaseFragment implements View.OnClickListener{
@@ -298,10 +298,9 @@ public class CarDetailsFragment extends BaseFragment implements View.OnClickList
 
     private void updateDriverLicense(String driverLicense){
         mUser.setDriverLicenseNumber(driverLicense);
-        RestClient.getUserService().save(mUser.getId(), mUser, new Callback<User>() {
+        RestClient.getUserService().save(mUser.getId(), new NUser(mUser), new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                mUser = user;
                 GlobalSingleton.getInstance().currentUser = mUser;
                 hideProgress();
                 finishUpdate();

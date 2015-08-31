@@ -49,116 +49,94 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"
             android:textColor="@color/white"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             />
-
-        <EditText
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvChangePassword"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="e-mail"
-            android:id="@+id/editTextEmail"
-            android:inputType="textEmailAddress"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/spacing_tiny" />
+            android:text="Изменить пароль"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginLeft="20dp"
+            android:textSize="@dimen/font_large"
+            android:textColor="@color/lime"
+            />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Дата рождения"
-            android:imeOptions="actionNext"
-            android:id="@+id/editTextDoB"
-            android:inputType="date"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/llChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_centerHorizontal="true"
-            >
+            android:orientation="vertical"
+            android:visibility="gone">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:id="@+id/relativeLayoutPassword"
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="+996"
-                android:text="+996"
-                android:gravity="center"
-                android:id="@+id/textViewExtra"
-                android:inputType="phone"
-                android:visibility="gone"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/metPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:met_baseColor="@color/white"
+                    app:met_maxCharacters="16"
+                    app:met_floatingLabel="highlight"
+                    android:maxLength="16"
+                    app:met_primaryColor="@color/white"
+                    android:hint="@string/password"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="30dp"
+                    android:textColor="@color/white"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    />
 
+                <ImageButton
+                    android:id="@+id/imageButtonShowPassword"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:layout_alignRight="@+id/metPassword"
+                    android:layout_alignEnd="@+id/metPassword"
+                    android:background="#00ffffff"/>
+
+                <ImageButton
+                    android:id="@+id/imageButtonShowPasswordIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:background="@drawable/ic_eye"
+                    android:layout_centerVertical="true"
+                    android:layout_alignRight="@+id/metPassword"
+                    android:layout_alignEnd="@+id/metPassword" />
+
+            </RelativeLayout>
             <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/metPhone"
+                android:id="@+id/metCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:met_baseColor="@color/white"
-                app:met_maxCharacters="14"
+                app:met_maxCharacters="4"
                 app:met_floatingLabel="highlight"
-                android:maxLength="16"
+                android:maxLength="4"
                 app:met_primaryColor="@color/white"
-                android:hint="@string/phone"
-                android:paddingLeft="10dp"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="30dp"
-                android:textColor="@color/white"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-                android:visibility="gone"
-                />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:id="@+id/relativeLayoutPassword"
-            android:layout_height="wrap_content">
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/metPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:met_baseColor="@color/white"
-                app:met_maxCharacters="16"
-                app:met_floatingLabel="highlight"
-                android:maxLength="16"
-                app:met_primaryColor="@color/white"
-                android:hint="@string/password"
+                android:hint="Код подтверждения"
                 android:paddingLeft="10dp"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="30dp"
                 android:textColor="@color/white"
                 android:imeOptions="actionDone"
-                android:inputType="textPassword"
+                android:inputType="numberDecimal"
                 />
+        </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/imageButtonShowPassword"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:layout_alignRight="@+id/metPassword"
-                android:layout_alignEnd="@+id/metPassword"
-                android:background="#00ffffff"/>
 
-            <ImageButton
-                android:id="@+id/imageButtonShowPasswordIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:background="@drawable/ic_eye"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/metPassword"
-                android:layout_alignEnd="@+id/metPassword" />
 
-        </RelativeLayout>
 
     </LinearLayout>
 
@@ -170,14 +148,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp">
-
-        <Button
-            style="@style/mediumButton.Yellow"
-            android:text="Назад"
-            android:id="@+id/buttonBack"
-            android:layout_margin="10dp"
-            android:visibility="gone"/>
-
         <Button
             style="@style/mediumButton.Yellow"
             android:text="Сохранить"

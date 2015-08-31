@@ -11,7 +11,7 @@ import taxi.city.citytaxidriver.fragments.UserDetailsFragment;
 import taxi.city.citytaxidriver.utils.Helper;
 
 
-public class UserDetailsActivity extends AppCompatActivity {
+public class UserDetailsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

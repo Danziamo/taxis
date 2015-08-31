@@ -1,7 +1,5 @@
 package taxi.city.citytaxidriver.networking.api;
 
-import com.squareup.okhttp.Call;
-
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -29,8 +27,8 @@ public interface UserApi {
     @GET("/users/{userId}")
     void getById(@Path("userId") int id, Callback<User> cb);
 
-    @PATCH("/users/{userId}")
-    void save(@Path("userId") int id, @Body User user, Callback<User> cb);
+    @PATCH("/users/{userId}/")
+    void save(@Path("userId") int id, @Body NUser user, Callback<User> cb);
 
     @Multipart
     @POST("/users/{userId}/upload_picture")

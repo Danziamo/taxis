@@ -20,7 +20,7 @@ public interface CarApi {
     @POST("/usercars/")
     void addCar(@Body NCar car, Callback<NCar> cb);
 
-    @PATCH("/usercars/{carId}")
+    @PATCH("/usercars/{carId}/")
     void updateCar(@Path("carId") int carId, @Body NCar car, Callback<NCar> cb);
 
     @GET("/cars/carbrands/")

@@ -3,7 +3,14 @@ package taxi.city.citytaxidriver.networking.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NUser {
+import java.io.Serializable;
+
+import taxi.city.citytaxidriver.models.User;
+
+public class NUser{
+    @Expose
+    public int id;
+
     @Expose
     public String phone;
 
@@ -20,9 +27,17 @@ public class NUser {
     public String password;
 
     @Expose
-    @SerializedName("date_of_birth")
-    public String dob;
+    @SerializedName("driver_license_number")
+    private String driverLicenseNumber;
 
-    @Expose
-    public String email;
+    public NUser() {
+    }
+
+    public NUser(User user) {
+        id = user.getId();
+        phone = user.getPhone();
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        driverLicenseNumber = user.getDriverLicenseNumber();
+    }
 }
