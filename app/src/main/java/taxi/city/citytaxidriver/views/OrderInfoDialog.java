@@ -29,7 +29,7 @@ public class OrderInfoDialog extends Dialog {
     private Button btnSubmit;
 
     public OrderInfoDialog(Context context) {
-        super(context);
+        super(context, R.style.MyAlertDialogStyle);
         mContext = context;
         setTitle(getString(R.string.alert_info_order));
         setContentView(R.layout.dialog_order_info);

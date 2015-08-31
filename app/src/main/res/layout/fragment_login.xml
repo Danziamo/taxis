@@ -83,6 +83,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signin"
+        android:background="@drawable/button_shape_yellow"
+        android:textColor="@color/ColorPrimary"
         android:layout_below="@+id/metPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
@@ -91,6 +93,7 @@
         android:id="@+id/tvForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/splashPFinish"
         android:text="@string/forgot.password"
         android:layout_marginBottom="10dp"
         android:layout_alignParentBottom="true"
