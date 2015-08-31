@@ -146,4 +146,6 @@
     <string name="stopadress">Куда доставить</string>
 
     <string name="sms_send_toast">На номер %1$s будет выслано смс с кодом подтверждения. Введите его в поле "Код подтверждение".</string>
+
+    <string name="failed_create_bort_order">Не удалось создать заказ</string>
 </resources>

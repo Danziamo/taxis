@@ -122,7 +122,7 @@ public class LoginFragment extends BaseFragment {
                     UserStatus userStatus = new UserStatus();
                     userStatus.iosToken = null;
                     userStatus.onlineStatus = OnlineStatus.ONLINE;
-                    userStatus.role = Role.USER;
+                    userStatus.role = Role.DRIVER;
                     RestClient.getUserService().updateStatus(user.getId(), userStatus, new Callback<User>() {
                         @Override
                         public void success(User user, Response response) {

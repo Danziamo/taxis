@@ -1,6 +1,7 @@
 package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -12,6 +13,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -31,6 +33,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit.Callback;
@@ -359,12 +362,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void logout() {
-        RestClient.getSessionService().logout(null, new Callback<Object>() {
+        RestClient.getSessionService().logout(new Object(), new Callback<Object>() {
             @Override
             public void success(Object o, Response response) {
                 SessionHelper sh = new SessionHelper();
                 sh.setPassword(null);
                 sh.setToken(null);
+                Intent intent = new Intent(MainActivity.this, MainSplashActivity.class);
+                ComponentName cn = intent.getComponent();
+                Intent mainIntent = IntentCompat.makeRestartActivityTask(cn);
+                startActivity(mainIntent);
+                finish();
             }
 
             @Override
@@ -372,6 +380,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 SessionHelper sh = new SessionHelper();
                 sh.setPassword(null);
                 sh.setToken(null);
+                Intent intent = new Intent(MainActivity.this, MainSplashActivity.class);
+                ComponentName cn = intent.getComponent();
+                Intent mainIntent = IntentCompat.makeRestartActivityTask(cn);
+                startActivity(mainIntent);
+                finish();
             }
         });
     }
