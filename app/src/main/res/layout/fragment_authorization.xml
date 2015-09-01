@@ -16,7 +16,7 @@
         android:gravity="center"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp" />
+        android:layout_marginTop="50dp" />
 
     <TextView
         android:id="@+id/tvCode"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:text="@string/met.code"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -43,6 +43,7 @@
         app:met_baseColor="@color/white"
         app:met_primaryColor="@color/white"
         android:layout_marginTop="5dp"
+        android:imeOptions="actionNext"
         />
     <LinearLayout
         android:id="@+id/llPassword"
@@ -58,8 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/password"
-            android:visibility="invisible"/>
+            android:text="@string/password"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/metPassword"

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+import taxi.city.citytaxidriver.models.OnlineStatus;
 import taxi.city.citytaxidriver.models.User;
 
 public class NUser{
@@ -28,7 +29,11 @@ public class NUser{
 
     @Expose
     @SerializedName("driver_license_number")
-    private String driverLicenseNumber;
+    public String driverLicenseNumber;
+
+    @Expose
+    @SerializedName("online_status")
+    public OnlineStatus onlineStatus;
 
     public NUser() {
     }
@@ -39,5 +44,6 @@ public class NUser{
         firstName = user.getFirstName();
         lastName = user.getLastName();
         driverLicenseNumber = user.getDriverLicenseNumber();
+        onlineStatus = user.getOnlineStatus();
     }
 }

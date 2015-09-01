@@ -21,6 +21,7 @@ import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 import taxi.city.citytaxidriver.R;
 import taxi.city.citytaxidriver.models.GlobalSingleton;
+import taxi.city.citytaxidriver.models.OnlineStatus;
 import taxi.city.citytaxidriver.models.User;
 import taxi.city.citytaxidriver.networking.RestClient;
 import taxi.city.citytaxidriver.networking.model.NUser;
@@ -92,6 +93,7 @@ public class SignupFragment extends BaseFragment implements View.OnClickListener
         nuser.password = password;
         nuser.firstName = getString(R.string.signup_default_first_name);
         nuser.lastName = getString(R.string.signup_default_last_name);
+        nuser.onlineStatus = OnlineStatus.ONLINE;
 
         RestClient.getUserService().add(nuser, new Callback<User>() {
             @Override

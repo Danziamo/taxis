@@ -262,7 +262,8 @@ public class CarDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void success(NCar nCar, Response response) {
                 updateCurrentUserCar(nCar);
-                if( !mUser.getDriverLicenseNumber().equals(driverLicense) ){
+                String oldDriverLicense = mUser.getDriverLicenseNumber();
+                if( oldDriverLicense == null || !oldDriverLicense.equals(driverLicense) ){
                     updateDriverLicense(driverLicense);
                 }else {
                     hideProgress();
@@ -366,27 +367,30 @@ public class CarDetailsFragment extends BaseFragment implements View.OnClickList
                 carBrandSpinner.setSelection(position, false);
 
                 fetchBrandModels(true);
-                carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        fetchBrandModels(false);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
             }
         }else{
             fetchBrandModels(false);
         }
+        carBrandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                fetchBrandModels(false);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         hideProgress();
     }
 
     private void fetchBrandModels(final boolean setSelection){
         showProgress("Загрузка");
         Brand selectedBrand = (Brand) carBrandSpinner.getSelectedItem();
+        if(selectedBrand == null){
+            selectedBrand = brandArrayAdapter.getItem(0);
+        }
         final Brand dbBrand = Brand.getByBrandId(selectedBrand.getBrandId());
 
         if(dbBrand.isBrandModelsUpToDate()){

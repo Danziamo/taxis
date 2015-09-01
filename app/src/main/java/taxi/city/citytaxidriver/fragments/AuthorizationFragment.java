@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+import taxi.city.citytaxidriver.CarDetailsActivity;
 import taxi.city.citytaxidriver.LoginActivity;
 import taxi.city.citytaxidriver.MainActivity;
 import taxi.city.citytaxidriver.R;
@@ -42,8 +44,6 @@ public class AuthorizationFragment extends BaseFragment implements View.OnClickL
     private MaterialEditText metPassword;
     private MaterialEditText metSmscode;
 
-
-    public boolean test;
 
     public static AuthorizationFragment newInstance(String phone, String password, boolean isFromForgetPassword){
         AuthorizationFragment fragment = new AuthorizationFragment();
@@ -94,6 +94,7 @@ public class AuthorizationFragment extends BaseFragment implements View.OnClickL
             tvPassword.setText(getString(R.string.new_password));
         }else{
             metPassword.setFocusable(false);
+            metSmscode.setImeOptions(EditorInfo.IME_ACTION_DONE);
         }
         btnActivate.setOnClickListener(this);
 
@@ -212,8 +213,9 @@ public class AuthorizationFragment extends BaseFragment implements View.OnClickL
                 sessionHelper.setId(user.getId());
                 sessionHelper.setToken(user.getToken());
 
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), CarDetailsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("NEW", true);
                 getActivity().startActivity(intent);
                 getActivity().finish();
             }
