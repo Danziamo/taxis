@@ -374,6 +374,12 @@ public class OrderModel extends Model implements Serializable {
         double longitude = Double.valueOf(geo.get(1).trim());
         return new LatLng(latitude, longitude);
     }
+
+    public void updateSums(){
+        this.waitTimePrice = this.getWaitTimePrice();
+        this.sum = this.getTravelSum();
+        this.save();
+    }
     //End Helper methods
 
 

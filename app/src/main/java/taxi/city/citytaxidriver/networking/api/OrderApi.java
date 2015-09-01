@@ -38,8 +38,9 @@ public interface OrderApi {
     @PATCH("/orders/{orderId}/")
     void updateStatus(@Path("orderId") int orderId, @Field("status") OrderStatus status, Callback<OrderModel> cb);
 
+    @FormUrlEncoded
     @PATCH("/orders/{orderId}/")
-    void cancelOrder(@Path("orderId") int orderId, @Field("status") OrderStatus status, int driverId, Callback<OrderModel> cb);
+    void cancelOrder(@Path("orderId") int orderId, @Field("status") OrderStatus status, @Field("driver") int driverId, Callback<OrderModel> cb);
 
     @PATCH("/orders/{orderId}/")
     void update(@Path("orderId") int orderId, @Body OrderModel order, Callback<OrderModel> cb);

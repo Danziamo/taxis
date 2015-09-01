@@ -46,21 +46,38 @@ public class OrderInfoDialog extends Dialog {
         btnSubmit = (Button)findViewById(R.id.btnSubmit);
     }
 
-    public void setOrder(OrderModel order, View.OnClickListener listener){
+    public void setOrder(OrderModel order, boolean hasActiveOrder,  View.OnClickListener listener){
         isShowCalled = true;
         tvAddress.setText(order.getStartName());
         tvClientPhone.setText(order.getClientPhone());
-        tvDescription.setText(order.getDescription());
+        String desc = order.getDescription();
+        if(!desc.equals("")) {
+            tvDescription.setVisibility(View.VISIBLE);
+            tvDescription.setText(order.getDescription());
+        }else{
+            tvDescription.setVisibility(View.GONE);
+        }
         if (order.isFixedPrice()) {
             tvCounter.setVisibility(View.GONE);
             tvFixedPrice.setText(String.valueOf((int)order.getFixedPrice()));
-            tvStopAddress.setText(order.getStopName());
         } else {
             llFixedPrice.setVisibility(View.GONE);
         }
+        String stopAddress = order.getStopName();
+        if(stopAddress.equals("")){
+            tvStopAddress.setVisibility(View.GONE);
+        }else{
+            tvStopAddress.setVisibility(View.VISIBLE);
+            tvStopAddress.setText(order.getStopName());
+        }
 
         btnCancel.setOnClickListener(listener);
-        btnSubmit.setOnClickListener(listener);
+        if(hasActiveOrder) {
+            btnSubmit.setVisibility(View.GONE);
+        }else{
+            btnSubmit.setOnClickListener(listener);
+            btnSubmit.setVisibility(View.VISIBLE);
+        }
         if(isShowCalled) {
             show();
         }
