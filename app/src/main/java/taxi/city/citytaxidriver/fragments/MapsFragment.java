@@ -162,6 +162,7 @@ public class MapsFragment extends BaseFragment implements GoogleMap.OnMarkerClic
         tvPrice = (TextView)view.findViewById(R.id.tvPrice);
         tvStatus = (TextView)view.findViewById(R.id.tvStatus);
 
+
         llOrderDetails = (LinearLayout)view.findViewById(R.id.llOrderDetails);
         tvWaitTime = (TextView)view.findViewById(R.id.tvWaitTime);
         tvWaitSum = (TextView)view.findViewById(R.id.tvWaitSum);

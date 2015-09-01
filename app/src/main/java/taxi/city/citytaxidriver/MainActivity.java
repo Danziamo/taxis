@@ -2,10 +2,12 @@ package taxi.city.citytaxidriver;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -186,9 +188,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private boolean isGPSEnabled(){
-        String provider = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        return !provider.equals("");
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        String provider = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+//        return !provider.equals("");
     }
 
     public void displayPromptForEnablingGPS(final boolean needToZoom)
