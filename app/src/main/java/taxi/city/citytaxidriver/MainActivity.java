@@ -135,6 +135,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.accountInfo:
                 performState(UserDetailsActivity.class);
                 break;
+            case R.id.share:
+                shareLink();
+                break;
 
             case R.id.exit:
 
@@ -156,6 +159,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void performState(Class<?> activity){
         Intent intent = new Intent(MainActivity.this, activity);
         startActivity(intent);
+    }
+
+    private void shareLink(){
+        String text = "Зарабатывай с Easy Taxi. Будь хозяином своего времени.\nhttp://onelink.to/2tru25 \nEasy Taxi\nНам с тобой по пути!";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+
+        startActivity(Intent.createChooser(intent, "Поделиться"));
     }
 
     @Override
